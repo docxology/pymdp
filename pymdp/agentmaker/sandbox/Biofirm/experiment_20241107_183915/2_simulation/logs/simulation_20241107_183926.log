@@ -1,0 +1,35 @@
+18:39:26 |    INFO | Logging initialized: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/logs/simulation_20241107_183926.log
+18:39:26 |    INFO | Loading matrices...
+18:39:26 |    INFO | Loaded environment matrices:
+18:39:26 |    INFO | - A: shape (3, 3)
+18:39:26 |    INFO | - B: shape (3, 3, 3)
+18:39:26 |    INFO | - D: shape (3,)
+18:39:26 |    INFO | Loaded agent matrices:
+18:39:26 |    INFO | - A: shape (3, 3)
+18:39:26 |    INFO | - B: shape (3, 3, 3)
+18:39:26 |    INFO | - C: shape (3,)
+18:39:26 |    INFO | - D: shape (3,)
+18:39:26 |    INFO | Initialized active inference agent
+18:39:26 |    INFO | BiofirmExecutor initialized successfully
+18:39:26 |    INFO | Running simulation for 1000 timesteps
+18:39:26 |    INFO | Starting simulation for 1000 timesteps
+18:39:26 |    INFO | Timestep 0: state=1, obs=1, action=0
+18:39:26 |    INFO | Timestep 100: state=0, obs=0, action=2
+18:39:27 |    INFO | Timestep 200: state=2, obs=2, action=0
+18:39:27 |    INFO | Timestep 300: state=2, obs=2, action=0
+18:39:27 |    INFO | Timestep 400: state=1, obs=1, action=2
+18:39:27 |    INFO | Timestep 500: state=1, obs=1, action=0
+18:39:27 |    INFO | Timestep 600: state=0, obs=1, action=1
+18:39:27 |    INFO | Timestep 700: state=0, obs=0, action=0
+18:39:27 |    INFO | Timestep 800: state=1, obs=1, action=1
+18:39:27 |    INFO | Timestep 900: state=1, obs=1, action=0
+18:39:27 |    INFO | Saved histories to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/data/histories.json
+18:39:27 |    INFO | Saved results to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/results/simulation_results.json
+18:39:27 |    INFO | Saved metadata to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/data/simulation_metadata.json
+18:39:27 |    INFO | Saved simulation data to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation
+18:39:27 |    INFO | Saved summary to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/results/simulation_summary.json
+18:39:27 |    INFO | Saved metrics to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/metrics/performance_metrics.json
+18:39:27 |    INFO | Saved checkpoint to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/checkpoints/final_state.json
+18:39:27 |    INFO | Saved metrics to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_183915/2_simulation/metrics/performance_metrics.json
+18:39:27 |    INFO | Simulation complete
+18:39:27 |    INFO | Simulation completed successfully

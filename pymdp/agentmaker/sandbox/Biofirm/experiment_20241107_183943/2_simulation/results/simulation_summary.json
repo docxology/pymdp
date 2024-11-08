@@ -1,0 +1,19 @@
+{
+  "mean_beliefs": [
+    0.5363067688419332,
+    0.044583226178542906,
+    0.41911000497952383
+  ],
+  "action_frequencies": [
+    353,
+    268,
+    379
+  ],
+  "final_state": 2,
+  "total_timesteps": 1000,
+  "homeostasis_metrics": {
+    "time_in_homeo": 0.286,
+    "transitions": 300,
+    "control_efficiency": 0.268
+  }
+}

@@ -1,0 +1,156 @@
+{
+    "modelName": "biofirm_agent",
+    "modelType": [
+        "Agent",
+        "Homeostatic"
+    ],
+    "stateSpace": {
+        "factors": [
+            "EcologicalState"
+        ],
+        "sizes": [
+            3
+        ],
+        "labels": [
+            [
+                "LOW",
+                "HOMEO",
+                "HIGH"
+            ]
+        ]
+    },
+    "observations": {
+        "modalities": [
+            "StateObservation"
+        ],
+        "sizes": [
+            3
+        ],
+        "labels": [
+            [
+                "LOW",
+                "HOMEO",
+                "HIGH"
+            ]
+        ],
+        "A_matrix": {
+            "type": "identity_with_noise",
+            "noise": 0.2
+        }
+    },
+    "transitionModel": {
+        "EcologicalState": {
+            "controlled": true,
+            "control_factor_idx": 0,
+            "num_controls": 3,
+            "state_labels": [
+                "LOW",
+                "HOMEO",
+                "HIGH"
+            ],
+            "action_labels": [
+                "DECREASE",
+                "MAINTAIN",
+                "INCREASE"
+            ],
+            "transitions": {
+                "DECREASE": [
+                    [
+                        0.8,
+                        0.2,
+                        0.0
+                    ],
+                    [
+                        0.4,
+                        0.5,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.4,
+                        0.5
+                    ]
+                ],
+                "MAINTAIN": [
+                    [
+                        0.9,
+                        0.1,
+                        0.0
+                    ],
+                    [
+                        0.1,
+                        0.8,
+                        0.1
+                    ],
+                    [
+                        0.0,
+                        0.1,
+                        0.9
+                    ]
+                ],
+                "INCREASE": [
+                    [
+                        0.5,
+                        0.4,
+                        0.1
+                    ],
+                    [
+                        0.1,
+                        0.5,
+                        0.4
+                    ],
+                    [
+                        0.0,
+                        0.2,
+                        0.8
+                    ]
+                ]
+            }
+        }
+    },
+    "policies": {
+        "controlFactors": [
+            0
+        ],
+        "numControls": [
+            3
+        ],
+        "policyLen": 1,
+        "control_fac_idx": [
+            0
+        ],
+        "labels": [
+            [
+                "DECREASE",
+                "MAINTAIN",
+                "INCREASE"
+            ]
+        ]
+    },
+    "preferences": {
+        "modalities": [
+            "StateObservation"
+        ],
+        "values": [
+            [
+                2,
+                0.1,
+                2
+            ]
+        ],
+        "labels": [
+            [
+                "LOW",
+                "HOMEO",
+                "HIGH"
+            ]
+        ]
+    },
+    "initialBeliefs": {
+        "EcologicalState": [
+            0.1,
+            0.8,
+            0.1
+        ]
+    }
+}

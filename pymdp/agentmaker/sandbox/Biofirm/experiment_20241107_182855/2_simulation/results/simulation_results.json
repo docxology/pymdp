@@ -1,0 +1,23 @@
+{
+  "status": "completed",
+  "timestamp": "2024-11-07T18:29:05.302622",
+  "summary": {
+    "mean_beliefs": [
+      0.13187369282068073,
+      0.459346885867506,
+      0.40877942131181166
+    ],
+    "action_frequencies": [
+      360,
+      273,
+      367
+    ],
+    "final_state": 2,
+    "total_timesteps": 1000,
+    "homeostasis_metrics": {
+      "time_in_homeo": 0.319,
+      "transitions": 331,
+      "control_efficiency": 0.273
+    }
+  }
+}

@@ -130,8 +130,8 @@ SHAPLEY_CONFIG = {
             'preferences': [[0.1, 2.0, 0.1]]  # Lower preference differential
         },
         {
-            'name': '1-3-1',
-            'preferences': [[1.0, 3.0, 1.0]]  # Moderate preference with exploration
+            'name': 'Extreme',
+            'preferences': [[2, .1, 2]]  # Preferences for the Extremes. 
         },
         {
             'name': '2-2-2',

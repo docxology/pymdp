@@ -1,0 +1,278 @@
+{
+    "name": "BabeRuthIFSAgent",
+    "nodes": {
+        "self_system": {
+            "dim": 8,
+            "labels": ["presence", "compassion", "curiosity", "clarity", "confidence", "connectedness", "calmness", "leadership"],
+            "type": "hidden"
+        },
+        "protector_parts": {
+            "dim": 6,
+            "labels": ["manager_control", "perfectionist", "critic", "performer", "pleaser", "achiever"],
+            "type": "hidden"
+        },
+        "exile_parts": {
+            "dim": 5,
+            "labels": ["young_babe", "orphaned_self", "rejected_child", "uncertain_player", "vulnerable_hero"],
+            "type": "hidden"
+        },
+        "firefighter_parts": {
+            "dim": 4,
+            "labels": ["risk_taker", "dramatic_showman", "defiant_rebel", "pressure_reliever"],
+            "type": "hidden"
+        },
+        "emotional_state": {
+            "dim": 7,
+            "labels": ["fear", "confidence", "excitement", "pressure", "determination", "vulnerability", "integration"],
+            "type": "observation"
+        },
+        "part_blending": {
+            "dim": 5,
+            "labels": ["self_led", "protector_dominant", "exile_activated", "firefighter_response", "harmonious_blend"],
+            "type": "hidden"
+        },
+        "healing_response": {
+            "dim": 6,
+            "labels": ["unburden", "witness", "nurture", "validate", "protect", "integrate"],
+            "type": "action"
+        },
+        "system_harmony": {
+            "dim": 4,
+            "labels": ["polarization", "cooperation", "self_leadership", "wholeness"],
+            "type": "hidden"
+        }
+    },
+    "edges": {
+        "self_to_parts": {
+            "from": "self_system",
+            "to": ["protector_parts", "exile_parts", "firefighter_parts"],
+            "type": "modulation"
+        },
+        "parts_to_emotional": {
+            "from": ["protector_parts", "exile_parts", "firefighter_parts"],
+            "to": "emotional_state",
+            "type": "generative"
+        },
+        "emotional_to_blending": {
+            "from": "emotional_state",
+            "to": "part_blending",
+            "type": "inference"
+        },
+        "self_to_healing": {
+            "from": "self_system",
+            "to": "healing_response",
+            "type": "policy"
+        },
+        "healing_to_harmony": {
+            "from": "healing_response",
+            "to": "system_harmony",
+            "type": "deterministic"
+        },
+        "harmony_to_self": {
+            "from": "system_harmony",
+            "to": "self_system",
+            "type": "feedback"
+        }
+    },
+    "parameters": {
+        "precision": {
+            "self_system": 2.5,
+            "part_blending": 1.8,
+            "system_harmony": 2.0
+        },
+        "learning_rate": 0.15,
+        "temporal_horizon": 3
+    },
+    "active_inference_matrices": {
+        "A_matrices": {
+            "parts_observation": {
+                "dimensions": ["emotional_state", "part_blending"],
+                "dirichlet_prior": 1.0,
+                "mapping": {
+                    "fear_to_exile": 0.9,
+                    "pressure_to_protector": 0.8,
+                    "excitement_to_firefighter": 0.7,
+                    "integration_to_self": 0.95
+                }
+            }
+        },
+        "B_matrices": {
+            "healing_dynamics": {
+                "dimensions": ["healing_response", "system_harmony"],
+                "dirichlet_prior": 1.5,
+                "mapping": {
+                    "unburden_to_wholeness": 0.8,
+                    "witness_to_cooperation": 0.85,
+                    "protect_to_leadership": 0.9
+                }
+            }
+        },
+        "C_matrices": {
+            "harmony_preferences": {
+                "dimensions": ["system_harmony"],
+                "values": {
+                    "wholeness": 5.0,
+                    "self_leadership": 4.5,
+                    "cooperation": 4.0,
+                    "polarization": -2.0
+                }
+            }
+        },
+        "D_matrices": {
+            "initial_beliefs": {
+                "self_system": [0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3, 0.3],
+                "part_blending": [0.4, 0.15, 0.15, 0.15, 0.15],
+                "system_harmony": [0.1, 0.3, 0.3, 0.3]
+            }
+        }
+    },
+    "ifs_specific_parameters": {
+        "self_energy_threshold": 0.7,
+        "part_activation_threshold": 0.6,
+        "blending_sensitivity": 0.8,
+        "unburdening_rate": 0.2,
+        "integration_momentum": 0.3,
+        "part_relationships": {
+            "protector_exile_dynamics": {
+                "protection_strength": 0.8,
+                "triggering_threshold": 0.7
+            },
+            "firefighter_activation": {
+                "response_speed": 0.9,
+                "intensity_scaling": 0.85
+            },
+            "self_leadership_factors": {
+                "presence_weight": 0.9,
+                "compassion_influence": 0.85,
+                "curiosity_drive": 0.8
+            }
+        },
+        "healing_protocols": {
+            "exile_unburdening": {
+                "stages": ["witness", "nurture", "validate", "protect"],
+                "completion_threshold": 0.85
+            },
+            "protector_transformation": {
+                "trust_building_rate": 0.3,
+                "role_evolution_speed": 0.25
+            },
+            "system_reorganization": {
+                "harmony_threshold": 0.8,
+                "integration_checkpoint": 0.75
+            }
+        }
+    },
+    "dissertation_framework": {
+        "title": "The Internal Family Systems Analysis of Babe Ruth's Called Shot: A Multi-Level Study of Peak Performance, Trauma Integration, and Athletic Transcendence",
+        "chapters": {
+            "1_theoretical_foundation": {
+                "title": "Theoretical Integration: IFS, Sports Psychology, and Transformative Moments",
+                "sections": [
+                    "1.1 Internal Family Systems in High-Stakes Athletic Performance",
+                    "1.2 The Neuroscience of Self-Leadership in Peak Moments",
+                    "1.3 Trauma-Informed Sports Psychology: The Orphanage to Legend Pipeline",
+                    "1.4 Collective Unconscious and Baseball Mythology"
+                ]
+            },
+            "2_parts_analysis": {
+                "title": "The Parts Constellation of the Called Shot Moment",
+                "sections": [
+                    "2.1 Exile Mapping: Young Babe's Journey from St. Mary's Industrial School",
+                    "2.2 Protector Evolution: From Survival to Performance Excellence",
+                    "2.3 The Firefighter's Gift: Transforming Impulsivity into Legendary Moments",
+                    "2.4 Self-Energy Manifestation in Athletic Prowess"
+                ]
+            },
+            "3_system_dynamics": {
+                "title": "System Polarizations and Harmonies",
+                "sections": [
+                    "3.1 The Perfectionist-Showman Polarity",
+                    "3.2 Burden Patterns: From Abandonment to Adoration",
+                    "3.3 Part Blending Analysis in Critical Moments",
+                    "3.4 The Role of Self in Athletic Flow States"
+                ]
+            },
+            "4_transformation_analysis": {
+                "title": "The Moment of Integration",
+                "sections": [
+                    "4.1 Temporal Analysis of the Pre-Pitch Constellation",
+                    "4.2 The Gesture: Firefighter Spontaneity Meets Self Leadership",
+                    "4.3 Somatic Markers of Integration During the At-Bat",
+                    "4.4 Post-Event System Reorganization"
+                ]
+            },
+            "5_cultural_implications": {
+                "title": "Beyond the Individual: Systemic Resonance",
+                "sections": [
+                    "5.1 Collective Trauma and Baseball's Healing Role",
+                    "5.2 Depression-Era Psyche and Heroic Transformation",
+                    "5.3 Transgenerational Impact of Integrated Moments",
+                    "5.4 IFS as a Framework for Understanding Athletic Mythology"
+                ]
+            },
+            "6_clinical_applications": {
+                "title": "Applications in Sports Psychology and Trauma Work",
+                "sections": [
+                    "6.1 IFS-Informed Peak Performance Protocol",
+                    "6.2 Working with Athletic Exiles",
+                    "6.3 Protector Meditation in Sports Psychology",
+                    "6.4 The Self-Led Athlete: Training Applications"
+                ]
+            }
+        },
+        "research_methodologies": {
+            "primary_sources": [
+                "Historical footage analysis",
+                "Contemporary witness accounts",
+                "Ruth's autobiographical materials",
+                "Period psychological frameworks"
+            ],
+            "analytical_frameworks": [
+                "IFS developmental mapping",
+                "Somatic psychology markers",
+                "Performance state analysis",
+                "Cultural mythology metrics"
+            ],
+            "novel_contributions": {
+                "theoretical": [
+                    "Integration of IFS with peak performance theory",
+                    "Trauma-informed sports psychology framework",
+                    "Multi-level part mapping in athletic moments",
+                    "Self-energy quantification in performance states"
+                ],
+                "practical": [
+                    "IFS-based performance enhancement protocols",
+                    "Part-mapping tools for athletes",
+                    "Integration metrics for sports psychology",
+                    "Cultural resonance assessment framework"
+                ]
+            }
+        },
+        "key_hypotheses": {
+            "H1": "Self-leadership presence correlates with peak performance integration",
+            "H2": "Exile unburdening creates sustainable athletic transformation",
+            "H3": "Firefighter-Protector harmony enables controlled spontaneity",
+            "H4": "System reorganization precedes transcendent athletic moments"
+        },
+        "implications": {
+            "clinical": [
+                "Treatment protocols for athlete trauma",
+                "Performance anxiety interventions",
+                "Team dynamics optimization",
+                "Career transition support"
+            ],
+            "theoretical": [
+                "Extended IFS model for peak performance",
+                "Athletic-spiritual integration framework",
+                "Collective trauma resolution through sports",
+                "Embodied leadership theory"
+            ],
+            "cultural": [
+                "Mythological moment formation process",
+                "Collective healing through athletic narrative",
+                "Transgenerational trauma resolution patterns",
+                "Cultural symbol integration dynamics"
+            ]
+        }
+    }
+}

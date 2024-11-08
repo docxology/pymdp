@@ -1,0 +1,18 @@
+2024-11-07 18:49:23 | INFO | ==================================================
+2024-11-07 18:49:23 | INFO | Initializing BiofirmRenderer
+2024-11-07 18:49:23 | INFO | Output directory structure created at: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render
+2024-11-07 18:49:23 | INFO | - root: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render
+2024-11-07 18:49:23 | INFO | - matrices: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrices
+2024-11-07 18:49:23 | INFO | - matrices_env: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrices/environment
+2024-11-07 18:49:23 | INFO | - matrices_agent: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrices/agent
+2024-11-07 18:49:23 | INFO | - config: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/config
+2024-11-07 18:49:23 | INFO | - viz: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrix_visualizations
+2024-11-07 18:49:23 | INFO | - logs: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/logs
+2024-11-07 18:49:23 | INFO | ==================================================
+2024-11-07 18:49:23 | INFO | Loading GNN models...
+2024-11-07 18:49:23 | INFO | Validating matrices...
+2024-11-07 18:49:23 | INFO | Saved environment files to config directory
+2024-11-07 18:49:23 | INFO | Saved agent files to config directory
+2024-11-07 18:49:23 | INFO | Initialization complete
+2024-11-07 18:49:26 | INFO | Generated matrix visualizations in /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrix_visualizations
+2024-11-07 18:49:26 | INFO | Saved model configurations to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/config

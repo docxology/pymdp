@@ -1,0 +1,3236 @@
+{
+  "shapley_values": {
+    "homeostasis_satisfaction": {
+      "values": {
+        "0": 0.01530000000000002,
+        "1": 0.015583333333333341,
+        "2": 0.05188333333333335,
+        "3": 0.010200000000000016,
+        "4": 0.005333333333333346
+      },
+      "interpretation": "Contribution to maintaining homeostasis:\n- Agent 2 (.1-2-.1): 0.0519\n- Agent 1 (0-6-0): 0.0156\n- Agent 0 (base): 0.0153\n- Agent 3 (Extreme): 0.0102\n- Agent 4 (2-2-2): 0.0053\n",
+      "ranking": [
+        {
+          "agent_id": 2,
+          "name": ".1-2-.1",
+          "value": 0.05188333333333335,
+          "relative_contribution": 52.780603594438766,
+          "rank": 1
+        },
+        {
+          "agent_id": 1,
+          "name": "0-6-0",
+          "value": 0.015583333333333341,
+          "relative_contribution": 15.852831468294335,
+          "rank": 2
+        },
+        {
+          "agent_id": 0,
+          "name": "base",
+          "value": 0.01530000000000002,
+          "relative_contribution": 15.564598168870813,
+          "rank": 3
+        },
+        {
+          "agent_id": 3,
+          "name": "Extreme",
+          "value": 0.010200000000000016,
+          "relative_contribution": 10.376398779247213,
+          "rank": 4
+        },
+        {
+          "agent_id": 4,
+          "name": "2-2-2",
+          "value": 0.005333333333333346,
+          "relative_contribution": 5.425567989148873,
+          "rank": 5
+        }
+      ]
+    },
+    "expected_free_energy": {
+      "values": {
+        "0": 0.015093867842485056,
+        "1": -0.0389841075900934,
+        "2": -0.04039845648505037,
+        "3": -0.01619278756017225,
+        "4": -0.024544176252671718
+      },
+      "interpretation": "Contribution to minimizing uncertainty:\n- Agent 0 (base): 0.0151\n- Agent 3 (Extreme): -0.0162\n- Agent 4 (2-2-2): -0.0245\n- Agent 1 (0-6-0): -0.0390\n- Agent 2 (.1-2-.1): -0.0404\n",
+      "ranking": [
+        {
+          "agent_id": 2,
+          "name": ".1-2-.1",
+          "value": -0.04039845648505037,
+          "relative_contribution": 29.87755485823202,
+          "rank": 1
+        },
+        {
+          "agent_id": 1,
+          "name": "0-6-0",
+          "value": -0.0389841075900934,
+          "relative_contribution": 28.831542451461132,
+          "rank": 2
+        },
+        {
+          "agent_id": 4,
+          "name": "2-2-2",
+          "value": -0.024544176252671718,
+          "relative_contribution": 18.15217798508424,
+          "rank": 3
+        },
+        {
+          "agent_id": 3,
+          "name": "Extreme",
+          "value": -0.01619278756017225,
+          "relative_contribution": 11.97572731066535,
+          "rank": 4
+        },
+        {
+          "agent_id": 0,
+          "name": "base",
+          "value": 0.015093867842485056,
+          "relative_contribution": 11.162997394557244,
+          "rank": 5
+        }
+      ]
+    },
+    "belief_accuracy": {
+      "values": {
+        "0": -0.0009666666666666695,
+        "1": -0.00658333333333334,
+        "2": -0.018083333333333347,
+        "3": -0.01113333333333335,
+        "4": -0.0075333333333333355
+      },
+      "interpretation": "Contribution to accurate state estimation:\n- Agent 0 (base): -0.0010\n- Agent 1 (0-6-0): -0.0066\n- Agent 4 (2-2-2): -0.0075\n- Agent 3 (Extreme): -0.0111\n- Agent 2 (.1-2-.1): -0.0181\n",
+      "ranking": [
+        {
+          "agent_id": 2,
+          "name": ".1-2-.1",
+          "value": -0.018083333333333347,
+          "relative_contribution": 40.820165537998484,
+          "rank": 1
+        },
+        {
+          "agent_id": 3,
+          "name": "Extreme",
+          "value": -0.01113333333333335,
+          "relative_contribution": 25.131677953348397,
+          "rank": 2
+        },
+        {
+          "agent_id": 4,
+          "name": "2-2-2",
+          "value": -0.0075333333333333355,
+          "relative_contribution": 17.005267118133922,
+          "rank": 3
+        },
+        {
+          "agent_id": 1,
+          "name": "0-6-0",
+          "value": -0.00658333333333334,
+          "relative_contribution": 14.860797592174569,
+          "rank": 4
+        },
+        {
+          "agent_id": 0,
+          "name": "base",
+          "value": -0.0009666666666666695,
+          "relative_contribution": 2.1820917983446244,
+          "rank": 5
+        }
+      ]
+    },
+    "control_efficiency": {
+      "values": {
+        "0": 0.02833333333333333,
+        "1": 0.06254999999999998,
+        "2": 0.024349999999999986,
+        "3": 0.028366666666666637,
+        "4": 0.03329999999999998
+      },
+      "interpretation": "Contribution to control efficiency:\n- Agent 1 (0-6-0): 0.0625\n- Agent 4 (2-2-2): 0.0333\n- Agent 3 (Extreme): 0.0284\n- Agent 0 (base): 0.0283\n- Agent 2 (.1-2-.1): 0.0243\n",
+      "ranking": [
+        {
+          "agent_id": 1,
+          "name": "0-6-0",
+          "value": 0.06254999999999998,
+          "relative_contribution": 35.35895986433013,
+          "rank": 1
+        },
+        {
+          "agent_id": 4,
+          "name": "2-2-2",
+          "value": 0.03329999999999998,
+          "relative_contribution": 18.82419446014697,
+          "rank": 2
+        },
+        {
+          "agent_id": 3,
+          "name": "Extreme",
+          "value": 0.028366666666666637,
+          "relative_contribution": 16.03542491049556,
+          "rank": 3
+        },
+        {
+          "agent_id": 0,
+          "name": "base",
+          "value": 0.02833333333333333,
+          "relative_contribution": 16.01658187299793,
+          "rank": 4
+        },
+        {
+          "agent_id": 2,
+          "name": ".1-2-.1",
+          "value": 0.024349999999999986,
+          "relative_contribution": 13.76483889202939,
+          "rank": 5
+        }
+      ]
+    }
+  },
+  "coalition_performances": {
+    "homeostasis_satisfaction": {
+      "coalition_0": 0.318,
+      "coalition_1": 0.286,
+      "coalition_2": 0.327,
+      "coalition_3": 0.304,
+      "coalition_4": 0.279,
+      "coalition_0_1": 0.329,
+      "coalition_0_2": 0.31,
+      "coalition_0_3": 0.304,
+      "coalition_0_4": 0.306,
+      "coalition_1_2": 0.342,
+      "coalition_1_3": 0.331,
+      "coalition_1_4": 0.312,
+      "coalition_2_3": 0.308,
+      "coalition_2_4": 0.33,
+      "coalition_3_4": 0.318,
+      "coalition_0_1_2": 0.362,
+      "coalition_0_1_3": 0.269,
+      "coalition_0_1_4": 0.269,
+      "coalition_0_2_3": 0.307,
+      "coalition_0_2_4": 0.32,
+      "coalition_0_3_4": 0.261,
+      "coalition_1_2_3": 0.289,
+      "coalition_1_2_4": 0.318,
+      "coalition_1_3_4": 0.338,
+      "coalition_2_3_4": 0.306,
+      "coalition_0_1_2_3": 0.314,
+      "coalition_0_1_2_4": 0.3,
+      "coalition_0_1_3_4": 0.291,
+      "coalition_0_2_3_4": 0.317,
+      "coalition_1_2_3_4": 0.298,
+      "coalition_0_1_2_3_4": 0.332
+    },
+    "expected_free_energy": {
+      "coalition_0": -0.03745493707616741,
+      "coalition_1": -0.06613366240248073,
+      "coalition_2": -0.023163804537285407,
+      "coalition_3": -0.023696537856952617,
+      "coalition_4": -0.03693272981613584,
+      "coalition_0_1": -0.04026564160673766,
+      "coalition_0_2": -0.01829364325246907,
+      "coalition_0_3": -0.017458661347736295,
+      "coalition_0_4": -0.05872675850630587,
+      "coalition_1_2": -0.02900473639283811,
+      "coalition_1_3": -0.031834157032380385,
+      "coalition_1_4": -0.050918986623656765,
+      "coalition_2_3": -0.02827227965402464,
+      "coalition_2_4": -0.020485402776505922,
+      "coalition_3_4": -0.045768116625083365,
+      "coalition_0_1_2": -0.008484350799465232,
+      "coalition_0_1_3": -0.039531004921387974,
+      "coalition_0_1_4": -0.016736377983306214,
+      "coalition_0_2_3": -0.03340255313449252,
+      "coalition_0_2_4": -0.02008244440267345,
+      "coalition_0_3_4": -0.034244006518203855,
+      "coalition_1_2_3": -0.019282302190406164,
+      "coalition_1_2_4": -0.04951707275530273,
+      "coalition_1_3_4": -0.03616290007080019,
+      "coalition_2_3_4": -0.04611110952438141,
+      "coalition_0_1_2_3": -0.0381537781235843,
+      "coalition_0_1_2_4": -0.041133636771499796,
+      "coalition_0_1_3_4": -0.005011163618451462,
+      "coalition_0_2_3_4": -0.014000409429552182,
+      "coalition_1_2_3_4": -0.06336283239243655,
+      "coalition_0_1_2_3_4": -0.05982315226555693
+    },
+    "belief_accuracy": {
+      "coalition_0": 0.362,
+      "coalition_1": 0.375,
+      "coalition_2": 0.351,
+      "coalition_3": 0.35,
+      "coalition_4": 0.382,
+      "coalition_0_1": 0.356,
+      "coalition_0_2": 0.345,
+      "coalition_0_3": 0.367,
+      "coalition_0_4": 0.374,
+      "coalition_1_2": 0.345,
+      "coalition_1_3": 0.347,
+      "coalition_1_4": 0.383,
+      "coalition_2_3": 0.409,
+      "coalition_2_4": 0.341,
+      "coalition_3_4": 0.36,
+      "coalition_0_1_2": 0.364,
+      "coalition_0_1_3": 0.381,
+      "coalition_0_1_4": 0.397,
+      "coalition_0_2_3": 0.363,
+      "coalition_0_2_4": 0.353,
+      "coalition_0_3_4": 0.392,
+      "coalition_1_2_3": 0.372,
+      "coalition_1_2_4": 0.358,
+      "coalition_1_3_4": 0.355,
+      "coalition_2_3_4": 0.369,
+      "coalition_0_1_2_3": 0.372,
+      "coalition_0_1_2_4": 0.379,
+      "coalition_0_1_3_4": 0.369,
+      "coalition_0_2_3_4": 0.368,
+      "coalition_1_2_3_4": 0.368,
+      "coalition_0_1_2_3_4": 0.356
+    },
+    "control_efficiency": {
+      "coalition_0": 0.253,
+      "coalition_1": 0.268,
+      "coalition_2": 0.254,
+      "coalition_3": 0.219,
+      "coalition_4": 0.228,
+      "coalition_0_1": 0.228,
+      "coalition_0_2": 0.236,
+      "coalition_0_3": 0.259,
+      "coalition_0_4": 0.226,
+      "coalition_1_2": 0.249,
+      "coalition_1_3": 0.265,
+      "coalition_1_4": 0.27,
+      "coalition_2_3": 0.246,
+      "coalition_2_4": 0.224,
+      "coalition_3_4": 0.258,
+      "coalition_0_1_2": 0.184,
+      "coalition_0_1_3": 0.247,
+      "coalition_0_1_4": 0.247,
+      "coalition_0_2_3": 0.256,
+      "coalition_0_2_4": 0.234,
+      "coalition_0_3_4": 0.253,
+      "coalition_1_2_3": 0.254,
+      "coalition_1_2_4": 0.271,
+      "coalition_1_3_4": 0.264,
+      "coalition_2_3_4": 0.244,
+      "coalition_0_1_2_3": 0.257,
+      "coalition_0_1_2_4": 0.269,
+      "coalition_0_1_3_4": 0.249,
+      "coalition_0_2_3_4": 0.222,
+      "coalition_1_2_3_4": 0.239,
+      "coalition_0_1_2_3_4": 0.29
+    }
+  },
+  "summary_statistics": {
+    "homeostasis_satisfaction": {
+      "shapley_stats": {
+        "mean": 0.019660000000000014,
+        "std": 0.01654519265526999,
+        "max_contributor": [
+          2,
+          0.05188333333333335
+        ],
+        "min_contributor": [
+          4,
+          0.005333333333333346
+        ]
+      },
+      "coalition_stats": {
+        "mean": 0.30951612903225806,
+        "std": 0.022218665457066234,
+        "best_coalition": [
+          "coalition_0_1_2",
+          0.362
+        ],
+        "worst_coalition": [
+          "coalition_0_3_4",
+          0.261
+        ]
+      },
+      "synergy_analysis": {
+        "pairwise_synergies": {
+          "base-0-6-0": {
+            "synergy_score": -0.27499999999999997,
+            "joint_performance": 0.329,
+            "individual_performances": [
+              0.318,
+              0.286
+            ]
+          },
+          "base-.1-2-.1": {
+            "synergy_score": -0.335,
+            "joint_performance": 0.31,
+            "individual_performances": [
+              0.318,
+              0.327
+            ]
+          },
+          "base-Extreme": {
+            "synergy_score": -0.318,
+            "joint_performance": 0.304,
+            "individual_performances": [
+              0.318,
+              0.304
+            ]
+          },
+          "base-2-2-2": {
+            "synergy_score": -0.291,
+            "joint_performance": 0.306,
+            "individual_performances": [
+              0.318,
+              0.279
+            ]
+          },
+          "0-6-0-.1-2-.1": {
+            "synergy_score": -0.27099999999999996,
+            "joint_performance": 0.342,
+            "individual_performances": [
+              0.286,
+              0.327
+            ]
+          },
+          "0-6-0-Extreme": {
+            "synergy_score": -0.25899999999999995,
+            "joint_performance": 0.331,
+            "individual_performances": [
+              0.286,
+              0.304
+            ]
+          },
+          "0-6-0-2-2-2": {
+            "synergy_score": -0.25299999999999995,
+            "joint_performance": 0.312,
+            "individual_performances": [
+              0.286,
+              0.279
+            ]
+          },
+          ".1-2-.1-Extreme": {
+            "synergy_score": -0.323,
+            "joint_performance": 0.308,
+            "individual_performances": [
+              0.327,
+              0.304
+            ]
+          },
+          ".1-2-.1-2-2-2": {
+            "synergy_score": -0.2760000000000001,
+            "joint_performance": 0.33,
+            "individual_performances": [
+              0.327,
+              0.279
+            ]
+          },
+          "Extreme-2-2-2": {
+            "synergy_score": -0.26499999999999996,
+            "joint_performance": 0.318,
+            "individual_performances": [
+              0.304,
+              0.279
+            ]
+          }
+        },
+        "best_pairs": [],
+        "worst_pairs": [],
+        "triplet_synergies": {
+          "base-0-6-0-.1-2-.1": {
+            "synergy_score": 1.2429999999999999,
+            "joint_performance": 0.362,
+            "pair_performances": [
+              0.329,
+              0.342,
+              0.31
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.327
+            ]
+          },
+          "base-0-6-0-Extreme": {
+            "synergy_score": 1.121,
+            "joint_performance": 0.269,
+            "pair_performances": [
+              0.329,
+              0.331,
+              0.304
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.304
+            ]
+          },
+          "base-0-6-0-2-2-2": {
+            "synergy_score": 1.088,
+            "joint_performance": 0.269,
+            "pair_performances": [
+              0.329,
+              0.312,
+              0.306
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.279
+            ]
+          },
+          "base-.1-2-.1-Extreme": {
+            "synergy_score": 1.2830000000000001,
+            "joint_performance": 0.307,
+            "pair_performances": [
+              0.31,
+              0.308,
+              0.304
+            ],
+            "individual_performances": [
+              0.318,
+              0.327,
+              0.304
+            ]
+          },
+          "base-.1-2-.1-2-2-2": {
+            "synergy_score": 1.2220000000000002,
+            "joint_performance": 0.32,
+            "pair_performances": [
+              0.31,
+              0.33,
+              0.306
+            ],
+            "individual_performances": [
+              0.318,
+              0.327,
+              0.279
+            ]
+          },
+          "base-Extreme-2-2-2": {
+            "synergy_score": 1.1350000000000002,
+            "joint_performance": 0.261,
+            "pair_performances": [
+              0.304,
+              0.318,
+              0.306
+            ],
+            "individual_performances": [
+              0.318,
+              0.304,
+              0.279
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": 1.142,
+            "joint_performance": 0.289,
+            "pair_performances": [
+              0.342,
+              0.308,
+              0.331
+            ],
+            "individual_performances": [
+              0.286,
+              0.327,
+              0.304
+            ]
+          },
+          "0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": 1.118,
+            "joint_performance": 0.318,
+            "pair_performances": [
+              0.342,
+              0.33,
+              0.312
+            ],
+            "individual_performances": [
+              0.286,
+              0.327,
+              0.279
+            ]
+          },
+          "0-6-0-Extreme-2-2-2": {
+            "synergy_score": 1.115,
+            "joint_performance": 0.338,
+            "pair_performances": [
+              0.331,
+              0.318,
+              0.312
+            ],
+            "individual_performances": [
+              0.286,
+              0.304,
+              0.279
+            ]
+          },
+          ".1-2-.1-Extreme-2-2-2": {
+            "synergy_score": 1.1700000000000002,
+            "joint_performance": 0.306,
+            "pair_performances": [
+              0.308,
+              0.318,
+              0.33
+            ],
+            "individual_performances": [
+              0.327,
+              0.304,
+              0.279
+            ]
+          }
+        },
+        "quartet_synergies": {
+          "base-0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": -0.7699999999999996,
+            "joint_performance": 0.314,
+            "triplet_performances": [
+              0.362,
+              0.269,
+              0.307,
+              0.289
+            ],
+            "pair_performances": [
+              0.329,
+              0.31,
+              0.304,
+              0.342,
+              0.331,
+              0.308
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.327,
+              0.304
+            ]
+          },
+          "base-0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": -0.7409999999999997,
+            "joint_performance": 0.3,
+            "triplet_performances": [
+              0.362,
+              0.269,
+              0.32,
+              0.318
+            ],
+            "pair_performances": [
+              0.329,
+              0.31,
+              0.306,
+              0.342,
+              0.312,
+              0.33
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.327,
+              0.279
+            ]
+          },
+          "base-0-6-0-Extreme-2-2-2": {
+            "synergy_score": -0.6069999999999993,
+            "joint_performance": 0.291,
+            "triplet_performances": [
+              0.269,
+              0.269,
+              0.261,
+              0.338
+            ],
+            "pair_performances": [
+              0.329,
+              0.304,
+              0.306,
+              0.331,
+              0.312,
+              0.318
+            ],
+            "individual_performances": [
+              0.318,
+              0.286,
+              0.304,
+              0.279
+            ]
+          },
+          "base-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -0.8090000000000006,
+            "joint_performance": 0.317,
+            "triplet_performances": [
+              0.307,
+              0.32,
+              0.261,
+              0.306
+            ],
+            "pair_performances": [
+              0.31,
+              0.304,
+              0.306,
+              0.308,
+              0.33,
+              0.318
+            ],
+            "individual_performances": [
+              0.318,
+              0.327,
+              0.304,
+              0.279
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -0.6590000000000003,
+            "joint_performance": 0.298,
+            "triplet_performances": [
+              0.289,
+              0.318,
+              0.338,
+              0.306
+            ],
+            "pair_performances": [
+              0.342,
+              0.331,
+              0.312,
+              0.308,
+              0.33,
+              0.318
+            ],
+            "individual_performances": [
+              0.286,
+              0.327,
+              0.304,
+              0.279
+            ]
+          }
+        },
+        "synergy_scores": {},
+        "best_pairwise_synergies": [
+          [
+            "0-6-0-2-2-2",
+            {
+              "synergy_score": -0.25299999999999995,
+              "joint_performance": 0.312,
+              "individual_performances": [
+                0.286,
+                0.279
+              ]
+            }
+          ],
+          [
+            "0-6-0-Extreme",
+            {
+              "synergy_score": -0.25899999999999995,
+              "joint_performance": 0.331,
+              "individual_performances": [
+                0.286,
+                0.304
+              ]
+            }
+          ],
+          [
+            "Extreme-2-2-2",
+            {
+              "synergy_score": -0.26499999999999996,
+              "joint_performance": 0.318,
+              "individual_performances": [
+                0.304,
+                0.279
+              ]
+            }
+          ]
+        ],
+        "worst_pairwise_synergies": [
+          [
+            "base-Extreme",
+            {
+              "synergy_score": -0.318,
+              "joint_performance": 0.304,
+              "individual_performances": [
+                0.318,
+                0.304
+              ]
+            }
+          ],
+          [
+            ".1-2-.1-Extreme",
+            {
+              "synergy_score": -0.323,
+              "joint_performance": 0.308,
+              "individual_performances": [
+                0.327,
+                0.304
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1",
+            {
+              "synergy_score": -0.335,
+              "joint_performance": 0.31,
+              "individual_performances": [
+                0.318,
+                0.327
+              ]
+            }
+          ]
+        ],
+        "best_triplet_synergies": [
+          [
+            "base-.1-2-.1-Extreme",
+            {
+              "synergy_score": 1.2830000000000001,
+              "joint_performance": 0.307,
+              "pair_performances": [
+                0.31,
+                0.308,
+                0.304
+              ],
+              "individual_performances": [
+                0.318,
+                0.327,
+                0.304
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1",
+            {
+              "synergy_score": 1.2429999999999999,
+              "joint_performance": 0.362,
+              "pair_performances": [
+                0.329,
+                0.342,
+                0.31
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.327
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-2-2-2",
+            {
+              "synergy_score": 1.2220000000000002,
+              "joint_performance": 0.32,
+              "pair_performances": [
+                0.31,
+                0.33,
+                0.306
+              ],
+              "individual_performances": [
+                0.318,
+                0.327,
+                0.279
+              ]
+            }
+          ]
+        ],
+        "worst_triplet_synergies": [
+          [
+            "0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": 1.118,
+              "joint_performance": 0.318,
+              "pair_performances": [
+                0.342,
+                0.33,
+                0.312
+              ],
+              "individual_performances": [
+                0.286,
+                0.327,
+                0.279
+              ]
+            }
+          ],
+          [
+            "0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": 1.115,
+              "joint_performance": 0.338,
+              "pair_performances": [
+                0.331,
+                0.318,
+                0.312
+              ],
+              "individual_performances": [
+                0.286,
+                0.304,
+                0.279
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-2-2-2",
+            {
+              "synergy_score": 1.088,
+              "joint_performance": 0.269,
+              "pair_performances": [
+                0.329,
+                0.312,
+                0.306
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.279
+              ]
+            }
+          ]
+        ],
+        "best_quartet_synergies": [
+          [
+            "base-0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": -0.6069999999999993,
+              "joint_performance": 0.291,
+              "triplet_performances": [
+                0.269,
+                0.269,
+                0.261,
+                0.338
+              ],
+              "pair_performances": [
+                0.329,
+                0.304,
+                0.306,
+                0.331,
+                0.312,
+                0.318
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.304,
+                0.279
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -0.6590000000000003,
+              "joint_performance": 0.298,
+              "triplet_performances": [
+                0.289,
+                0.318,
+                0.338,
+                0.306
+              ],
+              "pair_performances": [
+                0.342,
+                0.331,
+                0.312,
+                0.308,
+                0.33,
+                0.318
+              ],
+              "individual_performances": [
+                0.286,
+                0.327,
+                0.304,
+                0.279
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.7409999999999997,
+              "joint_performance": 0.3,
+              "triplet_performances": [
+                0.362,
+                0.269,
+                0.32,
+                0.318
+              ],
+              "pair_performances": [
+                0.329,
+                0.31,
+                0.306,
+                0.342,
+                0.312,
+                0.33
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.327,
+                0.279
+              ]
+            }
+          ]
+        ],
+        "worst_quartet_synergies": [
+          [
+            "base-0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.7409999999999997,
+              "joint_performance": 0.3,
+              "triplet_performances": [
+                0.362,
+                0.269,
+                0.32,
+                0.318
+              ],
+              "pair_performances": [
+                0.329,
+                0.31,
+                0.306,
+                0.342,
+                0.312,
+                0.33
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.327,
+                0.279
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": -0.7699999999999996,
+              "joint_performance": 0.314,
+              "triplet_performances": [
+                0.362,
+                0.269,
+                0.307,
+                0.289
+              ],
+              "pair_performances": [
+                0.329,
+                0.31,
+                0.304,
+                0.342,
+                0.331,
+                0.308
+              ],
+              "individual_performances": [
+                0.318,
+                0.286,
+                0.327,
+                0.304
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -0.8090000000000006,
+              "joint_performance": 0.317,
+              "triplet_performances": [
+                0.307,
+                0.32,
+                0.261,
+                0.306
+              ],
+              "pair_performances": [
+                0.31,
+                0.304,
+                0.306,
+                0.308,
+                0.33,
+                0.318
+              ],
+              "individual_performances": [
+                0.318,
+                0.327,
+                0.304,
+                0.279
+              ]
+            }
+          ]
+        ]
+      },
+      "performance_range": {
+        "min": 0.261,
+        "max": 0.362,
+        "range": 0.10099999999999998
+      }
+    },
+    "expected_free_energy": {
+      "shapley_stats": {
+        "mean": -0.021005132009100536,
+        "std": 0.02018992759129797,
+        "max_contributor": [
+          0,
+          0.015093867842485056
+        ],
+        "min_contributor": [
+          2,
+          -0.04039845648505037
+        ]
+      },
+      "coalition_stats": {
+        "mean": -0.033982230658331,
+        "std": 0.015798653778190463,
+        "best_coalition": [
+          "coalition_0_1_3_4",
+          -0.005011163618451462
+        ],
+        "worst_coalition": [
+          "coalition_1",
+          -0.06613366240248073
+        ]
+      },
+      "synergy_analysis": {
+        "pairwise_synergies": {
+          "base-0-6-0": {
+            "synergy_score": 0.06332295787191047,
+            "joint_performance": -0.04026564160673766,
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073
+            ]
+          },
+          "base-.1-2-.1": {
+            "synergy_score": 0.04232509836098375,
+            "joint_performance": -0.01829364325246907,
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023163804537285407
+            ]
+          },
+          "base-Extreme": {
+            "synergy_score": 0.04369281358538374,
+            "joint_performance": -0.017458661347736295,
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023696537856952617
+            ]
+          },
+          "base-2-2-2": {
+            "synergy_score": 0.01566090838599738,
+            "joint_performance": -0.05872675850630587,
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.03693272981613584
+            ]
+          },
+          "0-6-0-.1-2-.1": {
+            "synergy_score": 0.06029273054692802,
+            "joint_performance": -0.02900473639283811,
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023163804537285407
+            ]
+          },
+          "0-6-0-Extreme": {
+            "synergy_score": 0.05799604322705295,
+            "joint_performance": -0.031834157032380385,
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023696537856952617
+            ]
+          },
+          "0-6-0-2-2-2": {
+            "synergy_score": 0.0521474055949598,
+            "joint_performance": -0.050918986623656765,
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.03693272981613584
+            ]
+          },
+          ".1-2-.1-Extreme": {
+            "synergy_score": 0.018588062740213383,
+            "joint_performance": -0.02827227965402464,
+            "individual_performances": [
+              -0.023163804537285407,
+              -0.023696537856952617
+            ]
+          },
+          ".1-2-.1-2-2-2": {
+            "synergy_score": 0.03961113157691532,
+            "joint_performance": -0.020485402776505922,
+            "individual_performances": [
+              -0.023163804537285407,
+              -0.03693272981613584
+            ]
+          },
+          "Extreme-2-2-2": {
+            "synergy_score": 0.014861151048005089,
+            "joint_performance": -0.045768116625083365,
+            "individual_performances": [
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          }
+        },
+        "best_pairs": [],
+        "worst_pairs": [],
+        "triplet_synergies": {
+          "base-0-6-0-.1-2-.1": {
+            "synergy_score": -0.1744251375792875,
+            "joint_performance": -0.008484350799465232,
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.02900473639283811,
+              -0.01829364325246907
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.023163804537285407
+            ]
+          },
+          "base-0-6-0-Extreme": {
+            "synergy_score": -0.20454281960573517,
+            "joint_performance": -0.039531004921387974,
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.031834157032380385,
+              -0.017458661347736295
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.023696537856952617
+            ]
+          },
+          "base-0-6-0-2-2-2": {
+            "synergy_score": -0.14786764983617387,
+            "joint_performance": -0.016736377983306214,
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.050918986623656765,
+              -0.05872675850630587
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.03693272981613584
+            ]
+          },
+          "base-.1-2-.1-Extreme": {
+            "synergy_score": -0.13800852782107337,
+            "joint_performance": -0.03340255313449252,
+            "pair_performances": [
+              -0.01829364325246907,
+              -0.02827227965402464,
+              -0.017458661347736295
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023163804537285407,
+              -0.023696537856952617
+            ]
+          },
+          "base-.1-2-.1-2-2-2": {
+            "synergy_score": -0.11767958272656992,
+            "joint_performance": -0.02008244440267345,
+            "pair_performances": [
+              -0.01829364325246907,
+              -0.020485402776505922,
+              -0.05872675850630587
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023163804537285407,
+              -0.03693272981613584
+            ]
+          },
+          "base-Extreme-2-2-2": {
+            "synergy_score": -0.10845887953759006,
+            "joint_performance": -0.034244006518203855,
+            "pair_performances": [
+              -0.017458661347736295,
+              -0.045768116625083365,
+              -0.05872675850630587
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": -0.15615913870460055,
+            "joint_performance": -0.019282302190406164,
+            "pair_performances": [
+              -0.02900473639283811,
+              -0.02827227965402464,
+              -0.031834157032380385
+            ],
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023163804537285407,
+              -0.023696537856952617
+            ]
+          },
+          "0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": -0.20156834047410588,
+            "joint_performance": -0.04951707275530273,
+            "pair_performances": [
+              -0.02900473639283811,
+              -0.020485402776505922,
+              -0.050918986623656765
+            ],
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023163804537285407,
+              -0.03693272981613584
+            ]
+          },
+          "0-6-0-Extreme-2-2-2": {
+            "synergy_score": -0.161167499940818,
+            "joint_performance": -0.03616290007080019,
+            "pair_performances": [
+              -0.031834157032380385,
+              -0.045768116625083365,
+              -0.050918986623656765
+            ],
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          },
+          ".1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -0.1191714548895152,
+            "joint_performance": -0.04611110952438141,
+            "pair_performances": [
+              -0.02827227965402464,
+              -0.045768116625083365,
+              -0.020485402776505922
+            ],
+            "individual_performances": [
+              -0.023163804537285407,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          }
+        },
+        "quartet_synergies": {
+          "base-0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": 0.18363501996845366,
+            "joint_performance": -0.0381537781235843,
+            "triplet_performances": [
+              -0.008484350799465232,
+              -0.039531004921387974,
+              -0.03340255313449252,
+              -0.019282302190406164
+            ],
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.01829364325246907,
+              -0.017458661347736295,
+              -0.02900473639283811,
+              -0.031834157032380385,
+              -0.02827227965402464
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.023163804537285407,
+              -0.023696537856952617
+            ]
+          },
+          "base-0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": 0.10935167234842924,
+            "joint_performance": -0.041133636771499796,
+            "triplet_performances": [
+              -0.008484350799465232,
+              -0.016736377983306214,
+              -0.02008244440267345,
+              -0.04951707275530273
+            ],
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.01829364325246907,
+              -0.05872675850630587,
+              -0.02900473639283811,
+              -0.050918986623656765,
+              -0.020485402776505922
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.023163804537285407,
+              -0.03693272981613584
+            ]
+          },
+          "base-0-6-0-Extreme-2-2-2": {
+            "synergy_score": 0.12437208384665588,
+            "joint_performance": -0.005011163618451462,
+            "triplet_performances": [
+              -0.039531004921387974,
+              -0.016736377983306214,
+              -0.034244006518203855,
+              -0.03616290007080019
+            ],
+            "pair_performances": [
+              -0.04026564160673766,
+              -0.017458661347736295,
+              -0.05872675850630587,
+              -0.031834157032380385,
+              -0.050918986623656765,
+              -0.045768116625083365
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.06613366240248073,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          },
+          "base-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": 0.10557400768557251,
+            "joint_performance": -0.014000409429552182,
+            "triplet_performances": [
+              -0.03340255313449252,
+              -0.02008244440267345,
+              -0.034244006518203855,
+              -0.04611110952438141
+            ],
+            "pair_performances": [
+              -0.01829364325246907,
+              -0.017458661347736295,
+              -0.05872675850630587,
+              -0.02827227965402464,
+              -0.020485402776505922,
+              -0.045768116625083365
+            ],
+            "individual_performances": [
+              -0.03745493707616741,
+              -0.023163804537285407,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": 0.1249233977780394,
+            "joint_performance": -0.06336283239243655,
+            "triplet_performances": [
+              -0.019282302190406164,
+              -0.04951707275530273,
+              -0.03616290007080019,
+              -0.04611110952438141
+            ],
+            "pair_performances": [
+              -0.02900473639283811,
+              -0.031834157032380385,
+              -0.050918986623656765,
+              -0.02827227965402464,
+              -0.020485402776505922,
+              -0.045768116625083365
+            ],
+            "individual_performances": [
+              -0.06613366240248073,
+              -0.023163804537285407,
+              -0.023696537856952617,
+              -0.03693272981613584
+            ]
+          }
+        },
+        "synergy_scores": {},
+        "best_pairwise_synergies": [
+          [
+            "base-0-6-0",
+            {
+              "synergy_score": 0.06332295787191047,
+              "joint_performance": -0.04026564160673766,
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1",
+            {
+              "synergy_score": 0.06029273054692802,
+              "joint_performance": -0.02900473639283811,
+              "individual_performances": [
+                -0.06613366240248073,
+                -0.023163804537285407
+              ]
+            }
+          ],
+          [
+            "0-6-0-Extreme",
+            {
+              "synergy_score": 0.05799604322705295,
+              "joint_performance": -0.031834157032380385,
+              "individual_performances": [
+                -0.06613366240248073,
+                -0.023696537856952617
+              ]
+            }
+          ]
+        ],
+        "worst_pairwise_synergies": [
+          [
+            ".1-2-.1-Extreme",
+            {
+              "synergy_score": 0.018588062740213383,
+              "joint_performance": -0.02827227965402464,
+              "individual_performances": [
+                -0.023163804537285407,
+                -0.023696537856952617
+              ]
+            }
+          ],
+          [
+            "base-2-2-2",
+            {
+              "synergy_score": 0.01566090838599738,
+              "joint_performance": -0.05872675850630587,
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "Extreme-2-2-2",
+            {
+              "synergy_score": 0.014861151048005089,
+              "joint_performance": -0.045768116625083365,
+              "individual_performances": [
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ]
+        ],
+        "best_triplet_synergies": [
+          [
+            "base-Extreme-2-2-2",
+            {
+              "synergy_score": -0.10845887953759006,
+              "joint_performance": -0.034244006518203855,
+              "pair_performances": [
+                -0.017458661347736295,
+                -0.045768116625083365,
+                -0.05872675850630587
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.11767958272656992,
+              "joint_performance": -0.02008244440267345,
+              "pair_performances": [
+                -0.01829364325246907,
+                -0.020485402776505922,
+                -0.05872675850630587
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.023163804537285407,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            ".1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -0.1191714548895152,
+              "joint_performance": -0.04611110952438141,
+              "pair_performances": [
+                -0.02827227965402464,
+                -0.045768116625083365,
+                -0.020485402776505922
+              ],
+              "individual_performances": [
+                -0.023163804537285407,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ]
+        ],
+        "worst_triplet_synergies": [
+          [
+            "base-0-6-0-.1-2-.1",
+            {
+              "synergy_score": -0.1744251375792875,
+              "joint_performance": -0.008484350799465232,
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.02900473639283811,
+                -0.01829364325246907
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023163804537285407
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.20156834047410588,
+              "joint_performance": -0.04951707275530273,
+              "pair_performances": [
+                -0.02900473639283811,
+                -0.020485402776505922,
+                -0.050918986623656765
+              ],
+              "individual_performances": [
+                -0.06613366240248073,
+                -0.023163804537285407,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-Extreme",
+            {
+              "synergy_score": -0.20454281960573517,
+              "joint_performance": -0.039531004921387974,
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.031834157032380385,
+                -0.017458661347736295
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023696537856952617
+              ]
+            }
+          ]
+        ],
+        "best_quartet_synergies": [
+          [
+            "base-0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": 0.18363501996845366,
+              "joint_performance": -0.0381537781235843,
+              "triplet_performances": [
+                -0.008484350799465232,
+                -0.039531004921387974,
+                -0.03340255313449252,
+                -0.019282302190406164
+              ],
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.01829364325246907,
+                -0.017458661347736295,
+                -0.02900473639283811,
+                -0.031834157032380385,
+                -0.02827227965402464
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023163804537285407,
+                -0.023696537856952617
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": 0.1249233977780394,
+              "joint_performance": -0.06336283239243655,
+              "triplet_performances": [
+                -0.019282302190406164,
+                -0.04951707275530273,
+                -0.03616290007080019,
+                -0.04611110952438141
+              ],
+              "pair_performances": [
+                -0.02900473639283811,
+                -0.031834157032380385,
+                -0.050918986623656765,
+                -0.02827227965402464,
+                -0.020485402776505922,
+                -0.045768116625083365
+              ],
+              "individual_performances": [
+                -0.06613366240248073,
+                -0.023163804537285407,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": 0.12437208384665588,
+              "joint_performance": -0.005011163618451462,
+              "triplet_performances": [
+                -0.039531004921387974,
+                -0.016736377983306214,
+                -0.034244006518203855,
+                -0.03616290007080019
+              ],
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.017458661347736295,
+                -0.05872675850630587,
+                -0.031834157032380385,
+                -0.050918986623656765,
+                -0.045768116625083365
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ]
+        ],
+        "worst_quartet_synergies": [
+          [
+            "base-0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": 0.12437208384665588,
+              "joint_performance": -0.005011163618451462,
+              "triplet_performances": [
+                -0.039531004921387974,
+                -0.016736377983306214,
+                -0.034244006518203855,
+                -0.03616290007080019
+              ],
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.017458661347736295,
+                -0.05872675850630587,
+                -0.031834157032380385,
+                -0.050918986623656765,
+                -0.045768116625083365
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": 0.10935167234842924,
+              "joint_performance": -0.041133636771499796,
+              "triplet_performances": [
+                -0.008484350799465232,
+                -0.016736377983306214,
+                -0.02008244440267345,
+                -0.04951707275530273
+              ],
+              "pair_performances": [
+                -0.04026564160673766,
+                -0.01829364325246907,
+                -0.05872675850630587,
+                -0.02900473639283811,
+                -0.050918986623656765,
+                -0.020485402776505922
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.06613366240248073,
+                -0.023163804537285407,
+                -0.03693272981613584
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": 0.10557400768557251,
+              "joint_performance": -0.014000409429552182,
+              "triplet_performances": [
+                -0.03340255313449252,
+                -0.02008244440267345,
+                -0.034244006518203855,
+                -0.04611110952438141
+              ],
+              "pair_performances": [
+                -0.01829364325246907,
+                -0.017458661347736295,
+                -0.05872675850630587,
+                -0.02827227965402464,
+                -0.020485402776505922,
+                -0.045768116625083365
+              ],
+              "individual_performances": [
+                -0.03745493707616741,
+                -0.023163804537285407,
+                -0.023696537856952617,
+                -0.03693272981613584
+              ]
+            }
+          ]
+        ]
+      },
+      "performance_range": {
+        "min": -0.06613366240248073,
+        "max": -0.005011163618451462,
+        "range": 0.06112249878402926
+      }
+    },
+    "belief_accuracy": {
+      "shapley_stats": {
+        "mean": -0.008860000000000008,
+        "std": 0.005647758650808109,
+        "max_contributor": [
+          0,
+          -0.0009666666666666695
+        ],
+        "min_contributor": [
+          2,
+          -0.018083333333333347
+        ]
+      },
+      "coalition_stats": {
+        "mean": 0.3665483870967742,
+        "std": 0.015686112019929258,
+        "best_coalition": [
+          "coalition_2_3",
+          0.409
+        ],
+        "worst_coalition": [
+          "coalition_2_4",
+          0.341
+        ]
+      },
+      "synergy_analysis": {
+        "pairwise_synergies": {
+          "base-0-6-0": {
+            "synergy_score": -0.381,
+            "joint_performance": 0.356,
+            "individual_performances": [
+              0.362,
+              0.375
+            ]
+          },
+          "base-.1-2-.1": {
+            "synergy_score": -0.368,
+            "joint_performance": 0.345,
+            "individual_performances": [
+              0.362,
+              0.351
+            ]
+          },
+          "base-Extreme": {
+            "synergy_score": -0.345,
+            "joint_performance": 0.367,
+            "individual_performances": [
+              0.362,
+              0.35
+            ]
+          },
+          "base-2-2-2": {
+            "synergy_score": -0.37,
+            "joint_performance": 0.374,
+            "individual_performances": [
+              0.362,
+              0.382
+            ]
+          },
+          "0-6-0-.1-2-.1": {
+            "synergy_score": -0.381,
+            "joint_performance": 0.345,
+            "individual_performances": [
+              0.375,
+              0.351
+            ]
+          },
+          "0-6-0-Extreme": {
+            "synergy_score": -0.378,
+            "joint_performance": 0.347,
+            "individual_performances": [
+              0.375,
+              0.35
+            ]
+          },
+          "0-6-0-2-2-2": {
+            "synergy_score": -0.374,
+            "joint_performance": 0.383,
+            "individual_performances": [
+              0.375,
+              0.382
+            ]
+          },
+          ".1-2-.1-Extreme": {
+            "synergy_score": -0.292,
+            "joint_performance": 0.409,
+            "individual_performances": [
+              0.351,
+              0.35
+            ]
+          },
+          ".1-2-.1-2-2-2": {
+            "synergy_score": -0.39199999999999996,
+            "joint_performance": 0.341,
+            "individual_performances": [
+              0.351,
+              0.382
+            ]
+          },
+          "Extreme-2-2-2": {
+            "synergy_score": -0.372,
+            "joint_performance": 0.36,
+            "individual_performances": [
+              0.35,
+              0.382
+            ]
+          }
+        },
+        "best_pairs": [],
+        "worst_pairs": [],
+        "triplet_synergies": {
+          "base-0-6-0-.1-2-.1": {
+            "synergy_score": 1.4940000000000002,
+            "joint_performance": 0.364,
+            "pair_performances": [
+              0.356,
+              0.345,
+              0.345
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.351
+            ]
+          },
+          "base-0-6-0-Extreme": {
+            "synergy_score": 1.485,
+            "joint_performance": 0.381,
+            "pair_performances": [
+              0.356,
+              0.347,
+              0.367
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.35
+            ]
+          },
+          "base-0-6-0-2-2-2": {
+            "synergy_score": 1.522,
+            "joint_performance": 0.397,
+            "pair_performances": [
+              0.356,
+              0.383,
+              0.374
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.382
+            ]
+          },
+          "base-.1-2-.1-Extreme": {
+            "synergy_score": 1.3679999999999999,
+            "joint_performance": 0.363,
+            "pair_performances": [
+              0.345,
+              0.409,
+              0.367
+            ],
+            "individual_performances": [
+              0.362,
+              0.351,
+              0.35
+            ]
+          },
+          "base-.1-2-.1-2-2-2": {
+            "synergy_score": 1.4829999999999999,
+            "joint_performance": 0.353,
+            "pair_performances": [
+              0.345,
+              0.341,
+              0.374
+            ],
+            "individual_performances": [
+              0.362,
+              0.351,
+              0.382
+            ]
+          },
+          "base-Extreme-2-2-2": {
+            "synergy_score": 1.4789999999999996,
+            "joint_performance": 0.392,
+            "pair_performances": [
+              0.367,
+              0.36,
+              0.374
+            ],
+            "individual_performances": [
+              0.362,
+              0.35,
+              0.382
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": 1.423,
+            "joint_performance": 0.372,
+            "pair_performances": [
+              0.345,
+              0.409,
+              0.347
+            ],
+            "individual_performances": [
+              0.375,
+              0.351,
+              0.35
+            ]
+          },
+          "0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": 1.5050000000000003,
+            "joint_performance": 0.358,
+            "pair_performances": [
+              0.345,
+              0.341,
+              0.383
+            ],
+            "individual_performances": [
+              0.375,
+              0.351,
+              0.382
+            ]
+          },
+          "0-6-0-Extreme-2-2-2": {
+            "synergy_score": 1.479,
+            "joint_performance": 0.355,
+            "pair_performances": [
+              0.347,
+              0.36,
+              0.383
+            ],
+            "individual_performances": [
+              0.375,
+              0.35,
+              0.382
+            ]
+          },
+          ".1-2-.1-Extreme-2-2-2": {
+            "synergy_score": 1.425,
+            "joint_performance": 0.369,
+            "pair_performances": [
+              0.409,
+              0.36,
+              0.341
+            ],
+            "individual_performances": [
+              0.351,
+              0.35,
+              0.382
+            ]
+          }
+        },
+        "quartet_synergies": {
+          "base-0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": -1.084,
+            "joint_performance": 0.372,
+            "triplet_performances": [
+              0.364,
+              0.381,
+              0.363,
+              0.372
+            ],
+            "pair_performances": [
+              0.356,
+              0.345,
+              0.367,
+              0.345,
+              0.347,
+              0.409
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.351,
+              0.35
+            ]
+          },
+          "base-0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": -1.2149999999999999,
+            "joint_performance": 0.379,
+            "triplet_performances": [
+              0.364,
+              0.397,
+              0.353,
+              0.358
+            ],
+            "pair_performances": [
+              0.356,
+              0.345,
+              0.374,
+              0.345,
+              0.383,
+              0.341
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.351,
+              0.382
+            ]
+          },
+          "base-0-6-0-Extreme-2-2-2": {
+            "synergy_score": -1.189,
+            "joint_performance": 0.369,
+            "triplet_performances": [
+              0.381,
+              0.397,
+              0.392,
+              0.355
+            ],
+            "pair_performances": [
+              0.356,
+              0.367,
+              0.374,
+              0.347,
+              0.383,
+              0.36
+            ],
+            "individual_performances": [
+              0.362,
+              0.375,
+              0.35,
+              0.382
+            ]
+          },
+          "base-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -1.0519999999999996,
+            "joint_performance": 0.368,
+            "triplet_performances": [
+              0.363,
+              0.353,
+              0.392,
+              0.369
+            ],
+            "pair_performances": [
+              0.345,
+              0.367,
+              0.374,
+              0.409,
+              0.341,
+              0.36
+            ],
+            "individual_performances": [
+              0.362,
+              0.351,
+              0.35,
+              0.382
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -1.0900000000000003,
+            "joint_performance": 0.368,
+            "triplet_performances": [
+              0.372,
+              0.358,
+              0.355,
+              0.369
+            ],
+            "pair_performances": [
+              0.345,
+              0.347,
+              0.383,
+              0.409,
+              0.341,
+              0.36
+            ],
+            "individual_performances": [
+              0.375,
+              0.351,
+              0.35,
+              0.382
+            ]
+          }
+        },
+        "synergy_scores": {},
+        "best_pairwise_synergies": [
+          [
+            ".1-2-.1-Extreme",
+            {
+              "synergy_score": -0.292,
+              "joint_performance": 0.409,
+              "individual_performances": [
+                0.351,
+                0.35
+              ]
+            }
+          ],
+          [
+            "base-Extreme",
+            {
+              "synergy_score": -0.345,
+              "joint_performance": 0.367,
+              "individual_performances": [
+                0.362,
+                0.35
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1",
+            {
+              "synergy_score": -0.368,
+              "joint_performance": 0.345,
+              "individual_performances": [
+                0.362,
+                0.351
+              ]
+            }
+          ]
+        ],
+        "worst_pairwise_synergies": [
+          [
+            "base-0-6-0",
+            {
+              "synergy_score": -0.381,
+              "joint_performance": 0.356,
+              "individual_performances": [
+                0.362,
+                0.375
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1",
+            {
+              "synergy_score": -0.381,
+              "joint_performance": 0.345,
+              "individual_performances": [
+                0.375,
+                0.351
+              ]
+            }
+          ],
+          [
+            ".1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.39199999999999996,
+              "joint_performance": 0.341,
+              "individual_performances": [
+                0.351,
+                0.382
+              ]
+            }
+          ]
+        ],
+        "best_triplet_synergies": [
+          [
+            "base-0-6-0-2-2-2",
+            {
+              "synergy_score": 1.522,
+              "joint_performance": 0.397,
+              "pair_performances": [
+                0.356,
+                0.383,
+                0.374
+              ],
+              "individual_performances": [
+                0.362,
+                0.375,
+                0.382
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": 1.5050000000000003,
+              "joint_performance": 0.358,
+              "pair_performances": [
+                0.345,
+                0.341,
+                0.383
+              ],
+              "individual_performances": [
+                0.375,
+                0.351,
+                0.382
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1",
+            {
+              "synergy_score": 1.4940000000000002,
+              "joint_performance": 0.364,
+              "pair_performances": [
+                0.356,
+                0.345,
+                0.345
+              ],
+              "individual_performances": [
+                0.362,
+                0.375,
+                0.351
+              ]
+            }
+          ]
+        ],
+        "worst_triplet_synergies": [
+          [
+            ".1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": 1.425,
+              "joint_performance": 0.369,
+              "pair_performances": [
+                0.409,
+                0.36,
+                0.341
+              ],
+              "individual_performances": [
+                0.351,
+                0.35,
+                0.382
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": 1.423,
+              "joint_performance": 0.372,
+              "pair_performances": [
+                0.345,
+                0.409,
+                0.347
+              ],
+              "individual_performances": [
+                0.375,
+                0.351,
+                0.35
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-Extreme",
+            {
+              "synergy_score": 1.3679999999999999,
+              "joint_performance": 0.363,
+              "pair_performances": [
+                0.345,
+                0.409,
+                0.367
+              ],
+              "individual_performances": [
+                0.362,
+                0.351,
+                0.35
+              ]
+            }
+          ]
+        ],
+        "best_quartet_synergies": [
+          [
+            "base-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -1.0519999999999996,
+              "joint_performance": 0.368,
+              "triplet_performances": [
+                0.363,
+                0.353,
+                0.392,
+                0.369
+              ],
+              "pair_performances": [
+                0.345,
+                0.367,
+                0.374,
+                0.409,
+                0.341,
+                0.36
+              ],
+              "individual_performances": [
+                0.362,
+                0.351,
+                0.35,
+                0.382
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": -1.084,
+              "joint_performance": 0.372,
+              "triplet_performances": [
+                0.364,
+                0.381,
+                0.363,
+                0.372
+              ],
+              "pair_performances": [
+                0.356,
+                0.345,
+                0.367,
+                0.345,
+                0.347,
+                0.409
+              ],
+              "individual_performances": [
+                0.362,
+                0.375,
+                0.351,
+                0.35
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -1.0900000000000003,
+              "joint_performance": 0.368,
+              "triplet_performances": [
+                0.372,
+                0.358,
+                0.355,
+                0.369
+              ],
+              "pair_performances": [
+                0.345,
+                0.347,
+                0.383,
+                0.409,
+                0.341,
+                0.36
+              ],
+              "individual_performances": [
+                0.375,
+                0.351,
+                0.35,
+                0.382
+              ]
+            }
+          ]
+        ],
+        "worst_quartet_synergies": [
+          [
+            "0-6-0-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -1.0900000000000003,
+              "joint_performance": 0.368,
+              "triplet_performances": [
+                0.372,
+                0.358,
+                0.355,
+                0.369
+              ],
+              "pair_performances": [
+                0.345,
+                0.347,
+                0.383,
+                0.409,
+                0.341,
+                0.36
+              ],
+              "individual_performances": [
+                0.375,
+                0.351,
+                0.35,
+                0.382
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": -1.189,
+              "joint_performance": 0.369,
+              "triplet_performances": [
+                0.381,
+                0.397,
+                0.392,
+                0.355
+              ],
+              "pair_performances": [
+                0.356,
+                0.367,
+                0.374,
+                0.347,
+                0.383,
+                0.36
+              ],
+              "individual_performances": [
+                0.362,
+                0.375,
+                0.35,
+                0.382
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -1.2149999999999999,
+              "joint_performance": 0.379,
+              "triplet_performances": [
+                0.364,
+                0.397,
+                0.353,
+                0.358
+              ],
+              "pair_performances": [
+                0.356,
+                0.345,
+                0.374,
+                0.345,
+                0.383,
+                0.341
+              ],
+              "individual_performances": [
+                0.362,
+                0.375,
+                0.351,
+                0.382
+              ]
+            }
+          ]
+        ]
+      },
+      "performance_range": {
+        "min": 0.341,
+        "max": 0.409,
+        "range": 0.06799999999999995
+      }
+    },
+    "control_efficiency": {
+      "shapley_stats": {
+        "mean": 0.03537999999999999,
+        "std": 0.01387831802168804,
+        "max_contributor": [
+          1,
+          0.06254999999999998
+        ],
+        "min_contributor": [
+          2,
+          0.024349999999999986
+        ]
+      },
+      "coalition_stats": {
+        "mean": 0.24719354838709676,
+        "std": 0.020119673175756896,
+        "best_coalition": [
+          "coalition_0_1_2_3_4",
+          0.29
+        ],
+        "worst_coalition": [
+          "coalition_0_1_2",
+          0.184
+        ]
+      },
+      "synergy_analysis": {
+        "pairwise_synergies": {
+          "base-0-6-0": {
+            "synergy_score": -0.29300000000000004,
+            "joint_performance": 0.228,
+            "individual_performances": [
+              0.253,
+              0.268
+            ]
+          },
+          "base-.1-2-.1": {
+            "synergy_score": -0.271,
+            "joint_performance": 0.236,
+            "individual_performances": [
+              0.253,
+              0.254
+            ]
+          },
+          "base-Extreme": {
+            "synergy_score": -0.21299999999999997,
+            "joint_performance": 0.259,
+            "individual_performances": [
+              0.253,
+              0.219
+            ]
+          },
+          "base-2-2-2": {
+            "synergy_score": -0.255,
+            "joint_performance": 0.226,
+            "individual_performances": [
+              0.253,
+              0.228
+            ]
+          },
+          "0-6-0-.1-2-.1": {
+            "synergy_score": -0.273,
+            "joint_performance": 0.249,
+            "individual_performances": [
+              0.268,
+              0.254
+            ]
+          },
+          "0-6-0-Extreme": {
+            "synergy_score": -0.22199999999999998,
+            "joint_performance": 0.265,
+            "individual_performances": [
+              0.268,
+              0.219
+            ]
+          },
+          "0-6-0-2-2-2": {
+            "synergy_score": -0.22599999999999998,
+            "joint_performance": 0.27,
+            "individual_performances": [
+              0.268,
+              0.228
+            ]
+          },
+          ".1-2-.1-Extreme": {
+            "synergy_score": -0.22699999999999998,
+            "joint_performance": 0.246,
+            "individual_performances": [
+              0.254,
+              0.219
+            ]
+          },
+          ".1-2-.1-2-2-2": {
+            "synergy_score": -0.258,
+            "joint_performance": 0.224,
+            "individual_performances": [
+              0.254,
+              0.228
+            ]
+          },
+          "Extreme-2-2-2": {
+            "synergy_score": -0.189,
+            "joint_performance": 0.258,
+            "individual_performances": [
+              0.219,
+              0.228
+            ]
+          }
+        },
+        "best_pairs": [],
+        "worst_pairs": [],
+        "triplet_synergies": {
+          "base-0-6-0-.1-2-.1": {
+            "synergy_score": 1.0210000000000001,
+            "joint_performance": 0.184,
+            "pair_performances": [
+              0.228,
+              0.249,
+              0.236
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.254
+            ]
+          },
+          "base-0-6-0-Extreme": {
+            "synergy_score": 0.975,
+            "joint_performance": 0.247,
+            "pair_performances": [
+              0.228,
+              0.265,
+              0.259
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.219
+            ]
+          },
+          "base-0-6-0-2-2-2": {
+            "synergy_score": 1.021,
+            "joint_performance": 0.247,
+            "pair_performances": [
+              0.228,
+              0.27,
+              0.226
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.228
+            ]
+          },
+          "base-.1-2-.1-Extreme": {
+            "synergy_score": 0.967,
+            "joint_performance": 0.256,
+            "pair_performances": [
+              0.236,
+              0.246,
+              0.259
+            ],
+            "individual_performances": [
+              0.253,
+              0.254,
+              0.219
+            ]
+          },
+          "base-.1-2-.1-2-2-2": {
+            "synergy_score": 1.018,
+            "joint_performance": 0.234,
+            "pair_performances": [
+              0.236,
+              0.224,
+              0.226
+            ],
+            "individual_performances": [
+              0.253,
+              0.254,
+              0.228
+            ]
+          },
+          "base-Extreme-2-2-2": {
+            "synergy_score": 0.9099999999999999,
+            "joint_performance": 0.253,
+            "pair_performances": [
+              0.259,
+              0.258,
+              0.226
+            ],
+            "individual_performances": [
+              0.253,
+              0.219,
+              0.228
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": 0.976,
+            "joint_performance": 0.254,
+            "pair_performances": [
+              0.249,
+              0.246,
+              0.265
+            ],
+            "individual_performances": [
+              0.268,
+              0.254,
+              0.219
+            ]
+          },
+          "0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": 1.028,
+            "joint_performance": 0.271,
+            "pair_performances": [
+              0.249,
+              0.224,
+              0.27
+            ],
+            "individual_performances": [
+              0.268,
+              0.254,
+              0.228
+            ]
+          },
+          "0-6-0-Extreme-2-2-2": {
+            "synergy_score": 0.9009999999999999,
+            "joint_performance": 0.264,
+            "pair_performances": [
+              0.265,
+              0.258,
+              0.27
+            ],
+            "individual_performances": [
+              0.268,
+              0.219,
+              0.228
+            ]
+          },
+          ".1-2-.1-Extreme-2-2-2": {
+            "synergy_score": 0.9179999999999999,
+            "joint_performance": 0.244,
+            "pair_performances": [
+              0.246,
+              0.258,
+              0.224
+            ],
+            "individual_performances": [
+              0.254,
+              0.219,
+              0.228
+            ]
+          }
+        },
+        "quartet_synergies": {
+          "base-0-6-0-.1-2-.1-Extreme": {
+            "synergy_score": -0.7000000000000002,
+            "joint_performance": 0.257,
+            "triplet_performances": [
+              0.184,
+              0.247,
+              0.256,
+              0.254
+            ],
+            "pair_performances": [
+              0.228,
+              0.236,
+              0.259,
+              0.249,
+              0.265,
+              0.246
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.254,
+              0.219
+            ]
+          },
+          "base-0-6-0-.1-2-.1-2-2-2": {
+            "synergy_score": -0.8100000000000005,
+            "joint_performance": 0.269,
+            "triplet_performances": [
+              0.184,
+              0.247,
+              0.234,
+              0.271
+            ],
+            "pair_performances": [
+              0.228,
+              0.236,
+              0.226,
+              0.249,
+              0.27,
+              0.224
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.254,
+              0.228
+            ]
+          },
+          "base-0-6-0-Extreme-2-2-2": {
+            "synergy_score": -0.6539999999999999,
+            "joint_performance": 0.249,
+            "triplet_performances": [
+              0.247,
+              0.247,
+              0.253,
+              0.264
+            ],
+            "pair_performances": [
+              0.228,
+              0.259,
+              0.226,
+              0.265,
+              0.27,
+              0.258
+            ],
+            "individual_performances": [
+              0.253,
+              0.268,
+              0.219,
+              0.228
+            ]
+          },
+          "base-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -0.7290000000000001,
+            "joint_performance": 0.222,
+            "triplet_performances": [
+              0.256,
+              0.234,
+              0.253,
+              0.244
+            ],
+            "pair_performances": [
+              0.236,
+              0.259,
+              0.226,
+              0.246,
+              0.224,
+              0.258
+            ],
+            "individual_performances": [
+              0.253,
+              0.254,
+              0.219,
+              0.228
+            ]
+          },
+          "0-6-0-.1-2-.1-Extreme-2-2-2": {
+            "synergy_score": -0.677,
+            "joint_performance": 0.239,
+            "triplet_performances": [
+              0.254,
+              0.271,
+              0.264,
+              0.244
+            ],
+            "pair_performances": [
+              0.249,
+              0.265,
+              0.27,
+              0.246,
+              0.224,
+              0.258
+            ],
+            "individual_performances": [
+              0.268,
+              0.254,
+              0.219,
+              0.228
+            ]
+          }
+        },
+        "synergy_scores": {},
+        "best_pairwise_synergies": [
+          [
+            "Extreme-2-2-2",
+            {
+              "synergy_score": -0.189,
+              "joint_performance": 0.258,
+              "individual_performances": [
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "base-Extreme",
+            {
+              "synergy_score": -0.21299999999999997,
+              "joint_performance": 0.259,
+              "individual_performances": [
+                0.253,
+                0.219
+              ]
+            }
+          ],
+          [
+            "0-6-0-Extreme",
+            {
+              "synergy_score": -0.22199999999999998,
+              "joint_performance": 0.265,
+              "individual_performances": [
+                0.268,
+                0.219
+              ]
+            }
+          ]
+        ],
+        "worst_pairwise_synergies": [
+          [
+            "base-.1-2-.1",
+            {
+              "synergy_score": -0.271,
+              "joint_performance": 0.236,
+              "individual_performances": [
+                0.253,
+                0.254
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1",
+            {
+              "synergy_score": -0.273,
+              "joint_performance": 0.249,
+              "individual_performances": [
+                0.268,
+                0.254
+              ]
+            }
+          ],
+          [
+            "base-0-6-0",
+            {
+              "synergy_score": -0.29300000000000004,
+              "joint_performance": 0.228,
+              "individual_performances": [
+                0.253,
+                0.268
+              ]
+            }
+          ]
+        ],
+        "best_triplet_synergies": [
+          [
+            "0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": 1.028,
+              "joint_performance": 0.271,
+              "pair_performances": [
+                0.249,
+                0.224,
+                0.27
+              ],
+              "individual_performances": [
+                0.268,
+                0.254,
+                0.228
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1",
+            {
+              "synergy_score": 1.0210000000000001,
+              "joint_performance": 0.184,
+              "pair_performances": [
+                0.228,
+                0.249,
+                0.236
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.254
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-2-2-2",
+            {
+              "synergy_score": 1.021,
+              "joint_performance": 0.247,
+              "pair_performances": [
+                0.228,
+                0.27,
+                0.226
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.228
+              ]
+            }
+          ]
+        ],
+        "worst_triplet_synergies": [
+          [
+            ".1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": 0.9179999999999999,
+              "joint_performance": 0.244,
+              "pair_performances": [
+                0.246,
+                0.258,
+                0.224
+              ],
+              "individual_performances": [
+                0.254,
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "base-Extreme-2-2-2",
+            {
+              "synergy_score": 0.9099999999999999,
+              "joint_performance": 0.253,
+              "pair_performances": [
+                0.259,
+                0.258,
+                0.226
+              ],
+              "individual_performances": [
+                0.253,
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": 0.9009999999999999,
+              "joint_performance": 0.264,
+              "pair_performances": [
+                0.265,
+                0.258,
+                0.27
+              ],
+              "individual_performances": [
+                0.268,
+                0.219,
+                0.228
+              ]
+            }
+          ]
+        ],
+        "best_quartet_synergies": [
+          [
+            "base-0-6-0-Extreme-2-2-2",
+            {
+              "synergy_score": -0.6539999999999999,
+              "joint_performance": 0.249,
+              "triplet_performances": [
+                0.247,
+                0.247,
+                0.253,
+                0.264
+              ],
+              "pair_performances": [
+                0.228,
+                0.259,
+                0.226,
+                0.265,
+                0.27,
+                0.258
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "0-6-0-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -0.677,
+              "joint_performance": 0.239,
+              "triplet_performances": [
+                0.254,
+                0.271,
+                0.264,
+                0.244
+              ],
+              "pair_performances": [
+                0.249,
+                0.265,
+                0.27,
+                0.246,
+                0.224,
+                0.258
+              ],
+              "individual_performances": [
+                0.268,
+                0.254,
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": -0.7000000000000002,
+              "joint_performance": 0.257,
+              "triplet_performances": [
+                0.184,
+                0.247,
+                0.256,
+                0.254
+              ],
+              "pair_performances": [
+                0.228,
+                0.236,
+                0.259,
+                0.249,
+                0.265,
+                0.246
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.254,
+                0.219
+              ]
+            }
+          ]
+        ],
+        "worst_quartet_synergies": [
+          [
+            "base-0-6-0-.1-2-.1-Extreme",
+            {
+              "synergy_score": -0.7000000000000002,
+              "joint_performance": 0.257,
+              "triplet_performances": [
+                0.184,
+                0.247,
+                0.256,
+                0.254
+              ],
+              "pair_performances": [
+                0.228,
+                0.236,
+                0.259,
+                0.249,
+                0.265,
+                0.246
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.254,
+                0.219
+              ]
+            }
+          ],
+          [
+            "base-.1-2-.1-Extreme-2-2-2",
+            {
+              "synergy_score": -0.7290000000000001,
+              "joint_performance": 0.222,
+              "triplet_performances": [
+                0.256,
+                0.234,
+                0.253,
+                0.244
+              ],
+              "pair_performances": [
+                0.236,
+                0.259,
+                0.226,
+                0.246,
+                0.224,
+                0.258
+              ],
+              "individual_performances": [
+                0.253,
+                0.254,
+                0.219,
+                0.228
+              ]
+            }
+          ],
+          [
+            "base-0-6-0-.1-2-.1-2-2-2",
+            {
+              "synergy_score": -0.8100000000000005,
+              "joint_performance": 0.269,
+              "triplet_performances": [
+                0.184,
+                0.247,
+                0.234,
+                0.271
+              ],
+              "pair_performances": [
+                0.228,
+                0.236,
+                0.226,
+                0.249,
+                0.27,
+                0.224
+              ],
+              "individual_performances": [
+                0.253,
+                0.268,
+                0.254,
+                0.228
+              ]
+            }
+          ]
+        ]
+      },
+      "performance_range": {
+        "min": 0.184,
+        "max": 0.29,
+        "range": 0.10599999999999998
+      }
+    }
+  },
+  "metadata": {
+    "timestamp": "2024-11-07T18:53:47.181253",
+    "n_agents": 5,
+    "n_iterations": 100,
+    "agent_types": [
+      "base",
+      "0-6-0",
+      ".1-2-.1",
+      "Extreme",
+      "2-2-2"
+    ]
+  }
+}

@@ -1,0 +1,66 @@
+{
+    "base_agent": "/home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn",
+    "env_gnn": "/home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn",
+    "output_base": "/home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm",
+    "agent_variations": [
+        {
+            "name": "base",
+            "preferences": [
+                [
+                    0.0,
+                    4.0,
+                    0.0
+                ]
+            ]
+        },
+        {
+            "name": "0-6-0",
+            "preferences": [
+                [
+                    0.0,
+                    6.0,
+                    0.0
+                ]
+            ]
+        },
+        {
+            "name": ".1-2-.1",
+            "preferences": [
+                [
+                    0.1,
+                    2.0,
+                    0.1
+                ]
+            ]
+        },
+        {
+            "name": "1-3-1",
+            "preferences": [
+                [
+                    1.0,
+                    3.0,
+                    1.0
+                ]
+            ]
+        },
+        {
+            "name": "2-2-2",
+            "preferences": [
+                [
+                    2.0,
+                    2.0,
+                    2.0
+                ]
+            ]
+        }
+    ],
+    "n_iterations": 100,
+    "metrics": [
+        "homeostasis_satisfaction",
+        "expected_free_energy",
+        "belief_accuracy",
+        "control_efficiency"
+    ],
+    "log_level": 20,
+    "random_seed": 42
+}

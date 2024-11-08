@@ -1,0 +1,42 @@
+{
+  "timestamp": "2024-11-07T18:47:52.464627",
+  "config": {
+    "matrices_dir": "/home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/1_render/matrices",
+    "output_dir": "/home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/2_simulation",
+    "timesteps": 1000,
+    "parameters": {
+      "ecological_noise": 0.1,
+      "controllability": 0.8,
+      "policy_precision": 16.0,
+      "use_states_info_gain": true,
+      "inference_horizon": 1,
+      "action_selection": "deterministic"
+    }
+  },
+  "matrix_shapes": {
+    "A": [
+      3,
+      3
+    ],
+    "B": [
+      3,
+      3,
+      3
+    ],
+    "C": [
+      3
+    ],
+    "D": [
+      3
+    ]
+  },
+  "simulation_info": {
+    "total_timesteps": 1000,
+    "final_state": 2,
+    "final_observation": 2,
+    "time_in_homeo": 0.307,
+    "mean_accuracy": 0.363,
+    "mean_belief_entropy": 0.03340255313449252,
+    "mean_policy_entropy": 1.0660303788125953
+  }
+}

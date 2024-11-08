@@ -1,0 +1,9 @@
+{
+  "timesteps": 1000,
+  "parameters": {
+    "ecological_noise": 0.1,
+    "controllability": 0.8,
+    "policy_precision": 16.0,
+    "use_states_info_gain": true
+  }
+}

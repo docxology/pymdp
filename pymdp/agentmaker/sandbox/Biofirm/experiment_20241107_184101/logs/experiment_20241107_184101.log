@@ -1,0 +1,1512 @@
+18:41:01 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184101/logs/experiment_20241107_184101.log
+18:41:01 |    INFO | 
+================================================================================
+18:41:01 |    INFO | Biofirm Experiment: coalition_1_0
+18:41:01 |    INFO | ================================================================================
+
+18:41:01 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184101
+18:41:01 |    INFO | 
+Using GNN models:
+18:41:01 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:41:01 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:41:01 |    INFO | 
+------------------------------------------------------------
+18:41:01 |    INFO | Stage 1: Matrix Rendering
+18:41:01 |    INFO | ------------------------------------------------------------
+
+18:41:07 |    INFO | 
+------------------------------------------------------------
+18:41:07 |    INFO | Stage 2: Simulation Execution
+18:41:07 |    INFO | ------------------------------------------------------------
+
+18:41:11 |    INFO | 
+------------------------------------------------------------
+18:41:11 |    INFO | Stage 3: Analysis
+18:41:11 |    INFO | ------------------------------------------------------------
+
+18:41:26 |    INFO | 
+================================================================================
+18:41:26 |    INFO | Experiment Summary
+18:41:26 |    INFO | ================================================================================
+
+18:41:26 |    INFO | 
+Experiment: coalition_1_0
+18:41:26 |    INFO | Started: 2024-11-07T18:41:01.293191
+18:41:26 |    INFO | Completed: 2024-11-07T18:41:26.257261
+18:41:26 |    INFO | Total Duration: 24.96s
+18:41:26 |    INFO | 
+Stage Results:
+18:41:26 |    INFO | 
+Render Stage:
+18:41:26 |    INFO | - Completed: True
+18:41:26 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184101/1_render/matrices
+18:41:26 |    INFO | - Time: 6.57s
+18:41:26 |    INFO | 
+Simulation Stage:
+18:41:26 |    INFO | - Completed: True
+18:41:26 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184101/2_simulation
+18:41:26 |    INFO | - Time: 3.93s
+18:41:26 |    INFO | 
+Analysis Stage:
+18:41:26 |    INFO | - Completed: True
+18:41:26 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184101/3_analysis
+18:41:26 |    INFO | - Time: 14.45s
+18:41:26 |    INFO | 
+================================================================================
+
+18:41:26 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184126/logs/experiment_20241107_184126.log
+18:41:26 |    INFO | 
+================================================================================
+18:41:26 |    INFO | Biofirm Experiment: coalition_2_01
+18:41:26 |    INFO | ================================================================================
+
+18:41:26 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184126
+18:41:26 |    INFO | 
+Using GNN models:
+18:41:26 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:41:26 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:41:26 |    INFO | 
+------------------------------------------------------------
+18:41:26 |    INFO | Stage 1: Matrix Rendering
+18:41:26 |    INFO | ------------------------------------------------------------
+
+18:41:32 |    INFO | 
+------------------------------------------------------------
+18:41:32 |    INFO | Stage 2: Simulation Execution
+18:41:32 |    INFO | ------------------------------------------------------------
+
+18:41:35 |    INFO | 
+------------------------------------------------------------
+18:41:35 |    INFO | Stage 3: Analysis
+18:41:35 |    INFO | ------------------------------------------------------------
+
+18:41:48 |    INFO | 
+================================================================================
+18:41:48 |    INFO | Experiment Summary
+18:41:48 |    INFO | ================================================================================
+
+18:41:48 |    INFO | 
+Experiment: coalition_2_01
+18:41:48 |    INFO | Started: 2024-11-07T18:41:26.278157
+18:41:48 |    INFO | Completed: 2024-11-07T18:41:48.751703
+18:41:48 |    INFO | Total Duration: 22.47s
+18:41:48 |    INFO | 
+Stage Results:
+18:41:48 |    INFO | 
+Render Stage:
+18:41:48 |    INFO | - Completed: True
+18:41:48 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184126/1_render/matrices
+18:41:48 |    INFO | - Time: 5.98s
+18:41:48 |    INFO | 
+Simulation Stage:
+18:41:48 |    INFO | - Completed: True
+18:41:48 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184126/2_simulation
+18:41:48 |    INFO | - Time: 3.21s
+18:41:48 |    INFO | 
+Analysis Stage:
+18:41:48 |    INFO | - Completed: True
+18:41:48 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184126/3_analysis
+18:41:48 |    INFO | - Time: 13.28s
+18:41:48 |    INFO | 
+================================================================================
+
+18:41:48 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184148/logs/experiment_20241107_184148.log
+18:41:48 |    INFO | 
+================================================================================
+18:41:48 |    INFO | Biofirm Experiment: coalition_2_01
+18:41:48 |    INFO | ================================================================================
+
+18:41:48 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184148
+18:41:48 |    INFO | 
+Using GNN models:
+18:41:48 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:41:48 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:41:48 |    INFO | 
+------------------------------------------------------------
+18:41:48 |    INFO | Stage 1: Matrix Rendering
+18:41:48 |    INFO | ------------------------------------------------------------
+
+18:41:56 |    INFO | 
+------------------------------------------------------------
+18:41:56 |    INFO | Stage 2: Simulation Execution
+18:41:56 |    INFO | ------------------------------------------------------------
+
+18:42:00 |    INFO | 
+------------------------------------------------------------
+18:42:00 |    INFO | Stage 3: Analysis
+18:42:00 |    INFO | ------------------------------------------------------------
+
+18:42:16 |    INFO | 
+================================================================================
+18:42:16 |    INFO | Experiment Summary
+18:42:16 |    INFO | ================================================================================
+
+18:42:16 |    INFO | 
+Experiment: coalition_2_01
+18:42:16 |    INFO | Started: 2024-11-07T18:41:48.778646
+18:42:16 |    INFO | Completed: 2024-11-07T18:42:16.112892
+18:42:16 |    INFO | Total Duration: 27.33s
+18:42:16 |    INFO | 
+Stage Results:
+18:42:16 |    INFO | 
+Render Stage:
+18:42:16 |    INFO | - Completed: True
+18:42:16 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184148/1_render/matrices
+18:42:16 |    INFO | - Time: 8.05s
+18:42:16 |    INFO | 
+Simulation Stage:
+18:42:16 |    INFO | - Completed: True
+18:42:16 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184148/2_simulation
+18:42:16 |    INFO | - Time: 3.33s
+18:42:16 |    INFO | 
+Analysis Stage:
+18:42:16 |    INFO | - Completed: True
+18:42:16 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184148/3_analysis
+18:42:16 |    INFO | - Time: 15.96s
+18:42:16 |    INFO | 
+================================================================================
+
+18:42:16 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184216/logs/experiment_20241107_184216.log
+18:42:16 |    INFO | 
+================================================================================
+18:42:16 |    INFO | Biofirm Experiment: coalition_2_01
+18:42:16 |    INFO | ================================================================================
+
+18:42:16 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184216
+18:42:16 |    INFO | 
+Using GNN models:
+18:42:16 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:42:16 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:42:16 |    INFO | 
+------------------------------------------------------------
+18:42:16 |    INFO | Stage 1: Matrix Rendering
+18:42:16 |    INFO | ------------------------------------------------------------
+
+18:42:24 |    INFO | 
+------------------------------------------------------------
+18:42:24 |    INFO | Stage 2: Simulation Execution
+18:42:24 |    INFO | ------------------------------------------------------------
+
+18:42:29 |    INFO | 
+------------------------------------------------------------
+18:42:29 |    INFO | Stage 3: Analysis
+18:42:29 |    INFO | ------------------------------------------------------------
+
+18:42:45 |    INFO | 
+================================================================================
+18:42:45 |    INFO | Experiment Summary
+18:42:45 |    INFO | ================================================================================
+
+18:42:45 |    INFO | 
+Experiment: coalition_2_01
+18:42:45 |    INFO | Started: 2024-11-07T18:42:16.141480
+18:42:45 |    INFO | Completed: 2024-11-07T18:42:45.267421
+18:42:45 |    INFO | Total Duration: 29.13s
+18:42:45 |    INFO | 
+Stage Results:
+18:42:45 |    INFO | 
+Render Stage:
+18:42:45 |    INFO | - Completed: True
+18:42:45 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184216/1_render/matrices
+18:42:45 |    INFO | - Time: 8.65s
+18:42:45 |    INFO | 
+Simulation Stage:
+18:42:45 |    INFO | - Completed: True
+18:42:45 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184216/2_simulation
+18:42:45 |    INFO | - Time: 5.06s
+18:42:45 |    INFO | 
+Analysis Stage:
+18:42:45 |    INFO | - Completed: True
+18:42:45 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184216/3_analysis
+18:42:45 |    INFO | - Time: 15.41s
+18:42:45 |    INFO | 
+================================================================================
+
+18:42:45 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184245/logs/experiment_20241107_184245.log
+18:42:45 |    INFO | 
+================================================================================
+18:42:45 |    INFO | Biofirm Experiment: coalition_2_01
+18:42:45 |    INFO | ================================================================================
+
+18:42:45 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184245
+18:42:45 |    INFO | 
+Using GNN models:
+18:42:45 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:42:45 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:42:45 |    INFO | 
+------------------------------------------------------------
+18:42:45 |    INFO | Stage 1: Matrix Rendering
+18:42:45 |    INFO | ------------------------------------------------------------
+
+18:42:52 |    INFO | 
+------------------------------------------------------------
+18:42:52 |    INFO | Stage 2: Simulation Execution
+18:42:52 |    INFO | ------------------------------------------------------------
+
+18:42:57 |    INFO | 
+------------------------------------------------------------
+18:42:57 |    INFO | Stage 3: Analysis
+18:42:57 |    INFO | ------------------------------------------------------------
+
+18:43:17 |    INFO | 
+================================================================================
+18:43:17 |    INFO | Experiment Summary
+18:43:17 |    INFO | ================================================================================
+
+18:43:17 |    INFO | 
+Experiment: coalition_2_01
+18:43:17 |    INFO | Started: 2024-11-07T18:42:45.297616
+18:43:17 |    INFO | Completed: 2024-11-07T18:43:17.853975
+18:43:17 |    INFO | Total Duration: 32.56s
+18:43:17 |    INFO | 
+Stage Results:
+18:43:17 |    INFO | 
+Render Stage:
+18:43:17 |    INFO | - Completed: True
+18:43:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184245/1_render/matrices
+18:43:17 |    INFO | - Time: 7.23s
+18:43:17 |    INFO | 
+Simulation Stage:
+18:43:17 |    INFO | - Completed: True
+18:43:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184245/2_simulation
+18:43:17 |    INFO | - Time: 4.80s
+18:43:17 |    INFO | 
+Analysis Stage:
+18:43:17 |    INFO | - Completed: True
+18:43:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184245/3_analysis
+18:43:17 |    INFO | - Time: 20.52s
+18:43:17 |    INFO | 
+================================================================================
+
+18:43:17 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184317/logs/experiment_20241107_184317.log
+18:43:17 |    INFO | 
+================================================================================
+18:43:17 |    INFO | Biofirm Experiment: coalition_2_01
+18:43:17 |    INFO | ================================================================================
+
+18:43:17 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184317
+18:43:17 |    INFO | 
+Using GNN models:
+18:43:17 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:43:17 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:43:17 |    INFO | 
+------------------------------------------------------------
+18:43:17 |    INFO | Stage 1: Matrix Rendering
+18:43:17 |    INFO | ------------------------------------------------------------
+
+18:43:27 |    INFO | 
+------------------------------------------------------------
+18:43:27 |    INFO | Stage 2: Simulation Execution
+18:43:27 |    INFO | ------------------------------------------------------------
+
+18:43:32 |    INFO | 
+------------------------------------------------------------
+18:43:32 |    INFO | Stage 3: Analysis
+18:43:32 |    INFO | ------------------------------------------------------------
+
+18:43:52 |    INFO | 
+================================================================================
+18:43:52 |    INFO | Experiment Summary
+18:43:52 |    INFO | ================================================================================
+
+18:43:52 |    INFO | 
+Experiment: coalition_2_01
+18:43:52 |    INFO | Started: 2024-11-07T18:43:17.875520
+18:43:52 |    INFO | Completed: 2024-11-07T18:43:52.541624
+18:43:52 |    INFO | Total Duration: 34.67s
+18:43:52 |    INFO | 
+Stage Results:
+18:43:52 |    INFO | 
+Render Stage:
+18:43:52 |    INFO | - Completed: True
+18:43:52 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184317/1_render/matrices
+18:43:52 |    INFO | - Time: 9.45s
+18:43:52 |    INFO | 
+Simulation Stage:
+18:43:52 |    INFO | - Completed: True
+18:43:52 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184317/2_simulation
+18:43:52 |    INFO | - Time: 5.53s
+18:43:52 |    INFO | 
+Analysis Stage:
+18:43:52 |    INFO | - Completed: True
+18:43:52 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184317/3_analysis
+18:43:52 |    INFO | - Time: 19.68s
+18:43:52 |    INFO | 
+================================================================================
+
+18:43:52 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184352/logs/experiment_20241107_184352.log
+18:43:52 |    INFO | 
+================================================================================
+18:43:52 |    INFO | Biofirm Experiment: coalition_2_01
+18:43:52 |    INFO | ================================================================================
+
+18:43:52 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184352
+18:43:52 |    INFO | 
+Using GNN models:
+18:43:52 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:43:52 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:43:52 |    INFO | 
+------------------------------------------------------------
+18:43:52 |    INFO | Stage 1: Matrix Rendering
+18:43:52 |    INFO | ------------------------------------------------------------
+
+18:44:01 |    INFO | 
+------------------------------------------------------------
+18:44:01 |    INFO | Stage 2: Simulation Execution
+18:44:01 |    INFO | ------------------------------------------------------------
+
+18:44:06 |    INFO | 
+------------------------------------------------------------
+18:44:06 |    INFO | Stage 3: Analysis
+18:44:06 |    INFO | ------------------------------------------------------------
+
+18:44:23 |    INFO | 
+================================================================================
+18:44:23 |    INFO | Experiment Summary
+18:44:23 |    INFO | ================================================================================
+
+18:44:23 |    INFO | 
+Experiment: coalition_2_01
+18:44:23 |    INFO | Started: 2024-11-07T18:43:52.571452
+18:44:23 |    INFO | Completed: 2024-11-07T18:44:23.769263
+18:44:23 |    INFO | Total Duration: 31.20s
+18:44:23 |    INFO | 
+Stage Results:
+18:44:23 |    INFO | 
+Render Stage:
+18:44:23 |    INFO | - Completed: True
+18:44:23 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184352/1_render/matrices
+18:44:23 |    INFO | - Time: 8.66s
+18:44:23 |    INFO | 
+Simulation Stage:
+18:44:23 |    INFO | - Completed: True
+18:44:23 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184352/2_simulation
+18:44:23 |    INFO | - Time: 5.03s
+18:44:23 |    INFO | 
+Analysis Stage:
+18:44:23 |    INFO | - Completed: True
+18:44:23 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184352/3_analysis
+18:44:23 |    INFO | - Time: 17.51s
+18:44:23 |    INFO | 
+================================================================================
+
+18:44:23 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184423/logs/experiment_20241107_184423.log
+18:44:23 |    INFO | 
+================================================================================
+18:44:23 |    INFO | Biofirm Experiment: coalition_2_01
+18:44:23 |    INFO | ================================================================================
+
+18:44:23 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184423
+18:44:23 |    INFO | 
+Using GNN models:
+18:44:23 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:44:23 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:44:23 |    INFO | 
+------------------------------------------------------------
+18:44:23 |    INFO | Stage 1: Matrix Rendering
+18:44:23 |    INFO | ------------------------------------------------------------
+
+18:44:31 |    INFO | 
+------------------------------------------------------------
+18:44:31 |    INFO | Stage 2: Simulation Execution
+18:44:31 |    INFO | ------------------------------------------------------------
+
+18:44:35 |    INFO | 
+------------------------------------------------------------
+18:44:35 |    INFO | Stage 3: Analysis
+18:44:35 |    INFO | ------------------------------------------------------------
+
+18:44:51 |    INFO | 
+================================================================================
+18:44:51 |    INFO | Experiment Summary
+18:44:51 |    INFO | ================================================================================
+
+18:44:51 |    INFO | 
+Experiment: coalition_2_01
+18:44:51 |    INFO | Started: 2024-11-07T18:44:23.798682
+18:44:51 |    INFO | Completed: 2024-11-07T18:44:51.662068
+18:44:51 |    INFO | Total Duration: 27.86s
+18:44:51 |    INFO | 
+Stage Results:
+18:44:51 |    INFO | 
+Render Stage:
+18:44:51 |    INFO | - Completed: True
+18:44:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184423/1_render/matrices
+18:44:51 |    INFO | - Time: 7.52s
+18:44:51 |    INFO | 
+Simulation Stage:
+18:44:51 |    INFO | - Completed: True
+18:44:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184423/2_simulation
+18:44:51 |    INFO | - Time: 3.93s
+18:44:51 |    INFO | 
+Analysis Stage:
+18:44:51 |    INFO | - Completed: True
+18:44:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184423/3_analysis
+18:44:51 |    INFO | - Time: 16.41s
+18:44:51 |    INFO | 
+================================================================================
+
+18:44:51 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184451/logs/experiment_20241107_184451.log
+18:44:51 |    INFO | 
+================================================================================
+18:44:51 |    INFO | Biofirm Experiment: coalition_2_01
+18:44:51 |    INFO | ================================================================================
+
+18:44:51 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184451
+18:44:51 |    INFO | 
+Using GNN models:
+18:44:51 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:44:51 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:44:51 |    INFO | 
+------------------------------------------------------------
+18:44:51 |    INFO | Stage 1: Matrix Rendering
+18:44:51 |    INFO | ------------------------------------------------------------
+
+18:44:59 |    INFO | 
+------------------------------------------------------------
+18:44:59 |    INFO | Stage 2: Simulation Execution
+18:44:59 |    INFO | ------------------------------------------------------------
+
+18:45:03 |    INFO | 
+------------------------------------------------------------
+18:45:03 |    INFO | Stage 3: Analysis
+18:45:03 |    INFO | ------------------------------------------------------------
+
+18:45:19 |    INFO | 
+================================================================================
+18:45:19 |    INFO | Experiment Summary
+18:45:19 |    INFO | ================================================================================
+
+18:45:19 |    INFO | 
+Experiment: coalition_2_01
+18:45:19 |    INFO | Started: 2024-11-07T18:44:51.679509
+18:45:19 |    INFO | Completed: 2024-11-07T18:45:19.790016
+18:45:19 |    INFO | Total Duration: 28.11s
+18:45:19 |    INFO | 
+Stage Results:
+18:45:19 |    INFO | 
+Render Stage:
+18:45:19 |    INFO | - Completed: True
+18:45:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184451/1_render/matrices
+18:45:19 |    INFO | - Time: 7.67s
+18:45:19 |    INFO | 
+Simulation Stage:
+18:45:19 |    INFO | - Completed: True
+18:45:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184451/2_simulation
+18:45:19 |    INFO | - Time: 4.57s
+18:45:19 |    INFO | 
+Analysis Stage:
+18:45:19 |    INFO | - Completed: True
+18:45:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184451/3_analysis
+18:45:19 |    INFO | - Time: 15.87s
+18:45:19 |    INFO | 
+================================================================================
+
+18:45:19 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184519/logs/experiment_20241107_184519.log
+18:45:19 |    INFO | 
+================================================================================
+18:45:19 |    INFO | Biofirm Experiment: coalition_2_01
+18:45:19 |    INFO | ================================================================================
+
+18:45:19 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184519
+18:45:19 |    INFO | 
+Using GNN models:
+18:45:19 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:45:19 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:45:19 |    INFO | 
+------------------------------------------------------------
+18:45:19 |    INFO | Stage 1: Matrix Rendering
+18:45:19 |    INFO | ------------------------------------------------------------
+
+18:45:27 |    INFO | 
+------------------------------------------------------------
+18:45:27 |    INFO | Stage 2: Simulation Execution
+18:45:27 |    INFO | ------------------------------------------------------------
+
+18:45:32 |    INFO | 
+------------------------------------------------------------
+18:45:32 |    INFO | Stage 3: Analysis
+18:45:32 |    INFO | ------------------------------------------------------------
+
+18:45:47 |    INFO | 
+================================================================================
+18:45:47 |    INFO | Experiment Summary
+18:45:47 |    INFO | ================================================================================
+
+18:45:47 |    INFO | 
+Experiment: coalition_2_01
+18:45:47 |    INFO | Started: 2024-11-07T18:45:19.820323
+18:45:47 |    INFO | Completed: 2024-11-07T18:45:47.444783
+18:45:47 |    INFO | Total Duration: 27.62s
+18:45:47 |    INFO | 
+Stage Results:
+18:45:47 |    INFO | 
+Render Stage:
+18:45:47 |    INFO | - Completed: True
+18:45:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184519/1_render/matrices
+18:45:47 |    INFO | - Time: 7.51s
+18:45:47 |    INFO | 
+Simulation Stage:
+18:45:47 |    INFO | - Completed: True
+18:45:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184519/2_simulation
+18:45:47 |    INFO | - Time: 4.85s
+18:45:47 |    INFO | 
+Analysis Stage:
+18:45:47 |    INFO | - Completed: True
+18:45:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184519/3_analysis
+18:45:47 |    INFO | - Time: 15.26s
+18:45:47 |    INFO | 
+================================================================================
+
+18:45:47 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184547/logs/experiment_20241107_184547.log
+18:45:47 |    INFO | 
+================================================================================
+18:45:47 |    INFO | Biofirm Experiment: coalition_2_01
+18:45:47 |    INFO | ================================================================================
+
+18:45:47 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184547
+18:45:47 |    INFO | 
+Using GNN models:
+18:45:47 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:45:47 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:45:47 |    INFO | 
+------------------------------------------------------------
+18:45:47 |    INFO | Stage 1: Matrix Rendering
+18:45:47 |    INFO | ------------------------------------------------------------
+
+18:45:55 |    INFO | 
+------------------------------------------------------------
+18:45:55 |    INFO | Stage 2: Simulation Execution
+18:45:55 |    INFO | ------------------------------------------------------------
+
+18:45:59 |    INFO | 
+------------------------------------------------------------
+18:45:59 |    INFO | Stage 3: Analysis
+18:45:59 |    INFO | ------------------------------------------------------------
+
+18:46:17 |    INFO | 
+================================================================================
+18:46:17 |    INFO | Experiment Summary
+18:46:17 |    INFO | ================================================================================
+
+18:46:17 |    INFO | 
+Experiment: coalition_2_01
+18:46:17 |    INFO | Started: 2024-11-07T18:45:47.466387
+18:46:17 |    INFO | Completed: 2024-11-07T18:46:17.433712
+18:46:17 |    INFO | Total Duration: 29.97s
+18:46:17 |    INFO | 
+Stage Results:
+18:46:17 |    INFO | 
+Render Stage:
+18:46:17 |    INFO | - Completed: True
+18:46:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184547/1_render/matrices
+18:46:17 |    INFO | - Time: 8.09s
+18:46:17 |    INFO | 
+Simulation Stage:
+18:46:17 |    INFO | - Completed: True
+18:46:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184547/2_simulation
+18:46:17 |    INFO | - Time: 4.38s
+18:46:17 |    INFO | 
+Analysis Stage:
+18:46:17 |    INFO | - Completed: True
+18:46:17 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184547/3_analysis
+18:46:17 |    INFO | - Time: 17.49s
+18:46:17 |    INFO | 
+================================================================================
+
+18:46:17 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184617/logs/experiment_20241107_184617.log
+18:46:17 |    INFO | 
+================================================================================
+18:46:17 |    INFO | Biofirm Experiment: coalition_3_012
+18:46:17 |    INFO | ================================================================================
+
+18:46:17 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184617
+18:46:17 |    INFO | 
+Using GNN models:
+18:46:17 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:46:17 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:46:17 |    INFO | 
+------------------------------------------------------------
+18:46:17 |    INFO | Stage 1: Matrix Rendering
+18:46:17 |    INFO | ------------------------------------------------------------
+
+18:46:26 |    INFO | 
+------------------------------------------------------------
+18:46:26 |    INFO | Stage 2: Simulation Execution
+18:46:26 |    INFO | ------------------------------------------------------------
+
+18:46:31 |    INFO | 
+------------------------------------------------------------
+18:46:31 |    INFO | Stage 3: Analysis
+18:46:31 |    INFO | ------------------------------------------------------------
+
+18:46:47 |    INFO | 
+================================================================================
+18:46:47 |    INFO | Experiment Summary
+18:46:47 |    INFO | ================================================================================
+
+18:46:47 |    INFO | 
+Experiment: coalition_3_012
+18:46:47 |    INFO | Started: 2024-11-07T18:46:17.464751
+18:46:47 |    INFO | Completed: 2024-11-07T18:46:47.965160
+18:46:47 |    INFO | Total Duration: 30.50s
+18:46:47 |    INFO | 
+Stage Results:
+18:46:47 |    INFO | 
+Render Stage:
+18:46:47 |    INFO | - Completed: True
+18:46:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184617/1_render/matrices
+18:46:47 |    INFO | - Time: 8.72s
+18:46:47 |    INFO | 
+Simulation Stage:
+18:46:47 |    INFO | - Completed: True
+18:46:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184617/2_simulation
+18:46:47 |    INFO | - Time: 5.41s
+18:46:47 |    INFO | 
+Analysis Stage:
+18:46:47 |    INFO | - Completed: True
+18:46:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184617/3_analysis
+18:46:47 |    INFO | - Time: 16.37s
+18:46:47 |    INFO | 
+================================================================================
+
+18:46:47 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184647/logs/experiment_20241107_184647.log
+18:46:47 |    INFO | 
+================================================================================
+18:46:47 |    INFO | Biofirm Experiment: coalition_3_012
+18:46:47 |    INFO | ================================================================================
+
+18:46:47 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184647
+18:46:47 |    INFO | 
+Using GNN models:
+18:46:47 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:46:47 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:46:47 |    INFO | 
+------------------------------------------------------------
+18:46:47 |    INFO | Stage 1: Matrix Rendering
+18:46:47 |    INFO | ------------------------------------------------------------
+
+18:46:55 |    INFO | 
+------------------------------------------------------------
+18:46:55 |    INFO | Stage 2: Simulation Execution
+18:46:55 |    INFO | ------------------------------------------------------------
+
+18:46:59 |    INFO | 
+------------------------------------------------------------
+18:46:59 |    INFO | Stage 3: Analysis
+18:46:59 |    INFO | ------------------------------------------------------------
+
+18:47:15 |    INFO | 
+================================================================================
+18:47:15 |    INFO | Experiment Summary
+18:47:15 |    INFO | ================================================================================
+
+18:47:15 |    INFO | 
+Experiment: coalition_3_012
+18:47:15 |    INFO | Started: 2024-11-07T18:46:47.988346
+18:47:15 |    INFO | Completed: 2024-11-07T18:47:15.793757
+18:47:15 |    INFO | Total Duration: 27.81s
+18:47:15 |    INFO | 
+Stage Results:
+18:47:15 |    INFO | 
+Render Stage:
+18:47:15 |    INFO | - Completed: True
+18:47:15 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184647/1_render/matrices
+18:47:15 |    INFO | - Time: 7.59s
+18:47:15 |    INFO | 
+Simulation Stage:
+18:47:15 |    INFO | - Completed: True
+18:47:15 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184647/2_simulation
+18:47:15 |    INFO | - Time: 3.93s
+18:47:15 |    INFO | 
+Analysis Stage:
+18:47:15 |    INFO | - Completed: True
+18:47:15 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184647/3_analysis
+18:47:15 |    INFO | - Time: 16.27s
+18:47:15 |    INFO | 
+================================================================================
+
+18:47:15 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184715/logs/experiment_20241107_184715.log
+18:47:15 |    INFO | 
+================================================================================
+18:47:15 |    INFO | Biofirm Experiment: coalition_3_012
+18:47:15 |    INFO | ================================================================================
+
+18:47:15 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184715
+18:47:15 |    INFO | 
+Using GNN models:
+18:47:15 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:47:15 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:47:15 |    INFO | 
+------------------------------------------------------------
+18:47:15 |    INFO | Stage 1: Matrix Rendering
+18:47:15 |    INFO | ------------------------------------------------------------
+
+18:47:23 |    INFO | 
+------------------------------------------------------------
+18:47:23 |    INFO | Stage 2: Simulation Execution
+18:47:23 |    INFO | ------------------------------------------------------------
+
+18:47:26 |    INFO | 
+------------------------------------------------------------
+18:47:26 |    INFO | Stage 3: Analysis
+18:47:26 |    INFO | ------------------------------------------------------------
+
+18:47:41 |    INFO | 
+================================================================================
+18:47:41 |    INFO | Experiment Summary
+18:47:41 |    INFO | ================================================================================
+
+18:47:41 |    INFO | 
+Experiment: coalition_3_012
+18:47:41 |    INFO | Started: 2024-11-07T18:47:15.829721
+18:47:41 |    INFO | Completed: 2024-11-07T18:47:41.378427
+18:47:41 |    INFO | Total Duration: 25.55s
+18:47:41 |    INFO | 
+Stage Results:
+18:47:41 |    INFO | 
+Render Stage:
+18:47:41 |    INFO | - Completed: True
+18:47:41 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184715/1_render/matrices
+18:47:41 |    INFO | - Time: 7.25s
+18:47:41 |    INFO | 
+Simulation Stage:
+18:47:41 |    INFO | - Completed: True
+18:47:41 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184715/2_simulation
+18:47:41 |    INFO | - Time: 3.77s
+18:47:41 |    INFO | 
+Analysis Stage:
+18:47:41 |    INFO | - Completed: True
+18:47:41 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184715/3_analysis
+18:47:41 |    INFO | - Time: 14.53s
+18:47:41 |    INFO | 
+================================================================================
+
+18:47:41 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/logs/experiment_20241107_184741.log
+18:47:41 |    INFO | 
+================================================================================
+18:47:41 |    INFO | Biofirm Experiment: coalition_3_012
+18:47:41 |    INFO | ================================================================================
+
+18:47:41 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741
+18:47:41 |    INFO | 
+Using GNN models:
+18:47:41 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:47:41 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:47:41 |    INFO | 
+------------------------------------------------------------
+18:47:41 |    INFO | Stage 1: Matrix Rendering
+18:47:41 |    INFO | ------------------------------------------------------------
+
+18:47:49 |    INFO | 
+------------------------------------------------------------
+18:47:49 |    INFO | Stage 2: Simulation Execution
+18:47:49 |    INFO | ------------------------------------------------------------
+
+18:47:52 |    INFO | 
+------------------------------------------------------------
+18:47:52 |    INFO | Stage 3: Analysis
+18:47:52 |    INFO | ------------------------------------------------------------
+
+18:48:06 |    INFO | 
+================================================================================
+18:48:06 |    INFO | Experiment Summary
+18:48:06 |    INFO | ================================================================================
+
+18:48:06 |    INFO | 
+Experiment: coalition_3_012
+18:48:06 |    INFO | Started: 2024-11-07T18:47:41.403333
+18:48:06 |    INFO | Completed: 2024-11-07T18:48:06.454496
+18:48:06 |    INFO | Total Duration: 25.05s
+18:48:06 |    INFO | 
+Stage Results:
+18:48:06 |    INFO | 
+Render Stage:
+18:48:06 |    INFO | - Completed: True
+18:48:06 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/1_render/matrices
+18:48:06 |    INFO | - Time: 7.91s
+18:48:06 |    INFO | 
+Simulation Stage:
+18:48:06 |    INFO | - Completed: True
+18:48:06 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/2_simulation
+18:48:06 |    INFO | - Time: 3.65s
+18:48:06 |    INFO | 
+Analysis Stage:
+18:48:06 |    INFO | - Completed: True
+18:48:06 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184741/3_analysis
+18:48:06 |    INFO | - Time: 13.48s
+18:48:06 |    INFO | 
+================================================================================
+
+18:48:06 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184806/logs/experiment_20241107_184806.log
+18:48:06 |    INFO | 
+================================================================================
+18:48:06 |    INFO | Biofirm Experiment: coalition_3_012
+18:48:06 |    INFO | ================================================================================
+
+18:48:06 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184806
+18:48:06 |    INFO | 
+Using GNN models:
+18:48:06 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:48:06 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:48:06 |    INFO | 
+------------------------------------------------------------
+18:48:06 |    INFO | Stage 1: Matrix Rendering
+18:48:06 |    INFO | ------------------------------------------------------------
+
+18:48:12 |    INFO | 
+------------------------------------------------------------
+18:48:12 |    INFO | Stage 2: Simulation Execution
+18:48:12 |    INFO | ------------------------------------------------------------
+
+18:48:16 |    INFO | 
+------------------------------------------------------------
+18:48:16 |    INFO | Stage 3: Analysis
+18:48:16 |    INFO | ------------------------------------------------------------
+
+18:48:31 |    INFO | 
+================================================================================
+18:48:31 |    INFO | Experiment Summary
+18:48:31 |    INFO | ================================================================================
+
+18:48:31 |    INFO | 
+Experiment: coalition_3_012
+18:48:31 |    INFO | Started: 2024-11-07T18:48:06.474192
+18:48:31 |    INFO | Completed: 2024-11-07T18:48:31.515136
+18:48:31 |    INFO | Total Duration: 25.04s
+18:48:31 |    INFO | 
+Stage Results:
+18:48:31 |    INFO | 
+Render Stage:
+18:48:31 |    INFO | - Completed: True
+18:48:31 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184806/1_render/matrices
+18:48:31 |    INFO | - Time: 6.27s
+18:48:31 |    INFO | 
+Simulation Stage:
+18:48:31 |    INFO | - Completed: True
+18:48:31 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184806/2_simulation
+18:48:31 |    INFO | - Time: 3.53s
+18:48:31 |    INFO | 
+Analysis Stage:
+18:48:31 |    INFO | - Completed: True
+18:48:31 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184806/3_analysis
+18:48:31 |    INFO | - Time: 15.23s
+18:48:31 |    INFO | 
+================================================================================
+
+18:48:31 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184831/logs/experiment_20241107_184831.log
+18:48:31 |    INFO | 
+================================================================================
+18:48:31 |    INFO | Biofirm Experiment: coalition_3_012
+18:48:31 |    INFO | ================================================================================
+
+18:48:31 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184831
+18:48:31 |    INFO | 
+Using GNN models:
+18:48:31 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:48:31 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:48:31 |    INFO | 
+------------------------------------------------------------
+18:48:31 |    INFO | Stage 1: Matrix Rendering
+18:48:31 |    INFO | ------------------------------------------------------------
+
+18:48:38 |    INFO | 
+------------------------------------------------------------
+18:48:38 |    INFO | Stage 2: Simulation Execution
+18:48:38 |    INFO | ------------------------------------------------------------
+
+18:48:42 |    INFO | 
+------------------------------------------------------------
+18:48:42 |    INFO | Stage 3: Analysis
+18:48:42 |    INFO | ------------------------------------------------------------
+
+18:48:56 |    INFO | 
+================================================================================
+18:48:56 |    INFO | Experiment Summary
+18:48:56 |    INFO | ================================================================================
+
+18:48:56 |    INFO | 
+Experiment: coalition_3_012
+18:48:56 |    INFO | Started: 2024-11-07T18:48:31.555556
+18:48:56 |    INFO | Completed: 2024-11-07T18:48:56.434484
+18:48:56 |    INFO | Total Duration: 24.88s
+18:48:56 |    INFO | 
+Stage Results:
+18:48:56 |    INFO | 
+Render Stage:
+18:48:56 |    INFO | - Completed: True
+18:48:56 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184831/1_render/matrices
+18:48:56 |    INFO | - Time: 6.59s
+18:48:56 |    INFO | 
+Simulation Stage:
+18:48:56 |    INFO | - Completed: True
+18:48:56 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184831/2_simulation
+18:48:56 |    INFO | - Time: 3.95s
+18:48:56 |    INFO | 
+Analysis Stage:
+18:48:56 |    INFO | - Completed: True
+18:48:56 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184831/3_analysis
+18:48:56 |    INFO | - Time: 14.34s
+18:48:56 |    INFO | 
+================================================================================
+
+18:48:56 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184856/logs/experiment_20241107_184856.log
+18:48:56 |    INFO | 
+================================================================================
+18:48:56 |    INFO | Biofirm Experiment: coalition_3_012
+18:48:56 |    INFO | ================================================================================
+
+18:48:56 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184856
+18:48:56 |    INFO | 
+Using GNN models:
+18:48:56 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:48:56 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:48:56 |    INFO | 
+------------------------------------------------------------
+18:48:56 |    INFO | Stage 1: Matrix Rendering
+18:48:56 |    INFO | ------------------------------------------------------------
+
+18:49:02 |    INFO | 
+------------------------------------------------------------
+18:49:02 |    INFO | Stage 2: Simulation Execution
+18:49:02 |    INFO | ------------------------------------------------------------
+
+18:49:06 |    INFO | 
+------------------------------------------------------------
+18:49:06 |    INFO | Stage 3: Analysis
+18:49:06 |    INFO | ------------------------------------------------------------
+
+18:49:20 |    INFO | 
+================================================================================
+18:49:20 |    INFO | Experiment Summary
+18:49:20 |    INFO | ================================================================================
+
+18:49:20 |    INFO | 
+Experiment: coalition_3_012
+18:49:20 |    INFO | Started: 2024-11-07T18:48:56.465089
+18:49:20 |    INFO | Completed: 2024-11-07T18:49:20.607050
+18:49:20 |    INFO | Total Duration: 24.14s
+18:49:20 |    INFO | 
+Stage Results:
+18:49:20 |    INFO | 
+Render Stage:
+18:49:20 |    INFO | - Completed: True
+18:49:20 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184856/1_render/matrices
+18:49:20 |    INFO | - Time: 6.36s
+18:49:20 |    INFO | 
+Simulation Stage:
+18:49:20 |    INFO | - Completed: True
+18:49:20 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184856/2_simulation
+18:49:20 |    INFO | - Time: 3.68s
+18:49:20 |    INFO | 
+Analysis Stage:
+18:49:20 |    INFO | - Completed: True
+18:49:20 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184856/3_analysis
+18:49:20 |    INFO | - Time: 14.10s
+18:49:20 |    INFO | 
+================================================================================
+
+18:49:20 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/logs/experiment_20241107_184920.log
+18:49:20 |    INFO | 
+================================================================================
+18:49:20 |    INFO | Biofirm Experiment: coalition_3_012
+18:49:20 |    INFO | ================================================================================
+
+18:49:20 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920
+18:49:20 |    INFO | 
+Using GNN models:
+18:49:20 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:49:20 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:49:20 |    INFO | 
+------------------------------------------------------------
+18:49:20 |    INFO | Stage 1: Matrix Rendering
+18:49:20 |    INFO | ------------------------------------------------------------
+
+18:49:27 |    INFO | 
+------------------------------------------------------------
+18:49:27 |    INFO | Stage 2: Simulation Execution
+18:49:27 |    INFO | ------------------------------------------------------------
+
+18:49:33 |    INFO | 
+------------------------------------------------------------
+18:49:33 |    INFO | Stage 3: Analysis
+18:49:33 |    INFO | ------------------------------------------------------------
+
+18:49:53 |    INFO | 
+================================================================================
+18:49:53 |    INFO | Experiment Summary
+18:49:53 |    INFO | ================================================================================
+
+18:49:53 |    INFO | 
+Experiment: coalition_3_012
+18:49:53 |    INFO | Started: 2024-11-07T18:49:20.626495
+18:49:53 |    INFO | Completed: 2024-11-07T18:49:53.373978
+18:49:53 |    INFO | Total Duration: 32.75s
+18:49:53 |    INFO | 
+Stage Results:
+18:49:53 |    INFO | 
+Render Stage:
+18:49:53 |    INFO | - Completed: True
+18:49:53 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/1_render/matrices
+18:49:53 |    INFO | - Time: 7.30s
+18:49:53 |    INFO | 
+Simulation Stage:
+18:49:53 |    INFO | - Completed: True
+18:49:53 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/2_simulation
+18:49:53 |    INFO | - Time: 5.45s
+18:49:53 |    INFO | 
+Analysis Stage:
+18:49:53 |    INFO | - Completed: True
+18:49:53 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184920/3_analysis
+18:49:53 |    INFO | - Time: 19.99s
+18:49:53 |    INFO | 
+================================================================================
+
+18:49:53 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184953/logs/experiment_20241107_184953.log
+18:49:53 |    INFO | 
+================================================================================
+18:49:53 |    INFO | Biofirm Experiment: coalition_3_012
+18:49:53 |    INFO | ================================================================================
+
+18:49:53 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184953
+18:49:53 |    INFO | 
+Using GNN models:
+18:49:53 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:49:53 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:49:53 |    INFO | 
+------------------------------------------------------------
+18:49:53 |    INFO | Stage 1: Matrix Rendering
+18:49:53 |    INFO | ------------------------------------------------------------
+
+18:50:02 |    INFO | 
+------------------------------------------------------------
+18:50:02 |    INFO | Stage 2: Simulation Execution
+18:50:02 |    INFO | ------------------------------------------------------------
+
+18:50:06 |    INFO | 
+------------------------------------------------------------
+18:50:06 |    INFO | Stage 3: Analysis
+18:50:06 |    INFO | ------------------------------------------------------------
+
+18:50:21 |    INFO | 
+================================================================================
+18:50:21 |    INFO | Experiment Summary
+18:50:21 |    INFO | ================================================================================
+
+18:50:21 |    INFO | 
+Experiment: coalition_3_012
+18:50:21 |    INFO | Started: 2024-11-07T18:49:53.406204
+18:50:21 |    INFO | Completed: 2024-11-07T18:50:21.774343
+18:50:21 |    INFO | Total Duration: 28.37s
+18:50:21 |    INFO | 
+Stage Results:
+18:50:21 |    INFO | 
+Render Stage:
+18:50:21 |    INFO | - Completed: True
+18:50:21 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184953/1_render/matrices
+18:50:21 |    INFO | - Time: 8.89s
+18:50:21 |    INFO | 
+Simulation Stage:
+18:50:21 |    INFO | - Completed: True
+18:50:21 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184953/2_simulation
+18:50:21 |    INFO | - Time: 4.13s
+18:50:21 |    INFO | 
+Analysis Stage:
+18:50:21 |    INFO | - Completed: True
+18:50:21 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_184953/3_analysis
+18:50:21 |    INFO | - Time: 15.34s
+18:50:21 |    INFO | 
+================================================================================
+
+18:50:21 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185021/logs/experiment_20241107_185021.log
+18:50:21 |    INFO | 
+================================================================================
+18:50:21 |    INFO | Biofirm Experiment: coalition_3_012
+18:50:21 |    INFO | ================================================================================
+
+18:50:21 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185021
+18:50:21 |    INFO | 
+Using GNN models:
+18:50:21 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:50:21 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:50:21 |    INFO | 
+------------------------------------------------------------
+18:50:21 |    INFO | Stage 1: Matrix Rendering
+18:50:21 |    INFO | ------------------------------------------------------------
+
+18:50:29 |    INFO | 
+------------------------------------------------------------
+18:50:29 |    INFO | Stage 2: Simulation Execution
+18:50:29 |    INFO | ------------------------------------------------------------
+
+18:50:33 |    INFO | 
+------------------------------------------------------------
+18:50:33 |    INFO | Stage 3: Analysis
+18:50:33 |    INFO | ------------------------------------------------------------
+
+18:50:51 |    INFO | 
+================================================================================
+18:50:51 |    INFO | Experiment Summary
+18:50:51 |    INFO | ================================================================================
+
+18:50:51 |    INFO | 
+Experiment: coalition_3_012
+18:50:51 |    INFO | Started: 2024-11-07T18:50:21.803995
+18:50:51 |    INFO | Completed: 2024-11-07T18:50:51.420820
+18:50:51 |    INFO | Total Duration: 29.62s
+18:50:51 |    INFO | 
+Stage Results:
+18:50:51 |    INFO | 
+Render Stage:
+18:50:51 |    INFO | - Completed: True
+18:50:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185021/1_render/matrices
+18:50:51 |    INFO | - Time: 7.61s
+18:50:51 |    INFO | 
+Simulation Stage:
+18:50:51 |    INFO | - Completed: True
+18:50:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185021/2_simulation
+18:50:51 |    INFO | - Time: 4.44s
+18:50:51 |    INFO | 
+Analysis Stage:
+18:50:51 |    INFO | - Completed: True
+18:50:51 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185021/3_analysis
+18:50:51 |    INFO | - Time: 17.55s
+18:50:51 |    INFO | 
+================================================================================
+
+18:50:51 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185051/logs/experiment_20241107_185051.log
+18:50:51 |    INFO | 
+================================================================================
+18:50:51 |    INFO | Biofirm Experiment: coalition_4_0123
+18:50:51 |    INFO | ================================================================================
+
+18:50:51 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185051
+18:50:51 |    INFO | 
+Using GNN models:
+18:50:51 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:50:51 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:50:51 |    INFO | 
+------------------------------------------------------------
+18:50:51 |    INFO | Stage 1: Matrix Rendering
+18:50:51 |    INFO | ------------------------------------------------------------
+
+18:50:59 |    INFO | 
+------------------------------------------------------------
+18:50:59 |    INFO | Stage 2: Simulation Execution
+18:50:59 |    INFO | ------------------------------------------------------------
+
+18:51:03 |    INFO | 
+------------------------------------------------------------
+18:51:03 |    INFO | Stage 3: Analysis
+18:51:03 |    INFO | ------------------------------------------------------------
+
+18:51:19 |    INFO | 
+================================================================================
+18:51:19 |    INFO | Experiment Summary
+18:51:19 |    INFO | ================================================================================
+
+18:51:19 |    INFO | 
+Experiment: coalition_4_0123
+18:51:19 |    INFO | Started: 2024-11-07T18:50:51.471669
+18:51:19 |    INFO | Completed: 2024-11-07T18:51:19.582020
+18:51:19 |    INFO | Total Duration: 28.11s
+18:51:19 |    INFO | 
+Stage Results:
+18:51:19 |    INFO | 
+Render Stage:
+18:51:19 |    INFO | - Completed: True
+18:51:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185051/1_render/matrices
+18:51:19 |    INFO | - Time: 7.68s
+18:51:19 |    INFO | 
+Simulation Stage:
+18:51:19 |    INFO | - Completed: True
+18:51:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185051/2_simulation
+18:51:19 |    INFO | - Time: 4.18s
+18:51:19 |    INFO | 
+Analysis Stage:
+18:51:19 |    INFO | - Completed: True
+18:51:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185051/3_analysis
+18:51:19 |    INFO | - Time: 16.24s
+18:51:19 |    INFO | 
+================================================================================
+
+18:51:19 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185119/logs/experiment_20241107_185119.log
+18:51:19 |    INFO | 
+================================================================================
+18:51:19 |    INFO | Biofirm Experiment: coalition_4_0123
+18:51:19 |    INFO | ================================================================================
+
+18:51:19 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185119
+18:51:19 |    INFO | 
+Using GNN models:
+18:51:19 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:51:19 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:51:19 |    INFO | 
+------------------------------------------------------------
+18:51:19 |    INFO | Stage 1: Matrix Rendering
+18:51:19 |    INFO | ------------------------------------------------------------
+
+18:51:27 |    INFO | 
+------------------------------------------------------------
+18:51:27 |    INFO | Stage 2: Simulation Execution
+18:51:27 |    INFO | ------------------------------------------------------------
+
+18:51:32 |    INFO | 
+------------------------------------------------------------
+18:51:32 |    INFO | Stage 3: Analysis
+18:51:32 |    INFO | ------------------------------------------------------------
+
+18:51:49 |    INFO | 
+================================================================================
+18:51:49 |    INFO | Experiment Summary
+18:51:49 |    INFO | ================================================================================
+
+18:51:49 |    INFO | 
+Experiment: coalition_4_0123
+18:51:49 |    INFO | Started: 2024-11-07T18:51:19.615221
+18:51:49 |    INFO | Completed: 2024-11-07T18:51:49.073682
+18:51:49 |    INFO | Total Duration: 29.46s
+18:51:49 |    INFO | 
+Stage Results:
+18:51:49 |    INFO | 
+Render Stage:
+18:51:49 |    INFO | - Completed: True
+18:51:49 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185119/1_render/matrices
+18:51:49 |    INFO | - Time: 7.97s
+18:51:49 |    INFO | 
+Simulation Stage:
+18:51:49 |    INFO | - Completed: True
+18:51:49 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185119/2_simulation
+18:51:49 |    INFO | - Time: 5.28s
+18:51:49 |    INFO | 
+Analysis Stage:
+18:51:49 |    INFO | - Completed: True
+18:51:49 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185119/3_analysis
+18:51:49 |    INFO | - Time: 16.20s
+18:51:49 |    INFO | 
+================================================================================
+
+18:51:49 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185149/logs/experiment_20241107_185149.log
+18:51:49 |    INFO | 
+================================================================================
+18:51:49 |    INFO | Biofirm Experiment: coalition_4_0123
+18:51:49 |    INFO | ================================================================================
+
+18:51:49 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185149
+18:51:49 |    INFO | 
+Using GNN models:
+18:51:49 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:51:49 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:51:49 |    INFO | 
+------------------------------------------------------------
+18:51:49 |    INFO | Stage 1: Matrix Rendering
+18:51:49 |    INFO | ------------------------------------------------------------
+
+18:51:55 |    INFO | 
+------------------------------------------------------------
+18:51:55 |    INFO | Stage 2: Simulation Execution
+18:51:55 |    INFO | ------------------------------------------------------------
+
+18:51:59 |    INFO | 
+------------------------------------------------------------
+18:51:59 |    INFO | Stage 3: Analysis
+18:51:59 |    INFO | ------------------------------------------------------------
+
+18:52:13 |    INFO | 
+================================================================================
+18:52:13 |    INFO | Experiment Summary
+18:52:13 |    INFO | ================================================================================
+
+18:52:13 |    INFO | 
+Experiment: coalition_4_0123
+18:52:13 |    INFO | Started: 2024-11-07T18:51:49.112847
+18:52:13 |    INFO | Completed: 2024-11-07T18:52:13.299386
+18:52:13 |    INFO | Total Duration: 24.19s
+18:52:13 |    INFO | 
+Stage Results:
+18:52:13 |    INFO | 
+Render Stage:
+18:52:13 |    INFO | - Completed: True
+18:52:13 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185149/1_render/matrices
+18:52:13 |    INFO | - Time: 6.75s
+18:52:13 |    INFO | 
+Simulation Stage:
+18:52:13 |    INFO | - Completed: True
+18:52:13 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185149/2_simulation
+18:52:13 |    INFO | - Time: 3.56s
+18:52:13 |    INFO | 
+Analysis Stage:
+18:52:13 |    INFO | - Completed: True
+18:52:13 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185149/3_analysis
+18:52:13 |    INFO | - Time: 13.87s
+18:52:13 |    INFO | 
+================================================================================
+
+18:52:13 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185213/logs/experiment_20241107_185213.log
+18:52:13 |    INFO | 
+================================================================================
+18:52:13 |    INFO | Biofirm Experiment: coalition_4_0123
+18:52:13 |    INFO | ================================================================================
+
+18:52:13 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185213
+18:52:13 |    INFO | 
+Using GNN models:
+18:52:13 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:52:13 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:52:13 |    INFO | 
+------------------------------------------------------------
+18:52:13 |    INFO | Stage 1: Matrix Rendering
+18:52:13 |    INFO | ------------------------------------------------------------
+
+18:52:20 |    INFO | 
+------------------------------------------------------------
+18:52:20 |    INFO | Stage 2: Simulation Execution
+18:52:20 |    INFO | ------------------------------------------------------------
+
+18:52:24 |    INFO | 
+------------------------------------------------------------
+18:52:24 |    INFO | Stage 3: Analysis
+18:52:24 |    INFO | ------------------------------------------------------------
+
+18:52:47 |    INFO | 
+================================================================================
+18:52:47 |    INFO | Experiment Summary
+18:52:47 |    INFO | ================================================================================
+
+18:52:47 |    INFO | 
+Experiment: coalition_4_0123
+18:52:47 |    INFO | Started: 2024-11-07T18:52:13.354389
+18:52:47 |    INFO | Completed: 2024-11-07T18:52:47.223188
+18:52:47 |    INFO | Total Duration: 33.87s
+18:52:47 |    INFO | 
+Stage Results:
+18:52:47 |    INFO | 
+Render Stage:
+18:52:47 |    INFO | - Completed: True
+18:52:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185213/1_render/matrices
+18:52:47 |    INFO | - Time: 7.18s
+18:52:47 |    INFO | 
+Simulation Stage:
+18:52:47 |    INFO | - Completed: True
+18:52:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185213/2_simulation
+18:52:47 |    INFO | - Time: 4.25s
+18:52:47 |    INFO | 
+Analysis Stage:
+18:52:47 |    INFO | - Completed: True
+18:52:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185213/3_analysis
+18:52:47 |    INFO | - Time: 22.43s
+18:52:47 |    INFO | 
+================================================================================
+
+18:52:47 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185247/logs/experiment_20241107_185247.log
+18:52:47 |    INFO | 
+================================================================================
+18:52:47 |    INFO | Biofirm Experiment: coalition_4_0123
+18:52:47 |    INFO | ================================================================================
+
+18:52:47 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185247
+18:52:47 |    INFO | 
+Using GNN models:
+18:52:47 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:52:47 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:52:47 |    INFO | 
+------------------------------------------------------------
+18:52:47 |    INFO | Stage 1: Matrix Rendering
+18:52:47 |    INFO | ------------------------------------------------------------
+
+18:52:56 |    INFO | 
+------------------------------------------------------------
+18:52:56 |    INFO | Stage 2: Simulation Execution
+18:52:56 |    INFO | ------------------------------------------------------------
+
+18:53:00 |    INFO | 
+------------------------------------------------------------
+18:53:00 |    INFO | Stage 3: Analysis
+18:53:00 |    INFO | ------------------------------------------------------------
+
+18:53:19 |    INFO | 
+================================================================================
+18:53:19 |    INFO | Experiment Summary
+18:53:19 |    INFO | ================================================================================
+
+18:53:19 |    INFO | 
+Experiment: coalition_4_0123
+18:53:19 |    INFO | Started: 2024-11-07T18:52:47.259201
+18:53:19 |    INFO | Completed: 2024-11-07T18:53:19.156975
+18:53:19 |    INFO | Total Duration: 31.90s
+18:53:19 |    INFO | 
+Stage Results:
+18:53:19 |    INFO | 
+Render Stage:
+18:53:19 |    INFO | - Completed: True
+18:53:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185247/1_render/matrices
+18:53:19 |    INFO | - Time: 8.92s
+18:53:19 |    INFO | 
+Simulation Stage:
+18:53:19 |    INFO | - Completed: True
+18:53:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185247/2_simulation
+18:53:19 |    INFO | - Time: 4.61s
+18:53:19 |    INFO | 
+Analysis Stage:
+18:53:19 |    INFO | - Completed: True
+18:53:19 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185247/3_analysis
+18:53:19 |    INFO | - Time: 18.36s
+18:53:19 |    INFO | 
+================================================================================
+
+18:53:19 |    INFO | Experiment log file: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185319/logs/experiment_20241107_185319.log
+18:53:19 |    INFO | 
+================================================================================
+18:53:19 |    INFO | Biofirm Experiment: coalition_5_01234
+18:53:19 |    INFO | ================================================================================
+
+18:53:19 |    INFO | Output Directory: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185319
+18:53:19 |    INFO | 
+Using GNN models:
+18:53:19 |    INFO | - Environment: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/envs/gnn_env_biofirm.gnn
+18:53:19 |    INFO | - Agent: /home/trim/Documents/GitHub/pymdp/pymdp/gnn/models/gnn_agent_biofirm.gnn
+18:53:19 |    INFO | 
+------------------------------------------------------------
+18:53:19 |    INFO | Stage 1: Matrix Rendering
+18:53:19 |    INFO | ------------------------------------------------------------
+
+18:53:27 |    INFO | 
+------------------------------------------------------------
+18:53:27 |    INFO | Stage 2: Simulation Execution
+18:53:27 |    INFO | ------------------------------------------------------------
+
+18:53:31 |    INFO | 
+------------------------------------------------------------
+18:53:31 |    INFO | Stage 3: Analysis
+18:53:31 |    INFO | ------------------------------------------------------------
+
+18:53:47 |    INFO | 
+================================================================================
+18:53:47 |    INFO | Experiment Summary
+18:53:47 |    INFO | ================================================================================
+
+18:53:47 |    INFO | 
+Experiment: coalition_5_01234
+18:53:47 |    INFO | Started: 2024-11-07T18:53:19.206464
+18:53:47 |    INFO | Completed: 2024-11-07T18:53:47.137197
+18:53:47 |    INFO | Total Duration: 27.93s
+18:53:47 |    INFO | 
+Stage Results:
+18:53:47 |    INFO | 
+Render Stage:
+18:53:47 |    INFO | - Completed: True
+18:53:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185319/1_render/matrices
+18:53:47 |    INFO | - Time: 8.11s
+18:53:47 |    INFO | 
+Simulation Stage:
+18:53:47 |    INFO | - Completed: True
+18:53:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185319/2_simulation
+18:53:47 |    INFO | - Time: 4.66s
+18:53:47 |    INFO | 
+Analysis Stage:
+18:53:47 |    INFO | - Completed: True
+18:53:47 |    INFO | - Output: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_185319/3_analysis
+18:53:47 |    INFO | - Time: 15.15s
+18:53:47 |    INFO | 
+================================================================================
+

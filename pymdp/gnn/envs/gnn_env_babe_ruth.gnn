@@ -1,0 +1,104 @@
+{
+    "name": "BabeRuthCalledShotEnv",
+    "nodes": {
+        "game_context": {
+            "dim": 5,
+            "labels": ["world_series_game", "cubs_home_field", "fifth_inning", "tied_score", "high_tension"]
+        },
+        "pitcher_state": {
+            "dim": 7,
+            "labels": ["wind_up", "delivery", "release", "follow_through", "reset", "fatigue_level", "psychological_state"]
+        },
+        "ball_trajectory": {
+            "dim": 10,
+            "labels": ["pre_pitch", "fastball_high", "fastball_low", "curveball", "slider", "in_flight", "contact", "home_run", "foul_ball", "field_out"]
+        },
+        "field_conditions": {
+            "dim": 6,
+            "labels": ["wind_speed", "wind_direction", "visibility", "crowd_noise", "wrigley_field_factors", "october_weather"]
+        },
+        "crowd_state": {
+            "dim": 6,
+            "labels": ["anticipation", "tension", "hostility", "excitement", "celebration", "cubs_fan_reaction"]
+        },
+        "score_state": {
+            "dim": 4,
+            "labels": ["yankees_lead", "cubs_lead", "tie_game", "critical_moment"]
+        },
+        "series_momentum": {
+            "dim": 3,
+            "labels": ["yankees_momentum", "cubs_momentum", "neutral"]
+        }
+    },
+    "edges": {
+        "context_affects_pitcher": {
+            "from": "game_context",
+            "to": "pitcher_state",
+            "type": "stochastic"
+        },
+        "pitcher_influences_ball": {
+            "from": "pitcher_state",
+            "to": "ball_trajectory",
+            "type": "deterministic"
+        },
+        "conditions_affect_ball": {
+            "from": "field_conditions",
+            "to": "ball_trajectory",
+            "type": "stochastic"
+        },
+        "trajectory_affects_crowd": {
+            "from": "ball_trajectory",
+            "to": "crowd_state",
+            "type": "deterministic"
+        },
+        "score_affects_context": {
+            "from": "score_state",
+            "to": "game_context",
+            "type": "deterministic"
+        },
+        "momentum_influences_context": {
+            "from": "series_momentum",
+            "to": "game_context",
+            "type": "modulation"
+        }
+    },
+    "transition_matrices": {
+        "pitcher_ball_transition": {
+            "dimensions": ["pitcher_state", "ball_trajectory"],
+            "probabilities": {
+                "release_to_fastball": 0.4,
+                "release_to_curveball": 0.3,
+                "release_to_slider": 0.3,
+                "psychological_impact": 0.2
+            }
+        },
+        "context_dynamics": {
+            "dimensions": ["game_context", "series_momentum"],
+            "probabilities": {
+                "tension_to_momentum": 0.7,
+                "score_to_context": 0.8
+            }
+        }
+    },
+    "observation_matrices": {
+        "crowd_observation": {
+            "dimensions": ["crowd_state", "ball_trajectory"],
+            "probabilities": {
+                "anticipation_mapping": 0.9,
+                "celebration_mapping": 0.95
+            }
+        }
+    },
+    "environment_parameters": {
+        "wrigley_field_effects": {
+            "wind_factor": 1.2,
+            "crowd_intensity": 1.5,
+            "historical_pressure": 2.0
+        },
+        "world_series_context": {
+            "game_importance": 0.9,
+            "psychological_pressure": 0.85,
+            "historical_weight": 0.95
+        }
+    }
+} 

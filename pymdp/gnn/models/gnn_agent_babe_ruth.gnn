@@ -1,0 +1,214 @@
+{
+    "name": "BabeRuthAgent",
+    "nodes": {
+        "series_context": {
+            "dim": 5,
+            "labels": ["world_series_stakes", "team_momentum", "historical_significance", "personal_legacy", "yankees_destiny"],
+            "type": "hidden"
+        },
+        "game_situation": {
+            "dim": 6,
+            "labels": ["score_differential", "inning_state", "runners_on", "outs", "pitcher_fatigue", "momentum"],
+            "type": "observation"
+        },
+        "pitcher_reading": {
+            "dim": 8,
+            "labels": ["stance", "grip", "arm_angle", "hip_rotation", "release_point", "follow_through", "confidence_level", "pitch_pattern"],
+            "type": "observation"
+        },
+        "pitch_prediction": {
+            "dim": 7,
+            "labels": ["fastball_likely", "curveball_likely", "slider_likely", "location_high", "location_low", "pitch_sequence", "pitcher_intention"],
+            "type": "hidden"
+        },
+        "batting_strategy": {
+            "dim": 6,
+            "labels": ["wait_for_pitch", "power_swing", "contact_swing", "take_pitch", "crowd_psychology", "dramatic_timing"],
+            "type": "hidden"
+        },
+        "confidence_state": {
+            "dim": 5,
+            "labels": ["uncertain", "confident", "called_shot", "historical_awareness", "clutch_performer"],
+            "type": "hidden"
+        },
+        "motor_action": {
+            "dim": 8,
+            "labels": ["load", "stride", "hip_rotation", "swing_plane", "contact_point", "follow_through", "bat_speed", "point_to_bleachers"],
+            "type": "action"
+        },
+        "outcome_prediction": {
+            "dim": 6,
+            "labels": ["miss", "foul", "contact", "home_run", "game_impact", "series_impact"],
+            "type": "hidden"
+        },
+        "legacy_awareness": {
+            "dim": 4,
+            "labels": ["personal_achievement", "team_achievement", "baseball_history", "mythical_moment"],
+            "type": "hidden"
+        }
+    },
+    "edges": {
+        "context_to_confidence": {
+            "from": "series_context",
+            "to": "confidence_state",
+            "type": "modulation"
+        },
+        "situation_to_strategy": {
+            "from": "game_situation",
+            "to": "batting_strategy",
+            "type": "policy"
+        },
+        "pitcher_to_prediction": {
+            "from": "pitcher_reading",
+            "to": "pitch_prediction",
+            "type": "predictive"
+        },
+        "prediction_to_strategy": {
+            "from": "pitch_prediction",
+            "to": "batting_strategy",
+            "type": "policy"
+        },
+        "confidence_to_strategy": {
+            "from": "confidence_state",
+            "to": "batting_strategy",
+            "type": "modulation"
+        },
+        "strategy_to_motor": {
+            "from": "batting_strategy",
+            "to": "motor_action",
+            "type": "policy"
+        },
+        "action_to_outcome": {
+            "from": "motor_action",
+            "to": "outcome_prediction",
+            "type": "predictive"
+        },
+        "outcome_to_legacy": {
+            "from": "outcome_prediction",
+            "to": "legacy_awareness",
+            "type": "predictive"
+        }
+    },
+    "parameters": {
+        "precision": {
+            "series_context": 3.0,
+            "confidence_state": 2.5,
+            "pitch_prediction": 1.8,
+            "outcome_prediction": 2.0,
+            "legacy_awareness": 2.8
+        },
+        "learning_rate": 0.1,
+        "temporal_horizon": 4,
+        "preference_strength": {
+            "outcome_prediction": {
+                "home_run": 5.0,
+                "game_impact": 4.5,
+                "series_impact": 4.8,
+                "contact": 2.0,
+                "foul": 0.0,
+                "miss": -1.0
+            },
+            "legacy_awareness": {
+                "mythical_moment": 5.0,
+                "team_achievement": 4.5,
+                "baseball_history": 4.0,
+                "personal_achievement": 3.5
+            }
+        }
+    },
+    "active_inference_matrices": {
+        "A_matrices": {
+            "pitcher_observation": {
+                "dimensions": ["pitcher_reading", "pitch_prediction"],
+                "dirichlet_prior": 1.0,
+                "learning_enabled": true,
+                "mapping": {
+                    "stance_to_fastball": 0.8,
+                    "grip_to_curveball": 0.9,
+                    "arm_angle_to_location": 0.85,
+                    "confidence_to_intention": 0.7
+                }
+            },
+            "situation_observation": {
+                "dimensions": ["game_situation", "series_context"],
+                "dirichlet_prior": 2.0,
+                "learning_enabled": true,
+                "mapping": {
+                    "score_to_stakes": 0.9,
+                    "momentum_to_destiny": 0.85
+                }
+            }
+        },
+        "B_matrices": {
+            "motor_dynamics": {
+                "dimensions": ["motor_action", "outcome_prediction"],
+                "dirichlet_prior": 1.5,
+                "mapping": {
+                    "power_swing_to_homerun": 0.7,
+                    "timing_to_contact": 0.8,
+                    "point_to_legacy": 0.95
+                }
+            },
+            "strategic_transitions": {
+                "dimensions": ["batting_strategy", "confidence_state"],
+                "dirichlet_prior": 2.0,
+                "mapping": {
+                    "dramatic_to_clutch": 0.9,
+                    "power_to_called": 0.85
+                }
+            }
+        },
+        "C_matrices": {
+            "outcome_preferences": {
+                "dimensions": ["outcome_prediction"],
+                "values": {
+                    "home_run": 5.0,
+                    "series_impact": 4.8,
+                    "mythical_moment": 4.5
+                }
+            },
+            "legacy_preferences": {
+                "dimensions": ["legacy_awareness"],
+                "values": {
+                    "baseball_history": 4.0,
+                    "team_achievement": 3.8
+                }
+            }
+        },
+        "D_matrices": {
+            "initial_beliefs": {
+                "series_context": [0.2, 0.3, 0.1, 0.2, 0.2],
+                "confidence_state": [0.1, 0.2, 0.4, 0.2, 0.1],
+                "pitch_prediction": [0.15, 0.15, 0.15, 0.2, 0.15, 0.1, 0.1]
+            }
+        },
+        "policies": {
+            "batting_policies": {
+                "dimensions": ["batting_strategy", "motor_action"],
+                "policy_sets": [
+                    {
+                        "name": "called_shot_sequence",
+                        "actions": ["point_to_bleachers", "wait_for_pitch", "power_swing"],
+                        "probability": 0.8
+                    },
+                    {
+                        "name": "conservative_approach",
+                        "actions": ["wait_for_pitch", "contact_swing"],
+                        "probability": 0.2
+                    }
+                ]
+            }
+        }
+    },
+    "inference_parameters": {
+        "num_iter": 10,
+        "dF_threshold": 0.001,
+        "policy_precision": 5.0,
+        "temporal_window": 4,
+        "learning_parameters": {
+            "A_learning_rate": 0.1,
+            "B_learning_rate": 0.05,
+            "policy_learning_rate": 0.2
+        }
+    }
+}

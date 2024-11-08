@@ -391,3 +391,336 @@ Coalition Performance Summary (coalition_3_012):
 18:26:33 |    INFO | - expected_free_energy: -0.0253
 18:26:33 |    INFO | 
 Evaluating coalition: frozenset({2, 3, 4})
+18:27:01 |    INFO | 
+Coalition Performance Summary (coalition_3_012):
+18:27:01 |    INFO | ----------------------------------------
+18:27:01 |    INFO | Agents: ['gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:27:01 |    INFO | Metrics:
+18:27:01 |    INFO | - Homeostasis: 29.50% time in target range
+18:27:01 |    INFO | - Belief Accuracy: 35.70% correct state estimation
+18:27:01 |    INFO | - Control Efficiency: 0.24 optimal actions
+18:27:01 |    INFO | - Expected Free Energy: -0.04 (lower is better)
+18:27:01 |    INFO | Coalition frozenset({2, 3, 4}) metrics:
+18:27:01 |    INFO | - homeostasis_satisfaction: 0.2950
+18:27:01 |    INFO | - belief_accuracy: 0.3570
+18:27:01 |    INFO | - control_efficiency: 0.2450
+18:27:01 |    INFO | - expected_free_energy: -0.0373
+18:27:01 |    INFO | 
+Evaluating coalition: frozenset({0, 1, 2, 3})
+18:27:31 |    INFO | 
+Coalition Performance Summary (coalition_4_0123):
+18:27:31 |    INFO | ----------------------------------------
+18:27:31 |    INFO | Agents: ['gnn_agent_biofirm_base', 'gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_1-3-1']
+18:27:31 |    INFO | Metrics:
+18:27:31 |    INFO | - Homeostasis: 30.50% time in target range
+18:27:31 |    INFO | - Belief Accuracy: 36.40% correct state estimation
+18:27:31 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:27:31 |    INFO | - Expected Free Energy: -0.05 (lower is better)
+18:27:31 |    INFO | Coalition frozenset({0, 1, 2, 3}) metrics:
+18:27:31 |    INFO | - homeostasis_satisfaction: 0.3050
+18:27:31 |    INFO | - belief_accuracy: 0.3640
+18:27:31 |    INFO | - control_efficiency: 0.2610
+18:27:31 |    INFO | - expected_free_energy: -0.0465
+18:27:31 |    INFO | 
+Evaluating coalition: frozenset({0, 1, 2, 4})
+18:27:56 |    INFO | 
+Coalition Performance Summary (coalition_4_0123):
+18:27:56 |    INFO | ----------------------------------------
+18:27:56 |    INFO | Agents: ['gnn_agent_biofirm_base', 'gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_2-2-2']
+18:27:56 |    INFO | Metrics:
+18:27:56 |    INFO | - Homeostasis: 28.40% time in target range
+18:27:56 |    INFO | - Belief Accuracy: 38.90% correct state estimation
+18:27:56 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:27:56 |    INFO | - Expected Free Energy: -0.02 (lower is better)
+18:27:56 |    INFO | Coalition frozenset({0, 1, 2, 4}) metrics:
+18:27:56 |    INFO | - homeostasis_satisfaction: 0.2840
+18:27:56 |    INFO | - belief_accuracy: 0.3890
+18:27:56 |    INFO | - control_efficiency: 0.2610
+18:27:56 |    INFO | - expected_free_energy: -0.0214
+18:27:56 |    INFO | 
+Evaluating coalition: frozenset({0, 1, 3, 4})
+18:28:23 |    INFO | 
+Coalition Performance Summary (coalition_4_0123):
+18:28:23 |    INFO | ----------------------------------------
+18:28:23 |    INFO | Agents: ['gnn_agent_biofirm_base', 'gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:28:23 |    INFO | Metrics:
+18:28:23 |    INFO | - Homeostasis: 32.70% time in target range
+18:28:23 |    INFO | - Belief Accuracy: 35.90% correct state estimation
+18:28:23 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:28:23 |    INFO | - Expected Free Energy: -0.03 (lower is better)
+18:28:23 |    INFO | Coalition frozenset({0, 1, 3, 4}) metrics:
+18:28:23 |    INFO | - homeostasis_satisfaction: 0.3270
+18:28:23 |    INFO | - belief_accuracy: 0.3590
+18:28:23 |    INFO | - control_efficiency: 0.2620
+18:28:23 |    INFO | - expected_free_energy: -0.0268
+18:28:23 |    INFO | 
+Evaluating coalition: frozenset({0, 2, 3, 4})
+18:28:55 |    INFO | 
+Coalition Performance Summary (coalition_4_0123):
+18:28:55 |    INFO | ----------------------------------------
+18:28:55 |    INFO | Agents: ['gnn_agent_biofirm_base', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:28:55 |    INFO | Metrics:
+18:28:55 |    INFO | - Homeostasis: 32.10% time in target range
+18:28:55 |    INFO | - Belief Accuracy: 36.80% correct state estimation
+18:28:55 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:28:55 |    INFO | - Expected Free Energy: -0.08 (lower is better)
+18:28:55 |    INFO | Coalition frozenset({0, 2, 3, 4}) metrics:
+18:28:55 |    INFO | - homeostasis_satisfaction: 0.3210
+18:28:55 |    INFO | - belief_accuracy: 0.3680
+18:28:55 |    INFO | - control_efficiency: 0.2620
+18:28:55 |    INFO | - expected_free_energy: -0.0782
+18:28:55 |    INFO | 
+Evaluating coalition: frozenset({1, 2, 3, 4})
+18:29:21 |    INFO | 
+Coalition Performance Summary (coalition_4_0123):
+18:29:21 |    INFO | ----------------------------------------
+18:29:21 |    INFO | Agents: ['gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:29:21 |    INFO | Metrics:
+18:29:21 |    INFO | - Homeostasis: 31.90% time in target range
+18:29:21 |    INFO | - Belief Accuracy: 34.20% correct state estimation
+18:29:21 |    INFO | - Control Efficiency: 0.27 optimal actions
+18:29:21 |    INFO | - Expected Free Energy: -0.04 (lower is better)
+18:29:21 |    INFO | Coalition frozenset({1, 2, 3, 4}) metrics:
+18:29:21 |    INFO | - homeostasis_satisfaction: 0.3190
+18:29:21 |    INFO | - belief_accuracy: 0.3420
+18:29:21 |    INFO | - control_efficiency: 0.2730
+18:29:21 |    INFO | - expected_free_energy: -0.0386
+18:29:21 |    INFO | 
+Evaluating coalition: frozenset({0, 1, 2, 3, 4})
+18:29:46 |    INFO | 
+Coalition Performance Summary (coalition_5_01234):
+18:29:46 |    INFO | ----------------------------------------
+18:29:46 |    INFO | Agents: ['gnn_agent_biofirm_base', 'gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:29:46 |    INFO | Metrics:
+18:29:46 |    INFO | - Homeostasis: 31.00% time in target range
+18:29:46 |    INFO | - Belief Accuracy: 36.90% correct state estimation
+18:29:46 |    INFO | - Control Efficiency: 0.25 optimal actions
+18:29:46 |    INFO | - Expected Free Energy: -0.03 (lower is better)
+18:29:46 |    INFO | Coalition frozenset({0, 1, 2, 3, 4}) metrics:
+18:29:46 |    INFO | - homeostasis_satisfaction: 0.3100
+18:29:46 |    INFO | - belief_accuracy: 0.3690
+18:29:46 |    INFO | - control_efficiency: 0.2490
+18:29:46 |    INFO | - expected_free_energy: -0.0323
+18:29:50 |    INFO | Saved Shapley analysis plot to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444/shapley_experiment_20241107_181444/3_analysis/plots/shapley_analysis.png
+18:30:04 |   ERROR | Error plotting metric correlations: 'plot_settings'
+18:30:04 |    INFO | Generated comprehensive analysis report: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444/shapley_experiment_20241107_181444/3_analysis/results/shapley_analysis_report.md
+18:30:04 |    INFO | 
+Shapley Analysis Results:
+18:30:04 |    INFO | 
+homeostasis_satisfaction:
+18:30:04 |    INFO | Contribution to maintaining homeostasis:
+- Agent 3 (1-3-1): 0.0286
+- Agent 4 (2-2-2): 0.0078
+- Agent 1 (0-6-0): -0.0047
+- Agent 0 (base): -0.0081
+- Agent 2 (.1-2-.1): -0.0176
+
+18:30:04 |    INFO | 
+expected_free_energy:
+18:30:04 |    INFO | Contribution to minimizing uncertainty:
+- Agent 1 (0-6-0): 0.0386
+- Agent 4 (2-2-2): 0.0121
+- Agent 0 (base): -0.0031
+- Agent 2 (.1-2-.1): -0.0069
+- Agent 3 (1-3-1): -0.0296
+
+18:30:04 |    INFO | 
+belief_accuracy:
+18:30:04 |    INFO | Contribution to accurate state estimation:
+- Agent 0 (base): 0.0293
+- Agent 2 (.1-2-.1): 0.0123
+- Agent 1 (0-6-0): -0.0005
+- Agent 4 (2-2-2): -0.0021
+- Agent 3 (1-3-1): -0.0197
+
+18:30:04 |    INFO | 
+control_efficiency:
+18:30:04 |    INFO | Contribution to control efficiency:
+- Agent 4 (2-2-2): -0.0012
+- Agent 2 (.1-2-.1): -0.0030
+- Agent 3 (1-3-1): -0.0035
+- Agent 1 (0-6-0): -0.0094
+- Agent 0 (base): -0.0108
+
+18:30:04 |    INFO | 
+================================================================================
+18:30:04 |    INFO | SHAPLEY ANALYSIS RESULTS
+18:30:04 |    INFO | ================================================================================
+
+18:30:04 |    INFO | Individual Agent Contributions:
+18:30:04 |    INFO | --------------------------------------------------
+18:30:04 |    INFO | 
+HOMEOSTASIS_SATISFACTION:
+18:30:04 |    INFO | Rank 1: 1-3-1        | Value: +0.0286 | Relative Impact:  42.9%
+18:30:04 |    INFO | Rank 2: .1-2-.1      | Value: -0.0176 | Relative Impact:  26.3%
+18:30:04 |    INFO | Rank 3: base         | Value: -0.0081 | Relative Impact:  12.1%
+18:30:04 |    INFO | Rank 4: 2-2-2        | Value: +0.0078 | Relative Impact:  11.6%
+18:30:04 |    INFO | Rank 5: 0-6-0        | Value: -0.0047 | Relative Impact:   7.1%
+18:30:04 |    INFO | 
+EXPECTED_FREE_ENERGY:
+18:30:04 |    INFO | Rank 1: 0-6-0        | Value: +0.0386 | Relative Impact:  42.7%
+18:30:04 |    INFO | Rank 2: 1-3-1        | Value: -0.0296 | Relative Impact:  32.8%
+18:30:04 |    INFO | Rank 3: 2-2-2        | Value: +0.0121 | Relative Impact:  13.4%
+18:30:04 |    INFO | Rank 4: .1-2-.1      | Value: -0.0069 | Relative Impact:   7.7%
+18:30:04 |    INFO | Rank 5: base         | Value: -0.0031 | Relative Impact:   3.4%
+18:30:04 |    INFO | 
+BELIEF_ACCURACY:
+18:30:04 |    INFO | Rank 1: base         | Value: +0.0293 | Relative Impact:  45.8%
+18:30:04 |    INFO | Rank 2: 1-3-1        | Value: -0.0197 | Relative Impact:  30.8%
+18:30:04 |    INFO | Rank 3: .1-2-.1      | Value: +0.0123 | Relative Impact:  19.3%
+18:30:04 |    INFO | Rank 4: 2-2-2        | Value: -0.0021 | Relative Impact:   3.4%
+18:30:04 |    INFO | Rank 5: 0-6-0        | Value: -0.0005 | Relative Impact:   0.7%
+18:30:04 |    INFO | 
+CONTROL_EFFICIENCY:
+18:30:04 |    INFO | Rank 1: base         | Value: -0.0108 | Relative Impact:  38.6%
+18:30:04 |    INFO | Rank 2: 0-6-0        | Value: -0.0094 | Relative Impact:  33.8%
+18:30:04 |    INFO | Rank 3: 1-3-1        | Value: -0.0035 | Relative Impact:  12.5%
+18:30:04 |    INFO | Rank 4: .1-2-.1      | Value: -0.0030 | Relative Impact:  10.9%
+18:30:04 |    INFO | Rank 5: 2-2-2        | Value: -0.0012 | Relative Impact:   4.2%
+18:30:04 |    INFO | 
+Coalition Performance:
+18:30:04 |    INFO | --------------------------------------------------
+18:30:04 |    INFO | 
+HOMEOSTASIS_SATISFACTION:
+18:30:04 |    INFO | 
+Top 3 Coalitions:
+18:30:04 |    INFO | - base                                     | Performance: 0.3470
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1                          | Performance: 0.3440
+18:30:04 |    INFO | - 1-3-1 + 2-2-2                            | Performance: 0.3370
+18:30:04 |    INFO | 
+Worst 3 Coalitions:
+18:30:04 |    INFO | - base + .1-2-.1 + 2-2-2                   | Performance: 0.2760
+18:30:04 |    INFO | - base + 0-6-0 + .1-2-.1                   | Performance: 0.2740
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1 + 1-3-1                  | Performance: 0.2670
+18:30:04 |    INFO | 
+EXPECTED_FREE_ENERGY:
+18:30:04 |    INFO | 
+Top 3 Coalitions:
+18:30:04 |    INFO | - .1-2-.1                                  | Performance: -0.0034
+18:30:04 |    INFO | - base + .1-2-.1 + 2-2-2                   | Performance: -0.0035
+18:30:04 |    INFO | - base + .1-2-.1                           | Performance: -0.0179
+18:30:04 |    INFO | 
+Worst 3 Coalitions:
+18:30:04 |    INFO | - base + .1-2-.1 + 1-3-1                   | Performance: -0.0598
+18:30:04 |    INFO | - base + .1-2-.1 + 1-3-1 + 2-2-2           | Performance: -0.0782
+18:30:04 |    INFO | - base + 1-3-1                             | Performance: -0.0789
+18:30:04 |    INFO | 
+BELIEF_ACCURACY:
+18:30:04 |    INFO | 
+Top 3 Coalitions:
+18:30:04 |    INFO | - base + 0-6-0 + .1-2-.1 + 2-2-2           | Performance: 0.3890
+18:30:04 |    INFO | - base + 0-6-0 + 1-3-1                     | Performance: 0.3840
+18:30:04 |    INFO | - .1-2-.1 + 2-2-2                          | Performance: 0.3800
+18:30:04 |    INFO | 
+Worst 3 Coalitions:
+18:30:04 |    INFO | - base + 0-6-0                             | Performance: 0.3510
+18:30:04 |    INFO | - 0-6-0                                    | Performance: 0.3460
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1 + 1-3-1 + 2-2-2          | Performance: 0.3420
+18:30:04 |    INFO | 
+CONTROL_EFFICIENCY:
+18:30:04 |    INFO | 
+Top 3 Coalitions:
+18:30:04 |    INFO | - base + .1-2-.1                           | Performance: 0.2810
+18:30:04 |    INFO | - base + .1-2-.1 + 1-3-1                   | Performance: 0.2780
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1 + 1-3-1 + 2-2-2          | Performance: 0.2730
+18:30:04 |    INFO | 
+Worst 3 Coalitions:
+18:30:04 |    INFO | - base + 0-6-0 + 1-3-1                     | Performance: 0.2270
+18:30:04 |    INFO | - 1-3-1 + 2-2-2                            | Performance: 0.2240
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1                          | Performance: 0.2010
+18:30:04 |    INFO | 
+Synergy Analysis:
+18:30:04 |    INFO | --------------------------------------------------
+18:30:04 |    INFO | 
+HOMEOSTASIS_SATISFACTION Synergies:
+18:30:04 |    INFO | 
+Strongest Positive Synergies:
+18:30:04 |    INFO | 
+Strongest Negative Synergies:
+18:30:04 |    INFO | - base + .1-2-.1      | Synergy: -0.3500
+18:30:04 |    INFO | - base + 2-2-2        | Synergy: -0.3480
+18:30:04 |    INFO | - base + 1-3-1        | Synergy: -0.3420
+18:30:04 |    INFO | 
+EXPECTED_FREE_ENERGY Synergies:
+18:30:04 |    INFO | 
+Strongest Positive Synergies:
+18:30:04 |    INFO | - base + 0-6-0        | Synergy: +0.0469
+18:30:04 |    INFO | - base + .1-2-.1      | Synergy: +0.0301
+18:30:04 |    INFO | - 0-6-0 + 2-2-2        | Synergy: +0.0249
+18:30:04 |    INFO | 
+Strongest Negative Synergies:
+18:30:04 |    INFO | - .1-2-.1 + 2-2-2        | Synergy: -0.0266
+18:30:04 |    INFO | - base + 1-3-1        | Synergy: -0.0101
+18:30:04 |    INFO | 
+BELIEF_ACCURACY Synergies:
+18:30:04 |    INFO | 
+Strongest Positive Synergies:
+18:30:04 |    INFO | 
+Strongest Negative Synergies:
+18:30:04 |    INFO | - 1-3-1 + 2-2-2        | Synergy: -0.3760
+18:30:04 |    INFO | - base + 1-3-1        | Synergy: -0.3630
+18:30:04 |    INFO | - base + 2-2-2        | Synergy: -0.3590
+18:30:04 |    INFO | 
+CONTROL_EFFICIENCY Synergies:
+18:30:04 |    INFO | 
+Strongest Positive Synergies:
+18:30:04 |    INFO | 
+Strongest Negative Synergies:
+18:30:04 |    INFO | - 0-6-0 + .1-2-.1      | Synergy: -0.3110
+18:30:04 |    INFO | - .1-2-.1 + 1-3-1        | Synergy: -0.2860
+18:30:04 |    INFO | - 1-3-1 + 2-2-2        | Synergy: -0.2760
+18:30:04 |    INFO | 
+Generating Visualizations...
+18:30:04 |    INFO | --------------------------------------------------
+18:30:08 |    INFO | Saved Shapley analysis plot to /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444/shapley_experiment_20241107_181444/3_analysis/plots/shapley_analysis.png
+18:30:08 |    INFO | ✓ Generated Shapley value plots
+18:30:18 |    INFO | ✓ Generated coalition performance plots
+18:30:24 |    INFO | ✓ Generated synergy matrices
+18:30:24 |   ERROR | Error plotting metric correlations: 'plot_settings'
+18:30:24 |    INFO | ✓ Generated metric correlations
+18:30:24 | WARNING | Warning: Missing plots: metric_correlations.png
+18:30:24 |    INFO | Generated comprehensive analysis report: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444/shapley_experiment_20241107_181444/3_analysis/results/shapley_analysis_report.md
+18:30:24 |    INFO | ✓ Generated analysis report: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444/shapley_experiment_20241107_181444/3_analysis/results/shapley_analysis_report.md
+18:30:24 |    INFO | 
+Analysis Summary:
+18:30:24 |    INFO | --------------------------------------------------
+18:30:24 |    INFO | 
+homeostasis_satisfaction:
+18:30:24 |    INFO | Contribution to maintaining homeostasis:
+- Agent 3 (1-3-1): 0.0286
+- Agent 4 (2-2-2): 0.0078
+- Agent 1 (0-6-0): -0.0047
+- Agent 0 (base): -0.0081
+- Agent 2 (.1-2-.1): -0.0176
+
+18:30:24 |    INFO | 
+expected_free_energy:
+18:30:24 |    INFO | Contribution to minimizing uncertainty:
+- Agent 1 (0-6-0): 0.0386
+- Agent 4 (2-2-2): 0.0121
+- Agent 0 (base): -0.0031
+- Agent 2 (.1-2-.1): -0.0069
+- Agent 3 (1-3-1): -0.0296
+
+18:30:24 |    INFO | 
+belief_accuracy:
+18:30:24 |    INFO | Contribution to accurate state estimation:
+- Agent 0 (base): 0.0293
+- Agent 2 (.1-2-.1): 0.0123
+- Agent 1 (0-6-0): -0.0005
+- Agent 4 (2-2-2): -0.0021
+- Agent 3 (1-3-1): -0.0197
+
+18:30:24 |    INFO | 
+control_efficiency:
+18:30:24 |    INFO | Contribution to control efficiency:
+- Agent 4 (2-2-2): -0.0012
+- Agent 2 (.1-2-.1): -0.0030
+- Agent 3 (1-3-1): -0.0035
+- Agent 1 (0-6-0): -0.0094
+- Agent 0 (base): -0.0108
+
+18:30:24 |    INFO | 
+Analysis completed in 939.80s
+18:30:24 |    INFO | 
+Experiment completed. Results saved to: /home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/shapley_experiment_20241107_181444
