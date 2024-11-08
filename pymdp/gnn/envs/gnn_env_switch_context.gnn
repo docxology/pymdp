@@ -1,0 +1,77 @@
+{
+    "modelName": "context_switching_environment",
+    "modelType": ["Environment", "Dynamic"],
+    
+    "stateSpace": {
+        "factors": ["ContextState", "EnergyState"],
+        "sizes": [3, 5],
+        "labels": [
+            ["VISUAL", "AUDIO", "TACTILE"],
+            ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+        ]
+    },
+    
+    "observationModel": {
+        "modalities": ["VisualObs", "AudioObs", "TactileObs", "EnergyObs"],
+        "sizes": [3, 3, 3, 5],
+        "labels": [
+            ["WEAK", "CLEAR", "STRONG"],
+            ["QUIET", "NORMAL", "LOUD"],
+            ["SOFT", "MEDIUM", "INTENSE"],
+            ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+        ]
+    },
+    
+    "transitionDynamics": {
+        "ContextState": {
+            "type": "controlled",
+            "control_factor_idx": 0,
+            "transition_noise": 0.1
+        },
+        "EnergyState": {
+            "type": "markov",
+            "transition_matrix": [
+                [0.8, 0.2, 0.0, 0.0, 0.0],
+                [0.1, 0.7, 0.2, 0.0, 0.0],
+                [0.0, 0.1, 0.7, 0.2, 0.0],
+                [0.0, 0.0, 0.1, 0.7, 0.2],
+                [0.0, 0.0, 0.0, 0.2, 0.8]
+            ]
+        }
+    },
+    
+    "initialState": {
+        "type": "random",
+        "distribution": {
+            "ContextState": [0.33, 0.33, 0.34],
+            "EnergyState": [0.2, 0.2, 0.2, 0.2, 0.2]
+        }
+    },
+    
+    "rewardFunction": {
+        "type": "context_dependent",
+        "rewards": {
+            "VISUAL": {
+                "conditions": {
+                    "EnergyState": ["VERY_LOW", "LOW"],
+                    "VisualObs": ["CLEAR", "STRONG"]
+                },
+                "value": 1.0
+            },
+            "AUDIO": {
+                "conditions": {
+                    "EnergyState": ["MEDIUM"],
+                    "AudioObs": ["NORMAL", "LOUD"]
+                },
+                "value": 1.0
+            },
+            "TACTILE": {
+                "conditions": {
+                    "EnergyState": ["HIGH", "VERY_HIGH"],
+                    "TactileObs": ["MEDIUM", "INTENSE"]
+                },
+                "value": 1.0
+            }
+        }
+    }
+} 

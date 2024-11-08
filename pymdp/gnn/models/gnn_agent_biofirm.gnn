@@ -14,7 +14,7 @@
         "labels": [["LOW", "HOMEO", "HIGH"]],
         "A_matrix": {
             "type": "identity_with_noise",
-            "noise": 0.1
+            "noise": 0.2
         }
     },
     

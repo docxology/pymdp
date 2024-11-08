@@ -85,18 +85,18 @@ def get_plot_settings():
     
     return {
         'figsize': {
-            'shapley': (20, 16),
-            'coalition': (24, 18),
-            'synergy': (12, 10),
+            'shapley': (24, 18),  # Increased size for 5 agents
+            'coalition': (28, 20),  # Larger for more combinations
+            'synergy': (14, 12),   # Adjusted for 5x5 matrix
             'correlation': (10, 8)
         },
         'style': 'default',
         'dpi': 300,
         'colors': {
-            'agents': ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728'],  # One per agent
-            'coalitions': plt.cm.viridis,  # Colormap for coalitions
-            'synergy': 'RdYlBu',  # Diverging colormap for synergy
-            'correlation': 'coolwarm'  # Diverging colormap for correlations
+            'agents': ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'],  # Five colors
+            'coalitions': plt.cm.viridis,
+            'synergy': 'RdYlBu',
+            'correlation': 'coolwarm'
         },
         'font': {
             'title': 16,
@@ -115,23 +115,27 @@ SHAPLEY_CONFIG = {
     # Base output directory
     'output_base': Path(__file__).parent / "sandbox" / "Biofirm",
     
-    # Agent variations to create
+    # Updated agent variations for N=5
     'agent_variations': [
         {
             'name': 'base',
-            'preferences': [[0.0, 4.0, 0.0]]  # Original preferences
+            'preferences': [[0.0, 4.0, 0.0]]  # Standard preferences
         },
         {
-            'name': 'risk_averse',
+            'name': '0-6-0',
             'preferences': [[0.0, 6.0, 0.0]]  # Higher preference for HOMEO
         },
         {
-            'name': 'exploratory',
+            'name': '.1-2-.1',
             'preferences': [[0.1, 2.0, 0.1]]  # Lower preference differential
         },
         {
-            'name': 'balanced',
+            'name': '1-3-1',
             'preferences': [[1.0, 3.0, 1.0]]  # Moderate preference with exploration
+        },
+        {
+            'name': '2-2-2',
+            'preferences': [[2.0, 2.0, 2.0]]  # Equal preferences across states
         }
     ],
     
@@ -718,14 +722,14 @@ class BiofirmShapleyAnalysis:
         return interpretation
 
     def _plot_shapley_results(self, shapley_values: Dict[str, Dict[int, float]]):
-        """Enhanced visualization of Shapley analysis results for 4 agents"""
+        """Enhanced visualization of Shapley analysis results for 5 agents"""
         try:
             import matplotlib.pyplot as plt
             import seaborn as sns
             
             settings = get_plot_settings()
             
-            # Create figure with adjusted size for 4 agents
+            # Create figure with adjusted size for 5 agents
             fig, axes = plt.subplots(2, 2, figsize=settings['figsize']['shapley'])
             fig.suptitle('Shapley Value Analysis: Agent Contributions', 
                         fontsize=settings['font']['title'], 
@@ -760,7 +764,7 @@ class BiofirmShapleyAnalysis:
                 ax.set_xlabel('Agent Type', fontsize=settings['font']['label'])
                 ax.set_ylabel('Shapley Value', fontsize=settings['font']['label'])
                 
-                # Adjust tick labels for better readability
+                # Adjust tick labels for better readability with 5 agents
                 ax.set_xticks(range(len(agent_names)))
                 ax.set_xticklabels(agent_names, 
                                  rotation=45, 
@@ -840,16 +844,17 @@ class BiofirmShapleyAnalysis:
         return stats
 
     def _analyze_synergies(self, coalition_values: Dict[frozenset, float]) -> Dict:
-        """Analyze synergistic and antagonistic effects between agents"""
+        """Analyze synergistic and antagonistic effects between agents for N=5"""
         synergy_analysis = {
             'pairwise_synergies': {},
             'best_pairs': [],
             'worst_pairs': [],
-            'triplet_synergies': {},  # Add analysis of 3-agent combinations
+            'triplet_synergies': {},
+            'quartet_synergies': {},  # Added for N=5 analysis
             'synergy_scores': {}
         }
         
-        # Analyze pairs
+        # Analyze pairs (same as before)
         for i in range(self.n_agents):
             for j in range(i + 1, self.n_agents):
                 i_perf = coalition_values.get(frozenset([i]), 0)
@@ -868,38 +873,29 @@ class BiofirmShapleyAnalysis:
                     'individual_performances': (i_perf, j_perf)
                 }
         
-        # Analyze triplets
+        # Analyze triplets (enhanced for N=5)
         for i in range(self.n_agents):
             for j in range(i + 1, self.n_agents):
                 for k in range(j + 1, self.n_agents):
-                    # Individual performances
-                    perfs = [
-                        coalition_values.get(frozenset([x]), 0)
-                        for x in (i, j, k)
-                    ]
-                    
-                    # Pair performances
+                    perfs = [coalition_values.get(frozenset([x]), 0) for x in (i, j, k)]
                     pair_perfs = [
                         coalition_values.get(frozenset([i, j]), 0),
                         coalition_values.get(frozenset([j, k]), 0),
                         coalition_values.get(frozenset([i, k]), 0)
                     ]
-                    
-                    # Triplet performance
                     triplet_perf = coalition_values.get(frozenset([i, j, k]), 0)
                     
-                    # Calculate higher-order synergy
+                    # Enhanced synergy calculation
                     triplet_synergy = (
                         triplet_perf - 
                         sum(pair_perfs) + 
-                        2 * sum(perfs)  # Möbius inversion formula
+                        2 * sum(perfs)
                     )
                     
-                    triplet_key = (
-                        f"{SHAPLEY_CONFIG['agent_variations'][i]['name']}-"
-                        f"{SHAPLEY_CONFIG['agent_variations'][j]['name']}-"
-                        f"{SHAPLEY_CONFIG['agent_variations'][k]['name']}"
-                    )
+                    triplet_key = "-".join([
+                        SHAPLEY_CONFIG['agent_variations'][x]['name']
+                        for x in (i, j, k)
+                    ])
                     
                     synergy_analysis['triplet_synergies'][triplet_key] = {
                         'synergy_score': triplet_synergy,
@@ -908,23 +904,56 @@ class BiofirmShapleyAnalysis:
                         'individual_performances': perfs
                     }
         
+        # Add quartet analysis (new for N=5)
+        for combo in itertools.combinations(range(self.n_agents), 4):
+            i, j, k, l = combo
+            perfs = [coalition_values.get(frozenset([x]), 0) for x in combo]
+            
+            # Get all possible triplet performances
+            triplet_perfs = [
+                coalition_values.get(frozenset(t), 0)
+                for t in itertools.combinations(combo, 3)
+            ]
+            
+            # Get all possible pair performances
+            pair_perfs = [
+                coalition_values.get(frozenset(p), 0)
+                for p in itertools.combinations(combo, 2)
+            ]
+            
+            quartet_perf = coalition_values.get(frozenset(combo), 0)
+            
+            # Calculate higher-order synergy for quartets
+            quartet_synergy = (
+                quartet_perf -
+                sum(triplet_perfs) +
+                2 * sum(pair_perfs) -
+                3 * sum(perfs)
+            )
+            
+            quartet_key = "-".join([
+                SHAPLEY_CONFIG['agent_variations'][x]['name']
+                for x in combo
+            ])
+            
+            synergy_analysis['quartet_synergies'][quartet_key] = {
+                'synergy_score': quartet_synergy,
+                'joint_performance': quartet_perf,
+                'triplet_performances': triplet_perfs,
+                'pair_performances': pair_perfs,
+                'individual_performances': perfs
+            }
+        
         # Sort and store best/worst combinations
-        sorted_pairs = sorted(
-            synergy_analysis['pairwise_synergies'].items(),
-            key=lambda x: x[1]['synergy_score'],
-            reverse=True
-        )
-        
-        sorted_triplets = sorted(
-            synergy_analysis['triplet_synergies'].items(),
-            key=lambda x: x[1]['synergy_score'],
-            reverse=True
-        )
-        
-        synergy_analysis['best_pairs'] = sorted_pairs[:3]
-        synergy_analysis['worst_pairs'] = sorted_pairs[-3:]
-        synergy_analysis['best_triplets'] = sorted_triplets[:3]
-        synergy_analysis['worst_triplets'] = sorted_triplets[-3:]
+        for category in ['pairwise_synergies', 'triplet_synergies', 'quartet_synergies']:
+            sorted_combos = sorted(
+                synergy_analysis[category].items(),
+                key=lambda x: x[1]['synergy_score'],
+                reverse=True
+            )
+            
+            synergy_analysis[f'best_{category}'] = sorted_combos[:3]
+            synergy_analysis[f'worst_{category}'] = sorted_combos[-3:]
         
         return synergy_analysis
 
