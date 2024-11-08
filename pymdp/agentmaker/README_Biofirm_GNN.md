@@ -1,7 +1,7 @@
 # Biofirm Active Inference Agent
 
 ## Overview
-Biofirm is an active inference agent that maintains homeostasis in a simple ecological environment. The agent uses the Generalized Neural Network (GNN) notation to define its generative model and operates in a discrete state space with three states: LOW, HOMEO (homeostasis), and HIGH.
+Biofirm is an active inference agent that maintains homeostasis in a simple ecological environment. The agent uses the Generalized Notation Notation (GNN) notation to define its generative model and operates in a discrete state space with three states: LOW, HOMEO (homeostasis), and HIGH.
 
 ## Architecture
 

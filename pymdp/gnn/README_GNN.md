@@ -1,7 +1,7 @@
-# Generalized Neural Network (GNN) Notation
+# Generalized Notation Notation (GNN) Notation
 
 ## Overview
-The Generalized Neural Network (GNN) notation is a flexible format for specifying active inference models. It provides a structured way to define generative models, including state spaces, observation mappings, transition dynamics, and preferences.
+The Generalized Notation Notation (GNN) notation is a flexible format for specifying active inference models. It provides a structured way to define generative models, including state spaces, observation mappings, transition dynamics, and preferences.
 
 ## Specification
 

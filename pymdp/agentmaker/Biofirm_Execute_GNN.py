@@ -161,14 +161,14 @@ class BiofirmExecutor:
                 q_pi = self.agent.infer_policies()
                 histories['policy_probs'][t] = q_pi
                 
+                # Action selection
+                action = self.agent.sample_action()
+                histories['actions'][t] = action
+                
                 # Calculate metrics directly
                 histories['belief_entropy'][t] = -np.sum(qs * np.log(qs + 1e-16))
                 histories['policy_entropy'][t] = -np.sum(q_pi * np.log(q_pi + 1e-16))
                 histories['accuracy'][t] = float(np.argmax(qs) == current_state)
-                
-                # Action selection
-                action = self.agent.sample_action()
-                histories['actions'][t] = action
                 
                 # Environment dynamics
                 current_state = self._state_transition(current_state, action)
