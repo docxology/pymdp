@@ -1,0 +1,41 @@
+from .maths import (
+    softmax,
+    spm_dot,
+    spm_log,
+    spm_log_single,
+    spm_log_obj_array,
+    dot_likelihood,
+    calc_free_energy,
+    get_joint_likelihood_seq,
+    get_joint_likelihood_seq_by_modality,
+    get_joint_likelihood,
+    get_modality_likelihood,
+    spm_norm,
+    factor_dot_flex,
+    softmax_obj_arr,
+    spm_wnorm,
+    spm_MDP_G,
+    kl_div,
+    entropy
+)
+
+__all__ = [
+    'softmax',
+    'spm_dot',
+    'spm_log',
+    'spm_log_single',
+    'spm_log_obj_array',
+    'dot_likelihood',
+    'calc_free_energy',
+    'get_joint_likelihood_seq',
+    'get_joint_likelihood_seq_by_modality',
+    'get_joint_likelihood',
+    'get_modality_likelihood',
+    'spm_norm',
+    'factor_dot_flex',
+    'softmax_obj_arr',
+    'spm_wnorm',
+    'spm_MDP_G',
+    'kl_div',
+    'entropy'
+] 

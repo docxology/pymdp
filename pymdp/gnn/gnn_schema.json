@@ -1,0 +1,179 @@
+{
+    "$schema": "GNN_2024_11_06.json",
+    "title": "GNN Model Schema",
+    "description": "Schema for Generalized Notation Notation (GNN) model definitions",
+    
+    "type": "object",
+    "required": ["modelName", "modelType", "stateSpace", "observations", "transitionModel"],
+    
+    "properties": {
+        "modelName": {
+            "type": "string",
+            "description": "Unique identifier for the model"
+        },
+        "modelType": {
+            "type": "array",
+            "items": {
+                "type": "string",
+                "enum": ["Agent", "Environment", "Homeostatic"]
+            },
+            "minItems": 1
+        },
+        "stateSpace": {
+            "type": "object",
+            "required": ["factors", "sizes", "labels"],
+            "properties": {
+                "factors": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Names of state factors"
+                },
+                "sizes": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 1},
+                    "description": "Number of states for each factor"
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    },
+                    "description": "Labels for each state in each factor"
+                }
+            }
+        },
+        "observations": {
+            "type": "object",
+            "required": ["modalities", "sizes", "labels"],
+            "properties": {
+                "modalities": {
+                    "type": "array",
+                    "items": {"type": "string"},
+                    "description": "Names of observation modalities"
+                },
+                "sizes": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 1},
+                    "description": "Number of observations for each modality"
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    },
+                    "description": "Labels for each observation in each modality"
+                },
+                "A_matrix": {
+                    "type": "object",
+                    "required": ["type", "noise"],
+                    "properties": {
+                        "type": {
+                            "type": "string",
+                            "enum": ["identity_with_noise"]
+                        },
+                        "noise": {
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
+                        }
+                    }
+                }
+            }
+        },
+        "transitionModel": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "object",
+                    "required": ["controlled", "control_factor_idx", "num_controls", "state_labels", "action_labels", "transitions"],
+                    "properties": {
+                        "controlled": {"type": "boolean"},
+                        "control_factor_idx": {"type": "integer", "minimum": 0},
+                        "num_controls": {"type": "integer", "minimum": 1},
+                        "state_labels": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        },
+                        "action_labels": {
+                            "type": "array",
+                            "items": {"type": "string"}
+                        },
+                        "transitions": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^.*$": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "array",
+                                        "items": {"type": "number", "minimum": 0, "maximum": 1}
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        },
+        "policies": {
+            "type": "object",
+            "required": ["controlFactors", "numControls", "policyLen", "control_fac_idx", "labels"],
+            "properties": {
+                "controlFactors": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 0}
+                },
+                "numControls": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 1}
+                },
+                "policyLen": {"type": "integer", "minimum": 1},
+                "control_fac_idx": {
+                    "type": "array",
+                    "items": {"type": "integer", "minimum": 0}
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "preferences": {
+            "type": "object",
+            "required": ["modalities", "values", "labels"],
+            "properties": {
+                "modalities": {
+                    "type": "array",
+                    "items": {"type": "string"}
+                },
+                "values": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {"type": "number"}
+                    }
+                },
+                "labels": {
+                    "type": "array",
+                    "items": {
+                        "type": "array",
+                        "items": {"type": "string"}
+                    }
+                }
+            }
+        },
+        "initialState": {
+            "type": "object",
+            "patternProperties": {
+                "^.*$": {
+                    "type": "array",
+                    "items": {"type": "number", "minimum": 0, "maximum": 1}
+                }
+            }
+        }
+    }
+}

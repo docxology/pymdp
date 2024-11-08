@@ -1,0 +1,155 @@
+{
+    "pymdp": {
+        "docs": {
+            "conf.py": "file",
+            "algos": {},
+            "_static": {},
+            "notebooks": {}
+        },
+        "test": {
+            "test_SPM_validation.py": "file",
+            "test_agent.py": "file",
+            "test_message_passing_jax.py": "file",
+            "test_agent_jax.py": "file",
+            "test_control.py": "file",
+            "test_wrappers.py": "file",
+            "test_learning.py": "file",
+            "test_utils.py": "file",
+            "test_demos.py": "file",
+            "test_fpi.py": "file",
+            "test_control_jax.py": "file",
+            "matlab_crossval": {
+                "generation": {},
+                "output": {}
+            },
+            "test_mmp.py": "file",
+            "test_inference.py": "file",
+            "test_gnn.py": "file",
+            "test_inference_jax.py": "file",
+            "test_learning_jax.py": "file",
+            "__init__.py": "file"
+        },
+        "setup.py": "file",
+        "Archive": {
+            "old_visualizations.py": "file",
+            "Single_GNN_Agent.py": "file",
+            "Run_GNN_Agents.py": "file",
+            "zzzzzzzzzzzz.py": "file"
+        },
+        "pymdp": {
+            "control.py": "file",
+            "utils.py": "file",
+            "metapymdp": {
+                "MetaPyMDP_folder_structure.py": "file"
+            },
+            "agentmaker": {
+                "Biofirm_Visualize.py": "file",
+                "sandbox": {
+                    "Biofirm": {
+                        "render_20241106_043549": {
+                            "logs": {},
+                            "matrices": {
+                                "matrices.json": "file",
+                                "agent": {},
+                                "environment": {}
+                            },
+                            "matrix_visualizations": {
+                                "agent": {},
+                                "environment": {}
+                            },
+                            "config": {
+                                "environment_model.json": "file",
+                                "agent_model.json": "file",
+                                "simulation_params.json": "file",
+                                "validation_report.json": "file"
+                            }
+                        }
+                    }
+                },
+                "Biofirm_Render_GNN.py": "file",
+                "Run_Biofirm.py": "file",
+                "Biofirm_Execute_GNN.py": "file",
+                "run_experiment.py": "file",
+                "biofirm_execution_utils.py": "file",
+                "Active_Inference_GNN.py": "file"
+            },
+            "algos": {
+                "fpi.py": "file",
+                "mmp.py": "file",
+                "mmp_old.py": "file",
+                "__init__.py": "file"
+            },
+            "maths": {
+                "maths.py": "file",
+                "__init__.py": "file"
+            },
+            "maths.py": "file",
+            "default_models.py": "file",
+            "agent.py": "file",
+            "utils": {
+                "logging_utils.py": "file",
+                "utils.py": "file"
+            },
+            "gnn": {
+                "gnn_matrix_factory.py": "file",
+                "gnn_utils.py": "file",
+                "gnn_runner.py": "file",
+                "gnn_schema.json": "file",
+                "gnn_logging.py": "file",
+                "resources": {},
+                "biofirm_utils.py": "file",
+                "envs": {
+                    "gnn_env_biofirm.gnn": "file",
+                    "gnn_env_visual_foraging.gnn": "file",
+                    "gnn_env_tmaze.gnn": "file",
+                    "gnn_env_grid_worlds.gnn": "file",
+                    "gnn_env.gnn": "file",
+                    "__init__.py": "file"
+                },
+                "models": {
+                    "gnn_agent_pomdp.gnn": "file",
+                    "gnn_agent_tmaze.gnn": "file",
+                    "gnn_biofirm_flatB.gnn": "file",
+                    "gnn_biofirm.gnn": "file",
+                    "gnn_agent_biofirm.gnn": "file"
+                }
+            },
+            "jax": {
+                "control.py": "file",
+                "utils.py": "file",
+                "likelihoods.py": "file",
+                "task.py": "file",
+                "algos.py": "file",
+                "maths.py": "file",
+                "agent.py": "file",
+                "inference.py": "file",
+                "learning.py": "file",
+                "__init__.py": "file"
+            },
+            "inference.py": "file",
+            "envs": {
+                "grid_worlds.py": "file",
+                "tmaze.py": "file",
+                "visual_foraging.py": "file",
+                "env.py": "file",
+                "__init__.py": "file"
+            },
+            "visualization": {
+                "biofirm_visualization.py": "file",
+                "gnn_visualization.py": "file",
+                "matrix_visualization.py": "file"
+            },
+            "learning.py": "file",
+            "__init__.py": "file"
+        },
+        "examples": {
+            "tmp_dir": {},
+            "A_matrix_demo.py": "file",
+            "inference_and_learning": {},
+            "learning": {},
+            "__init__.py": "file",
+            "agent_demo.py": "file"
+        },
+        "paper": {}
+    }
+}

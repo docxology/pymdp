@@ -1,0 +1,124 @@
+{
+    "modelName": "TMaze_Environment",
+    "modelType": ["Dynamic", "POMDP", "Environment"],
+    "description": "T-maze environment with informative cue and context-dependent rewards",
+    
+    "stateSpace": {
+        "factors": [
+            {
+                "name": "location",
+                "num_states": 4,
+                "controllable": true,
+                "description": "Physical location in maze",
+                "labels": ["CENTER", "RIGHT_ARM", "LEFT_ARM", "CUE_LOCATION"],
+                "initial_beliefs": [1.0, 0.0, 0.0, 0.0]
+            },
+            {
+                "name": "reward_condition",
+                "num_states": 2,
+                "controllable": false,
+                "description": "True reward location",
+                "labels": ["RIGHT", "LEFT"],
+                "initial_beliefs": [0.5, 0.5]
+            }
+        ]
+    },
+    
+    "observations": {
+        "modalities": [
+            {
+                "name": "location",
+                "num_observations": 4,
+                "description": "Location observations",
+                "labels": ["CENTER", "RIGHT_ARM", "LEFT_ARM", "CUE_LOCATION"],
+                "factors_observed": [0],
+                "A_matrix": {
+                    "values": [
+                        [1.0, 0.0, 0.0, 0.0],
+                        [0.0, 1.0, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                        [0.0, 0.0, 0.0, 1.0]
+                    ]
+                }
+            },
+            {
+                "name": "reward",
+                "num_observations": 3,
+                "description": "Reward observations",
+                "labels": ["NO_REWARD", "REWARD", "LOSS"],
+                "factors_observed": [0, 1],
+                "A_matrix": {
+                    "values": [
+                        [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+                        [0.0, 0.98, 0.02, 0.0, 0.0, 0.02, 0.98, 0.0],
+                        [0.0, 0.02, 0.98, 0.0, 0.0, 0.98, 0.02, 0.0]
+                    ]
+                }
+            },
+            {
+                "name": "cue",
+                "num_observations": 2,
+                "description": "Cue observations",
+                "labels": ["CUE_RIGHT", "CUE_LEFT"],
+                "factors_observed": [0, 1],
+                "A_matrix": {
+                    "values": [
+                        [0.5, 0.5, 0.5, 1.0, 0.5, 0.5, 0.5, 0.0],
+                        [0.5, 0.5, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0]
+                    ]
+                }
+            }
+        ]
+    },
+    
+    "transitionModel": {
+        "location": {
+            "type": "controlled",
+            "num_actions": 4,
+            "control_labels": ["STAY", "GO_RIGHT", "GO_LEFT", "GO_CUE"],
+            "values": [
+                [
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ],
+                [
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0]
+                ],
+                [
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0]
+                ],
+                [
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ]
+            ]
+        },
+        "reward_condition": {
+            "type": "fixed",
+            "values": [
+                [1.0, 0.0],
+                [0.0, 1.0]
+            ]
+        }
+    },
+    
+    "controlFactors": [0],
+    
+    "initialState": {
+        "location": 0,
+        "reward_condition": {
+            "type": "random",
+            "values": [0.5, 0.5]
+        }
+    }
+}

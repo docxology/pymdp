@@ -1,78 +1,59 @@
 import numpy as np
 from pymdp.agent import Agent
 from pymdp import utils
-from pymdp.maths import softmax
-import copy
+from pymdp.gnn.gnn_matrix_factory import GNNMatrixFactory
+import os
 
-obs_names = ["state_observation", "reward", "decision_proprioceptive"]
-state_names = ["reward_level", "decision_state"]
-action_names = ["uncontrolled", "decision_state"]
+# Initialize the GNN factory with the model file
+gnn_file = "pymdp/gnn/models/ABCD_demo.gnn"
+factory = GNNMatrixFactory(gnn_file)
 
-num_obs = [3, 3, 3]
-num_states = [2, 3]
-num_modalities = len(num_obs)
-num_factors = len(num_states)
+# Create sandbox directory if it doesn't exist
+sandbox_dir = "sandbox"
+os.makedirs(sandbox_dir, exist_ok=True)
 
-A = utils.obj_array_zeros([[o] + num_states for _, o in enumerate(num_obs)])
+# Get matrices from the GNN model
+matrices = factory.create_matrices()
 
-A[0][:, :, 0] = np.ones( (num_obs[0], num_states[0]) ) / num_obs[0]
-A[0][:, :, 1] = np.ones( (num_obs[0], num_states[0]) ) / num_obs[0]
-A[0][:, :, 2] = np.array([[0.8, 0.2], [0.0, 0.0], [0.2, 0.8]])
+# Extract matrices and parameters
+A = matrices['A']
+B = matrices['B']
+C = matrices['C']
+D = matrices['D']
+control_fac_idx = matrices['control_fac_idx']
 
-A[1][2, :, 0] = np.ones(num_states[0])
-A[1][0:2, :, 1] = softmax(np.eye(num_obs[1] - 1)) # bandit statistics (mapping between reward-state (first hidden state factor) and rewards (Good vs Bad))
-A[1][2, :, 2] = np.ones(num_states[0])
+# Create the agent
+agent = Agent(A=A, B=B, C=C, D=D, control_fac_idx=control_fac_idx)
 
-# establish a proprioceptive mapping that determines how the agent perceives its own `decision_state`
-A[2][0,:,0] = 1.0
-A[2][1,:,1] = 1.0
-A[2][2,:,2] = 1.0
+# Set up simulation parameters
+T = 10  # Number of timesteps
 
-control_fac_idx = [1]
-B = utils.obj_array(num_factors)
-for f, ns in enumerate(num_states):
-    B[f] = np.eye(ns)
-    if f in control_fac_idx:
-        B[f] = B[f].reshape(ns, ns, 1)
-        B[f] = np.tile(B[f], (1, 1, ns))
-        B[f] = B[f].transpose(1, 2, 0)
-    else:
-        B[f] = B[f].reshape(ns, ns, 1)
+# Initialize state and observation
+s = [0, 0]  # Start at first location in first context
+o = [0, 0, 0]  # Initial observations (no hint, neutral reward, first location)
 
-C = utils.obj_array_zeros(num_obs)
-C[1][0] = 1.0  # put a 'reward' over first observation
-C[1][1] = -2.0  # put a 'punishment' over first observation
-# this implies that C[1][2] is 'neutral'
-
-agent = Agent(A=A, B=B, C=C, control_fac_idx=[1])
-
-# initial state
-T = 5
-o = [2, 2, 0]
-s = [0, 0]
-
-# transition/observation matrices characterising the generative process
-A_gp = copy.deepcopy(A)
-B_gp = copy.deepcopy(B)
-
+# Run simulation
 for t in range(T):
+    print(f"\nTimestep {t}")
+    print(f"Observations: Hint={o[0]}, Reward={o[1]}, Location={o[2]}")
 
-    for g in range(num_modalities):
-        print(f"{t}: Observation {obs_names[g]}: {o[g]}")
-
+    # Infer states
     qx = agent.infer_states(o)
+    print(f"Beliefs: Location={qx[0].round(3)}, Context={qx[1].round(3)}")
 
-    for f in range(num_factors):
-        print(f"{t}: Beliefs about {state_names[f]}: {qx[f]}")
-
+    # Plan and act
     agent.infer_policies()
     action = agent.sample_action()
-
-    for f, s_i in enumerate(s):
-        s[f] = utils.sample(B_gp[f][:, s_i, int(action[f])])
-
-    for g, _ in enumerate(o):
-        o[g] = utils.sample(A_gp[g][:, s[0], s[1]])
     
-    print(np.argmax(s))
-    print(f"{t}: Action: {action} / State: {s}")
+    # State transition
+    for f, s_i in enumerate(s):
+        if f in control_fac_idx:  # Only location is controllable
+            s[f] = utils.sample(B[f][:, s_i, int(action[f])])
+        else:  # Context stays the same
+            s[f] = s_i
+
+    # Generate observations
+    for g in range(len(o)):
+        o[g] = utils.sample(A[g][:, s[0], s[1]])
+    
+    print(f"Action: {action[0]} / State: Location={s[0]}, Context={s[1]}")

@@ -1,0 +1,191 @@
+{
+    "modelName": "TMaze_Agent_Model",
+    "modelType": ["Dynamic", "Action", "POMDP"],
+    "description": "Agent's generative model for T-maze task",
+    "documentation": {
+        "overview": "Active inference agent model for T-maze task with epistemic foraging and context-dependent rewards",
+        "inference": {
+            "state": "VFE minimization via marginal message passing",
+            "policy": "EFE minimization combining epistemic and pragmatic value",
+            "action": "Sampling from softmax(policy posterior)"
+        },
+        "state_factors": "Two factors: (1) Location in maze, (2) Hidden reward condition",
+        "observations": "Three modalities: (1) Location (perfect), (2) Reward (context-dependent), (3) Cue (informative at CUE_LOCATION)",
+        "behavior": "Should first visit CUE_LOCATION to resolve uncertainty, then visit correct reward arm",
+        "matrices": {
+            "A": "Observation model mapping hidden states to observations",
+            "B": "Transition model defining state dynamics under actions",
+            "C": "Preference distribution over observations",
+            "D": "Initial state prior beliefs"
+        }
+    },
+    
+    "stateSpace": {
+        "factors": [
+            {
+                "name": "location",
+                "num_states": 4,
+                "controllable": true,
+                "description": "Agent's location state space",
+                "labels": ["CENTER", "RIGHT_ARM", "LEFT_ARM", "CUE_LOCATION"],
+                "initial_beliefs": [1.0, 0.0, 0.0, 0.0]
+            },
+            {
+                "name": "reward_condition",
+                "num_states": 2,
+                "controllable": false,
+                "description": "Which arm contains reward",
+                "labels": ["RIGHT", "LEFT"],
+                "initial_beliefs": [0.5, 0.5]
+            }
+        ]
+    },
+    
+    "observations": {
+        "modalities": [
+            {
+                "name": "location",
+                "num_observations": 4,
+                "description": "Current location observation",
+                "labels": ["CENTER", "RIGHT_ARM", "LEFT_ARM", "CUE_LOCATION"],
+                "factors_observed": [0],
+                "A_matrix": {
+                    "values": [
+                        [1.0, 0.0, 0.0, 0.0],
+                        [0.0, 1.0, 0.0, 0.0],
+                        [0.0, 0.0, 1.0, 0.0],
+                        [0.0, 0.0, 0.0, 1.0]
+                    ]
+                },
+                "preferences": {
+                    "type": "uniform",
+                    "value": 0.0
+                }
+            },
+            {
+                "name": "reward",
+                "num_observations": 3,
+                "description": "Reward outcome observation",
+                "labels": ["NO_REWARD", "REWARD", "LOSS"],
+                "factors_observed": [0, 1],
+                "A_matrix": {
+                    "values": [
+                        [1.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0],
+                        [0.0, 0.98, 0.02, 0.0, 0.0, 0.02, 0.98, 0.0],
+                        [0.0, 0.02, 0.98, 0.0, 0.0, 0.98, 0.02, 0.0]
+                    ]
+                },
+                "preferences": {
+                    "type": "vector",
+                    "values": [0.0, 4.0, -2.0]
+                }
+            },
+            {
+                "name": "cue",
+                "num_observations": 2,
+                "description": "Cue indicating reward location",
+                "labels": ["CUE_RIGHT", "CUE_LEFT"],
+                "factors_observed": [0, 1],
+                "A_matrix": {
+                    "values": [
+                        [0.5, 0.5, 0.5, 1.0, 0.5, 0.5, 0.5, 0.0],
+                        [0.5, 0.5, 0.5, 0.0, 0.5, 0.5, 0.5, 1.0]
+                    ]
+                },
+                "preferences": {
+                    "type": "uniform",
+                    "value": 0.0
+                }
+            }
+        ]
+    },
+    
+    "transitionModel": {
+        "location": {
+            "type": "deterministic",
+            "documentation": "Deterministic transitions between locations based on actions",
+            "values": [
+                [
+                    [1.0, 0.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ],
+                [
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0, 0.0]
+                ],
+                [
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0, 0.0]
+                ],
+                [
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0],
+                    [0.0, 0.0, 0.0, 1.0]
+                ]
+            ]
+        },
+        "reward_condition": {
+            "type": "fixed",
+            "documentation": "Fixed reward condition (doesn't change during episode)",
+            "values": [
+                [1.0, 0.0],
+                [0.0, 1.0]
+            ]
+        }
+    },
+    
+    "controlFactors": [0],
+    
+    "policies": {
+        "control_fac_idx": [0],
+        "num_policies": 4,
+        "policy_len": 1,
+        "policy_matrix": [
+            [0],
+            [1],
+            [2],
+            [3]
+        ],
+        "policy_labels": ["STAY", "GO_RIGHT", "GO_LEFT", "GO_CUE"],
+        "prior": {
+            "type": "uniform"
+        },
+        "documentation": "Single-step policies for controlling agent location"
+    },
+    
+    "parameters": {
+        "temporal": {
+            "inference_horizon": 2,
+            "action_horizon": 1,
+            "policy_len": 1
+        },
+        "precision": {
+            "gamma": 16.0,
+            "alpha": 16.0
+        },
+        "active_inference": {
+            "state_inference": "MMP",
+            "policy_inference": {
+                "states_info_gain": true,
+                "param_info_gain": false
+            },
+            "action_selection": "deterministic"
+        },
+        "documentation": {
+            "inference_horizon": "Number of timesteps for state estimation",
+            "action_horizon": "Number of timesteps for action planning",
+            "gamma": "Policy precision parameter",
+            "alpha": "Action precision parameter",
+            "state_inference": "Marginal message passing for VFE minimization",
+            "policy_inference": "EFE minimization with epistemic and pragmatic value",
+            "action_selection": "Sample from softmax(policy posterior)"
+        }
+    }
+}

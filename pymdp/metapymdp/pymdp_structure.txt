@@ -1,0 +1,129 @@
+├── pymdp/
+│   ├── Archive/
+│   │   ├── Run_GNN_Agents.py
+│   │   ├── Single_GNN_Agent.py
+│   │   ├── old_visualizations.py
+│   │   ├── zzzzzzzzzzzz.py
+│   ├── docs/
+│   │   ├── _static/
+│   │   ├── algos/
+│   │   ├── conf.py
+│   │   ├── notebooks/
+│   ├── examples/
+│   │   ├── A_matrix_demo.py
+│   │   ├── __init__.py
+│   │   ├── agent_demo.py
+│   │   ├── inference_and_learning/
+│   │   ├── learning/
+│   │   ├── tmp_dir/
+│   ├── paper/
+│   ├── pymdp/
+│   │   ├── __init__.py
+│   │   ├── agent.py
+│   │   ├── agentmaker/
+│   │   │   ├── Active_Inference_GNN.py
+│   │   │   ├── Biofirm_Execute_GNN.py
+│   │   │   ├── Biofirm_Render_GNN.py
+│   │   │   ├── Biofirm_Visualize.py
+│   │   │   ├── Run_Biofirm.py
+│   │   │   ├── biofirm_execution_utils.py
+│   │   │   ├── run_experiment.py
+│   │   │   ├── sandbox/
+│   │   │   │   ├── Biofirm/
+│   │   │   │   │   ├── render_20241106_043549/
+│   │   │   │   │   │   ├── config/
+│   │   │   │   │   │   │   ├── agent_model.json
+│   │   │   │   │   │   │   ├── environment_model.json
+│   │   │   │   │   │   │   ├── simulation_params.json
+│   │   │   │   │   │   │   ├── validation_report.json
+│   │   │   │   │   │   ├── logs/
+│   │   │   │   │   │   ├── matrices/
+│   │   │   │   │   │   │   ├── agent/
+│   │   │   │   │   │   │   ├── environment/
+│   │   │   │   │   │   │   ├── matrices.json
+│   │   │   │   │   │   ├── matrix_visualizations/
+│   │   │   │   │   │   │   ├── agent/
+│   │   │   │   │   │   │   ├── environment/
+│   │   ├── algos/
+│   │   │   ├── __init__.py
+│   │   │   ├── fpi.py
+│   │   │   ├── mmp.py
+│   │   │   ├── mmp_old.py
+│   │   ├── control.py
+│   │   ├── default_models.py
+│   │   ├── envs/
+│   │   │   ├── __init__.py
+│   │   │   ├── env.py
+│   │   │   ├── grid_worlds.py
+│   │   │   ├── tmaze.py
+│   │   │   ├── visual_foraging.py
+│   │   ├── gnn/
+│   │   │   ├── biofirm_utils.py
+│   │   │   ├── envs/
+│   │   │   │   ├── __init__.py
+│   │   │   │   ├── gnn_env.gnn
+│   │   │   │   ├── gnn_env_biofirm.gnn
+│   │   │   │   ├── gnn_env_grid_worlds.gnn
+│   │   │   │   ├── gnn_env_tmaze.gnn
+│   │   │   │   ├── gnn_env_visual_foraging.gnn
+│   │   │   ├── gnn_logging.py
+│   │   │   ├── gnn_matrix_factory.py
+│   │   │   ├── gnn_runner.py
+│   │   │   ├── gnn_schema.json
+│   │   │   ├── gnn_utils.py
+│   │   │   ├── models/
+│   │   │   │   ├── gnn_agent_biofirm.gnn
+│   │   │   │   ├── gnn_agent_pomdp.gnn
+│   │   │   │   ├── gnn_agent_tmaze.gnn
+│   │   │   │   ├── gnn_biofirm.gnn
+│   │   │   │   ├── gnn_biofirm_flatB.gnn
+│   │   │   ├── resources/
+│   │   ├── inference.py
+│   │   ├── jax/
+│   │   │   ├── __init__.py
+│   │   │   ├── agent.py
+│   │   │   ├── algos.py
+│   │   │   ├── control.py
+│   │   │   ├── inference.py
+│   │   │   ├── learning.py
+│   │   │   ├── likelihoods.py
+│   │   │   ├── maths.py
+│   │   │   ├── task.py
+│   │   │   ├── utils.py
+│   │   ├── learning.py
+│   │   ├── maths/
+│   │   │   ├── __init__.py
+│   │   │   ├── maths.py
+│   │   ├── maths.py
+│   │   ├── metapymdp/
+│   │   │   ├── MetaPyMDP_folder_structure.py
+│   │   ├── utils/
+│   │   │   ├── logging_utils.py
+│   │   │   ├── utils.py
+│   │   ├── utils.py
+│   │   ├── visualization/
+│   │   │   ├── biofirm_visualization.py
+│   │   │   ├── gnn_visualization.py
+│   │   │   ├── matrix_visualization.py
+│   ├── setup.py
+│   ├── test/
+│   │   ├── __init__.py
+│   │   ├── matlab_crossval/
+│   │   │   ├── generation/
+│   │   │   ├── output/
+│   │   ├── test_SPM_validation.py
+│   │   ├── test_agent.py
+│   │   ├── test_agent_jax.py
+│   │   ├── test_control.py
+│   │   ├── test_control_jax.py
+│   │   ├── test_demos.py
+│   │   ├── test_fpi.py
+│   │   ├── test_gnn.py
+│   │   ├── test_inference.py
+│   │   ├── test_inference_jax.py
+│   │   ├── test_learning.py
+│   │   ├── test_learning_jax.py
+│   │   ├── test_message_passing_jax.py
+│   │   ├── test_mmp.py
+│   │   ├── test_utils.py
+│   │   ├── test_wrappers.py

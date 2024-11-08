@@ -1,0 +1,123 @@
+{
+    "modelName": "Step_by_Step_POMDP",
+    "modelType": ["Dynamic", "Action", "POMDP"],
+    "description": "Basic step-by-step active inference POMDP model",
+    
+    "stateSpace": {
+        "factors": [
+            {
+                "name": "position",
+                "num_states": 3,
+                "controllable": true,
+                "description": "Agent's position in 1D space",
+                "initial_beliefs": [1.0, 0.0, 0.0]
+            }
+        ]
+    },
+    
+    "observations": {
+        "modalities": [
+            {
+                "name": "observation",
+                "num_observations": 3,
+                "factors_observed": [0],
+                "description": "Sensory observation of position"
+            }
+        ]
+    },
+    
+    "policies": {
+        "num_policies": 2,
+        "policy_len": 1,
+        "control_fac_idx": [0],
+        "description": "Left/Right movement policies"
+    },
+    
+    "matrices": {
+        "A": [
+            {
+                "modality": 0,
+                "values": [
+                    [1.0, 0.0, 0.0],
+                    [0.0, 1.0, 0.0],
+                    [0.0, 0.0, 1.0]
+                ],
+                "description": "Identity mapping for observations"
+            }
+        ],
+        "B": [
+            {
+                "factor": 0,
+                "values": [
+                    [
+                        [0.0, 1.0, 0.0],
+                        [0.0, 0.0, 1.0],
+                        [0.0, 0.0, 1.0]
+                    ],
+                    [
+                        [1.0, 0.0, 0.0],
+                        [1.0, 0.0, 0.0],
+                        [0.0, 1.0, 0.0]
+                    ]
+                ],
+                "description": "Transition dynamics for left/right movement"
+            }
+        ],
+        "C": [
+            {
+                "modality": 0,
+                "values": [0.0, 0.0, 1.0],
+                "description": "Preference for rightmost position"
+            }
+        ]
+    },
+    
+    "visualization": {
+        "nodes": {
+            "position": {
+                "label": "Position",
+                "equations": ["s_{t+1} = T(s_t, a_t)"],
+                "description": "Current position state"
+            },
+            "observation": {
+                "label": "Observation",
+                "equations": ["o_t = g(s_t)"],
+                "description": "Observed position"
+            }
+        },
+        "connections": [
+            {
+                "from": "position",
+                "to": "observation",
+                "type": "bidirectional",
+                "label": "A"
+            },
+            {
+                "from": "position",
+                "to": "position",
+                "type": "self",
+                "label": "B"
+            }
+        ],
+        "layout": {
+            "type": "hierarchical",
+            "direction": "TB"
+        }
+    },
+    
+    "markdown": {
+        "title": "# Step-by-Step Active Inference POMDP",
+        "description": [
+            "A simple step-by-step active inference POMDP model where an agent:",
+            "1. Moves left/right in a 3-position space",
+            "2. Has perfect observations of position",
+            "3. Prefers the rightmost position"
+        ],
+        "equations": [
+            "## Key Equations",
+            "- State transition: $s_{t+1} = T(s_t, a_t)$",
+            "- Observation: $o_t = g(s_t)$",
+            "- Free Energy: $F = \\mathbb{E}_{Q(s)}[\\log Q(s) - \\log P(o,s)]$"
+        ]
+    }
+}
