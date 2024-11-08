@@ -359,3 +359,35 @@ Coalition Performance Summary (coalition_3_012):
 18:25:34 |    INFO | - expected_free_energy: -0.0433
 18:25:34 |    INFO | 
 Evaluating coalition: frozenset({1, 2, 4})
+18:26:04 |    INFO | 
+Coalition Performance Summary (coalition_3_012):
+18:26:04 |    INFO | ----------------------------------------
+18:26:04 |    INFO | Agents: ['gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_.1-2-.1', 'gnn_agent_biofirm_2-2-2']
+18:26:04 |    INFO | Metrics:
+18:26:04 |    INFO | - Homeostasis: 30.50% time in target range
+18:26:04 |    INFO | - Belief Accuracy: 35.90% correct state estimation
+18:26:04 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:26:04 |    INFO | - Expected Free Energy: -0.04 (lower is better)
+18:26:04 |    INFO | Coalition frozenset({1, 2, 4}) metrics:
+18:26:04 |    INFO | - homeostasis_satisfaction: 0.3050
+18:26:04 |    INFO | - belief_accuracy: 0.3590
+18:26:04 |    INFO | - control_efficiency: 0.2590
+18:26:04 |    INFO | - expected_free_energy: -0.0376
+18:26:04 |    INFO | 
+Evaluating coalition: frozenset({1, 3, 4})
+18:26:33 |    INFO | 
+Coalition Performance Summary (coalition_3_012):
+18:26:33 |    INFO | ----------------------------------------
+18:26:33 |    INFO | Agents: ['gnn_agent_biofirm_0-6-0', 'gnn_agent_biofirm_1-3-1', 'gnn_agent_biofirm_2-2-2']
+18:26:33 |    INFO | Metrics:
+18:26:33 |    INFO | - Homeostasis: 30.40% time in target range
+18:26:33 |    INFO | - Belief Accuracy: 35.70% correct state estimation
+18:26:33 |    INFO | - Control Efficiency: 0.26 optimal actions
+18:26:33 |    INFO | - Expected Free Energy: -0.03 (lower is better)
+18:26:33 |    INFO | Coalition frozenset({1, 3, 4}) metrics:
+18:26:33 |    INFO | - homeostasis_satisfaction: 0.3040
+18:26:33 |    INFO | - belief_accuracy: 0.3570
+18:26:33 |    INFO | - control_efficiency: 0.2630
+18:26:33 |    INFO | - expected_free_energy: -0.0253
+18:26:33 |    INFO | 
+Evaluating coalition: frozenset({2, 3, 4})

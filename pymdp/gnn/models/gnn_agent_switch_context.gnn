@@ -1,1 +1,123 @@
-an agent that can shift modalities based on the energy of the environment
+{
+    "modelName": "context_switching_agent",
+    "modelType": ["Agent", "Adaptive"],
+    
+    "stateSpace": {
+        "factors": ["ContextState", "EnergyState"],
+        "sizes": [3, 5],
+        "labels": [
+            ["VISUAL", "AUDIO", "TACTILE"],
+            ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+        ]
+    },
+    
+    "observations": {
+        "modalities": ["VisualObs", "AudioObs", "TactileObs", "EnergyObs"],
+        "sizes": [3, 3, 3, 5],
+        "labels": [
+            ["WEAK", "CLEAR", "STRONG"],
+            ["QUIET", "NORMAL", "LOUD"],
+            ["SOFT", "MEDIUM", "INTENSE"],
+            ["VERY_LOW", "LOW", "MEDIUM", "HIGH", "VERY_HIGH"]
+        ],
+        "A_matrix": {
+            "type": "custom",
+            "matrices": {
+                "VisualObs": {
+                    "factors": ["ContextState", "EnergyState"],
+                    "matrix": [
+                        [[0.9, 0.7, 0.5, 0.3, 0.1], [0.2, 0.2, 0.2, 0.2, 0.2], [0.1, 0.1, 0.1, 0.1, 0.1]],
+                        [[0.1, 0.2, 0.4, 0.5, 0.6], [0.3, 0.3, 0.3, 0.3, 0.3], [0.2, 0.2, 0.2, 0.2, 0.2]],
+                        [[0.0, 0.1, 0.1, 0.2, 0.3], [0.5, 0.5, 0.5, 0.5, 0.5], [0.7, 0.7, 0.7, 0.7, 0.7]]
+                    ]
+                },
+                "AudioObs": {
+                    "factors": ["ContextState", "EnergyState"],
+                    "matrix": [
+                        [[0.2, 0.2, 0.2, 0.2, 0.2], [0.9, 0.7, 0.5, 0.3, 0.1], [0.1, 0.1, 0.1, 0.1, 0.1]],
+                        [[0.3, 0.3, 0.3, 0.3, 0.3], [0.1, 0.2, 0.4, 0.5, 0.6], [0.2, 0.2, 0.2, 0.2, 0.2]],
+                        [[0.5, 0.5, 0.5, 0.5, 0.5], [0.0, 0.1, 0.1, 0.2, 0.3], [0.7, 0.7, 0.7, 0.7, 0.7]]
+                    ]
+                },
+                "TactileObs": {
+                    "factors": ["ContextState", "EnergyState"],
+                    "matrix": [
+                        [[0.1, 0.1, 0.1, 0.1, 0.1], [0.2, 0.2, 0.2, 0.2, 0.2], [0.9, 0.7, 0.5, 0.3, 0.1]],
+                        [[0.2, 0.2, 0.2, 0.2, 0.2], [0.3, 0.3, 0.3, 0.3, 0.3], [0.1, 0.2, 0.4, 0.5, 0.6]],
+                        [[0.7, 0.7, 0.7, 0.7, 0.7], [0.5, 0.5, 0.5, 0.5, 0.5], [0.0, 0.1, 0.1, 0.2, 0.3]]
+                    ]
+                },
+                "EnergyObs": {
+                    "factors": ["ContextState", "EnergyState"],
+                    "matrix": [
+                        [[0.9, 0.0, 0.0, 0.0, 0.0], [0.9, 0.0, 0.0, 0.0, 0.0], [0.9, 0.0, 0.0, 0.0, 0.0]],
+                        [[0.1, 0.9, 0.0, 0.0, 0.0], [0.1, 0.9, 0.0, 0.0, 0.0], [0.1, 0.9, 0.0, 0.0, 0.0]],
+                        [[0.0, 0.1, 0.9, 0.0, 0.0], [0.0, 0.1, 0.9, 0.0, 0.0], [0.0, 0.1, 0.9, 0.0, 0.0]],
+                        [[0.0, 0.0, 0.1, 0.9, 0.0], [0.0, 0.0, 0.1, 0.9, 0.0], [0.0, 0.0, 0.1, 0.9, 0.0]],
+                        [[0.0, 0.0, 0.0, 0.1, 0.9], [0.0, 0.0, 0.0, 0.1, 0.9], [0.0, 0.0, 0.0, 0.1, 0.9]]
+                    ]
+                }
+            }
+        }
+    },
+    
+    "transitionModel": {
+        "ContextState": {
+            "controlled": true,
+            "control_factor_idx": 0,
+            "num_controls": 3,
+            "state_labels": ["VISUAL", "AUDIO", "TACTILE"],
+            "action_labels": ["SWITCH_TO_VISUAL", "SWITCH_TO_AUDIO", "SWITCH_TO_TACTILE"],
+            "transitions": {
+                "SWITCH_TO_VISUAL": [
+                    [0.9, 0.05, 0.05],
+                    [0.8, 0.1, 0.1],
+                    [0.8, 0.1, 0.1]
+                ],
+                "SWITCH_TO_AUDIO": [
+                    [0.1, 0.8, 0.1],
+                    [0.05, 0.9, 0.05],
+                    [0.1, 0.8, 0.1]
+                ],
+                "SWITCH_TO_TACTILE": [
+                    [0.1, 0.1, 0.8],
+                    [0.1, 0.1, 0.8],
+                    [0.05, 0.05, 0.9]
+                ]
+            }
+        },
+        "EnergyState": {
+            "controlled": false,
+            "transitions": [
+                [0.8, 0.2, 0.0, 0.0, 0.0],
+                [0.1, 0.7, 0.2, 0.0, 0.0],
+                [0.0, 0.1, 0.7, 0.2, 0.0],
+                [0.0, 0.0, 0.1, 0.7, 0.2],
+                [0.0, 0.0, 0.0, 0.2, 0.8]
+            ]
+        }
+    },
+    
+    "policies": {
+        "controlFactors": [0],
+        "numControls": [3],
+        "policyLen": 1,
+        "control_fac_idx": [0],
+        "labels": [["SWITCH_TO_VISUAL", "SWITCH_TO_AUDIO", "SWITCH_TO_TACTILE"]]
+    },
+    
+    "preferences": {
+        "modalities": ["VisualObs", "AudioObs", "TactileObs", "EnergyObs"],
+        "values": [
+            [[4.0, 2.0, 0.0], [2.0, 4.0, 2.0], [0.0, 2.0, 4.0], [0.0, 0.0, 0.0, 0.0, 0.0]],
+            [[0.0, 2.0, 4.0], [4.0, 2.0, 0.0], [2.0, 4.0, 2.0], [0.0, 0.0, 0.0, 0.0, 0.0]],
+            [[2.0, 4.0, 2.0], [0.0, 2.0, 4.0], [4.0, 2.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]],
+            [[0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0], [0.0, 0.0, 0.0, 0.0, 0.0]]
+        ]
+    },
+    
+    "initialBeliefs": {
+        "ContextState": [0.33, 0.33, 0.34],
+        "EnergyState": [0.2, 0.2, 0.2, 0.2, 0.2]
+    }
+}

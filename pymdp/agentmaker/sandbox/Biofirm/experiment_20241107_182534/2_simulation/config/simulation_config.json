@@ -1,0 +1,13 @@
+{
+  "matrices_dir": "/home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_182534/1_render/matrices",
+  "output_dir": "/home/trim/Documents/GitHub/pymdp/pymdp/agentmaker/sandbox/Biofirm/experiment_20241107_182534/2_simulation",
+  "timesteps": 1000,
+  "parameters": {
+    "ecological_noise": 0.1,
+    "controllability": 0.8,
+    "policy_precision": 16.0,
+    "use_states_info_gain": true,
+    "inference_horizon": 1,
+    "action_selection": "deterministic"
+  }
+}
