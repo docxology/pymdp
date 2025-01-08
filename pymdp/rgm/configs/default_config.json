@@ -1,0 +1,85 @@
+{
+    "model": {
+        "hierarchy": {
+            "n_levels": 4,
+            "dimensions": {
+                "level0": {
+                    "state": 1024,
+                    "factor": 256
+                },
+                "level1": {
+                    "state": 256,
+                    "factor": 64
+                },
+                "level2": {
+                    "state": 64,
+                    "factor": 16
+                },
+                "level3": {
+                    "state": 16,
+                    "factor": 10
+                }
+            }
+        },
+        "matrix_shapes": {
+            "A0": [1024, 256],
+            "B0": [256, 256],
+            "D0": [256],
+            "A1": [256, 64],
+            "B1": [64, 64],
+            "D1": [64],
+            "A2": [64, 16],
+            "B2": [16, 16],
+            "D2": [16],
+            "A3": [16, 10],
+            "B3": [10, 10],
+            "D3": [10],
+            "E": [10]
+        }
+    },
+    "training": {
+        "n_epochs": 100,
+        "batch_size": 64,
+        "eval_frequency": 5,
+        "checkpoint_frequency": 10
+    },
+    "learning": {
+        "precision_init": 1.0,
+        "learning_rate": 0.01,
+        "active_learning": {
+            "enabled": true,
+            "beta": 0.1,
+            "max_precision": 100.0
+        },
+        "message_passing": {
+            "max_iterations": 10,
+            "convergence_threshold": 1e-6,
+            "damping_factor": 0.9
+        }
+    },
+    "data": {
+        "mnist": {
+            "training_samples": 10000,
+            "test_samples": 1000,
+            "batch_size": 64,
+            "augmentation": {
+                "enabled": true,
+                "rotation_range": 10,
+                "width_shift": 0.1,
+                "height_shift": 0.1
+            },
+            "preprocessing": {
+                "normalize": true,
+                "center": true,
+                "standardize": true
+            },
+            "image_format": {
+                "input_size": [32, 32],
+                "output_size": [32, 32],
+                "channels": 1,
+                "dtype": "float32",
+                "range": [0, 1]
+            }
+        }
+    }
+} 

@@ -1,0 +1,155 @@
+{
+    "hierarchy": {
+        "level_structure": {
+            "level0": {
+                "type": "input",
+                "dimensions": {
+                    "state": 1024,
+                    "factor": 256
+                },
+                "processing": {
+                    "block_size": [8, 8],
+                    "stride": [4, 4],
+                    "pooling": "max",
+                    "activation": "relu"
+                },
+                "matrices": {
+                    "A": {
+                        "type": "state_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "B": {
+                        "type": "factor_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "D": {
+                        "type": "factor_prior",
+                        "initialization": "uniform",
+                        "constraints": ["normalized", "non_negative"]
+                    }
+                }
+            },
+            "level1": {
+                "type": "hidden",
+                "dimensions": {
+                    "state": 256,
+                    "factor": 64
+                },
+                "processing": {
+                    "block_size": [4, 4],
+                    "stride": [2, 2],
+                    "pooling": "max",
+                    "activation": "relu"
+                },
+                "matrices": {
+                    "A": {
+                        "type": "state_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "B": {
+                        "type": "factor_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "D": {
+                        "type": "factor_prior",
+                        "initialization": "uniform",
+                        "constraints": ["normalized", "non_negative"]
+                    }
+                }
+            },
+            "level2": {
+                "type": "hidden",
+                "dimensions": {
+                    "state": 64,
+                    "factor": 16
+                },
+                "processing": {
+                    "block_size": [2, 2],
+                    "stride": [2, 2],
+                    "pooling": "average",
+                    "activation": "relu"
+                },
+                "matrices": {
+                    "A": {
+                        "type": "state_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "B": {
+                        "type": "factor_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "D": {
+                        "type": "factor_prior",
+                        "initialization": "uniform",
+                        "constraints": ["normalized", "non_negative"]
+                    }
+                }
+            },
+            "level3": {
+                "type": "output",
+                "dimensions": {
+                    "state": 16,
+                    "factor": 10
+                },
+                "processing": {
+                    "activation": "softmax"
+                },
+                "matrices": {
+                    "A": {
+                        "type": "state_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "B": {
+                        "type": "factor_transition",
+                        "initialization": "random",
+                        "constraints": ["column_normalized", "non_negative"]
+                    },
+                    "D": {
+                        "type": "factor_prior",
+                        "initialization": "uniform",
+                        "constraints": ["normalized", "non_negative"]
+                    },
+                    "E": {
+                        "type": "output_mapping",
+                        "initialization": "uniform",
+                        "constraints": ["normalized", "non_negative"]
+                    }
+                }
+            }
+        },
+        "connections": {
+            "bottom_up": {
+                "enabled": true,
+                "type": "dense"
+            },
+            "top_down": {
+                "enabled": true,
+                "type": "dense"
+            },
+            "lateral": {
+                "enabled": true,
+                "type": "sparse",
+                "sparsity": 0.9
+            }
+        },
+        "learning": {
+            "precision": {
+                "initial": 1.0,
+                "learning_rate": 0.1,
+                "max_value": 100.0
+            },
+            "weights": {
+                "learning_rate": 0.01,
+                "momentum": 0.9,
+                "weight_decay": 0.0001
+            }
+        }
+    }
+} 

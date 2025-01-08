@@ -1,0 +1,39 @@
+{
+    "modelType": "RGM",
+    "blockProcessing": {
+        "svd": {
+            "n_components": 32,
+            "quantization_levels": 7,
+            "center_on_zero": true
+        },
+        "weighting": {
+            "type": "radial_basis",
+            "radius": 4,
+            "center_weighted": true
+        },
+        "normalization": {
+            "type": "block_wise",
+            "method": "standardize",
+            "epsilon": 1e-8
+        }
+    },
+    "dimensions": {
+        "block_size": [4, 4],
+        "overlap": true,
+        "stride": [2, 2]
+    },
+    "initialization": {
+        "method": "truncated_normal",
+        "mean": 0.0,
+        "std": 0.02,
+        "min_val": -0.1,
+        "max_val": 0.1
+    },
+    "_comments": {
+        "svd": "SVD parameters for feature extraction",
+        "weighting": "Block weighting configuration",
+        "normalization": "Block normalization settings",
+        "dimensions": "Block spatial parameters",
+        "initialization": "Weight initialization settings"
+    }
+} 

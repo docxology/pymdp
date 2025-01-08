@@ -1,0 +1,68 @@
+{
+    "modelType": "RGM",
+    "messagePassing": {
+        "schedule": {
+            "type": "hierarchical",
+            "direction": "bidirectional",
+            "order": [
+                "bottom_up_pass",
+                "top_down_pass"
+            ],
+            "max_iterations": 50,
+            "convergence_tolerance": 1e-6
+        },
+        "precision": {
+            "scaling": {
+                "level0": 1.0,
+                "level1": 0.5,
+                "level2": 0.25,
+                "level3": 0.125
+            },
+            "temperature": 1.0
+        },
+        "updates": {
+            "bottom_up": {
+                "type": "likelihood_weighted",
+                "normalization": "column_wise"
+            },
+            "top_down": {
+                "type": "prediction_error",
+                "normalization": "belief_weighted"
+            }
+        },
+        "convergence": {
+            "metric": "kl_divergence",
+            "window_size": 5,
+            "threshold": 1e-6,
+            "min_iterations": 10,
+            "max_iterations": 50
+        }
+    },
+    "dimensions": {
+        "state_factors": [
+            "pixels",
+            "blocks",
+            "features",
+            "digits"
+        ],
+        "message_shapes": {
+            "bottom_up": {
+                "level0_to_1": [1024, 256],
+                "level1_to_2": [256, 64],
+                "level2_to_3": [64, 10]
+            },
+            "top_down": {
+                "level3_to_2": [10, 64],
+                "level2_to_1": [64, 256],
+                "level1_to_0": [256, 1024]
+            }
+        }
+    },
+    "_comments": {
+        "schedule": "Defines message passing sequence and control",
+        "precision": "Controls uncertainty weighting at each level",
+        "updates": "Specifies message computation methods",
+        "convergence": "Defines when message passing should stop",
+        "dimensions": "Specifies shapes for message tensors"
+    }
+} 

@@ -1,0 +1,207 @@
+{
+    "modelType": "RGM",
+    "data": {
+        "type": "mnist",
+        "input": {
+            "size": [32, 32],
+            "channels": 1,
+            "preprocessing": {
+                "normalize": true,
+                "center": true,
+                "standardize": true,
+                "pad_mode": "reflect",
+                "resize_mode": "bilinear"
+            }
+        },
+        "output": {
+            "classes": 10,
+            "encoding": "one_hot",
+            "confidence_threshold": 0.9
+        },
+        "augmentation": {
+            "enabled": true,
+            "rotation_range": 10,
+            "width_shift": 0.1,
+            "height_shift": 0.1,
+            "zoom_range": 0.1,
+            "fill_mode": "reflect"
+        },
+        "batching": {
+            "batch_size": 64,
+            "shuffle": true,
+            "num_workers": 4,
+            "pin_memory": true,
+            "drop_last": false
+        }
+    },
+    "hierarchy": {
+        "level0": {
+            "type": "image_processing",
+            "dimensions": {
+                "state": 1024,
+                "factor": 256
+            },
+            "processing": {
+                "receptive_field": [8, 8],
+                "stride": [4, 4],
+                "pooling": {
+                    "type": "max",
+                    "size": [2, 2],
+                    "stride": [2, 2]
+                },
+                "activation": {
+                    "type": "relu",
+                    "inplace": true,
+                    "negative_slope": 0.01
+                },
+                "normalization": {
+                    "type": "batch_norm",
+                    "momentum": 0.1,
+                    "eps": 1e-5
+                }
+            }
+        },
+        "level1": {
+            "type": "feature_extraction",
+            "dimensions": {
+                "state": 256,
+                "factor": 64
+            },
+            "processing": {
+                "receptive_field": [4, 4],
+                "stride": [2, 2],
+                "pooling": {
+                    "type": "max",
+                    "size": [2, 2],
+                    "stride": [2, 2]
+                },
+                "activation": {
+                    "type": "relu",
+                    "inplace": true,
+                    "negative_slope": 0.01
+                },
+                "normalization": {
+                    "type": "batch_norm",
+                    "momentum": 0.1,
+                    "eps": 1e-5
+                }
+            }
+        },
+        "level2": {
+            "type": "feature_integration",
+            "dimensions": {
+                "state": 64,
+                "factor": 16
+            },
+            "processing": {
+                "receptive_field": [2, 2],
+                "stride": [2, 2],
+                "pooling": {
+                    "type": "average",
+                    "size": [2, 2],
+                    "stride": [2, 2]
+                },
+                "activation": {
+                    "type": "relu",
+                    "inplace": true,
+                    "negative_slope": 0.01
+                },
+                "normalization": {
+                    "type": "layer_norm",
+                    "eps": 1e-5
+                }
+            }
+        },
+        "level3": {
+            "type": "classification",
+            "dimensions": {
+                "state": 16,
+                "factor": 10
+            },
+            "processing": {
+                "activation": {
+                    "type": "softmax",
+                    "dim": -1,
+                    "temperature": 1.0
+                },
+                "normalization": {
+                    "type": "layer_norm",
+                    "eps": 1e-5
+                }
+            }
+        }
+    },
+    "learning": {
+        "active": {
+            "beta": 0.2,
+            "max_precision": 50.0,
+            "precision_growth": "exponential",
+            "precision_growth_rate": 1.1,
+            "min_precision": 0.1,
+            "confidence_threshold": 0.9,
+            "exploration_factor": 0.1
+        },
+        "message_passing": {
+            "max_iterations": 5,
+            "convergence_threshold": 1e-5,
+            "damping_factor": 0.9,
+            "min_iterations": 3,
+            "scheduling": {
+                "type": "adaptive",
+                "patience": 3,
+                "factor": 0.5,
+                "min_iterations": 2
+            }
+        },
+        "regularization": {
+            "l1_weight": 0.0005,
+            "l2_weight": 0.0005,
+            "dropout_rate": 0.2,
+            "gradient_clipping": 1.0,
+            "belief_regularization": 0.01
+        }
+    },
+    "visualization": {
+        "enabled": true,
+        "feature_maps": {
+            "enabled": true,
+            "n_samples": 10,
+            "colormap": "viridis"
+        },
+        "receptive_fields": {
+            "enabled": true,
+            "overlay": true,
+            "alpha": 0.5
+        },
+        "belief_states": {
+            "enabled": true,
+            "history_length": 100
+        },
+        "learning_curves": {
+            "enabled": true,
+            "metrics": [
+                "accuracy",
+                "loss",
+                "precision",
+                "elbo"
+            ],
+            "smoothing": 0.9
+        }
+    },
+    "validation": {
+        "frequency": 100,
+        "metrics": [
+            "accuracy",
+            "confusion_matrix",
+            "precision",
+            "recall",
+            "f1_score"
+        ],
+        "early_stopping": {
+            "enabled": true,
+            "patience": 5,
+            "min_delta": 0.001,
+            "metric": "accuracy"
+        }
+    }
+} 

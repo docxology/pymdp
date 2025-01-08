@@ -1,4 +1,3 @@
-
 <p align='center'>
   <a href='https://github.com/infer-actively/pymdp'>
     <img src='.github/pymdp_logo_2-removebg.png' />
@@ -160,3 +159,37 @@ For a more in-depth, tutorial-style introduction to the package and a mathematic
 - Aswin Paul [@aswinpaul](https://github.com/aswinpaul)
 - Tim Verbelen [@tverbele](https://github.com/tverbele)
 - Dimitrije Markovic [@dimarkov](https://github.com/dimarkov)
+
+## PyMDP: Active Inference Framework
+
+### Installation
+
+```bash
+# Clone repository
+git clone https://github.com/your-username/pymdp.git
+cd pymdp
+
+# Install package
+./install.sh
+
+# Or manually:
+pip install -e .
+pip install -e .[dev]
+```
+
+### Running RGM MNIST Example
+
+```bash
+cd pymdp/rgm
+
+# Download and preprocess MNIST data
+python mnist_download.py
+
+# Run RGM pipeline
+python rgm_render.py
+python rgm_execute.py
+python rgm_analyze.py
+
+# Or run complete pipeline
+python Run_RGM.py
+```

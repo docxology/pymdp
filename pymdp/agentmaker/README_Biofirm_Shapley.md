@@ -5,7 +5,7 @@ The Shapley value analysis module (`Biofirm_Shapley.py`) provides a comprehensiv
 
 ## Core Concepts
 
-### Agent Types
+### Agent Types (SPECULATIVE REALISM)
 1. **Base Agent**
    - Standard homeostatic preferences: `[0.0, 4.0, 0.0]`
    - Balanced performance characteristics

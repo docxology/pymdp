@@ -1,0 +1,316 @@
+{
+    "$schema": "http://json-schema.org/draft-07/schema#",
+    "title": "RGM Configuration Schema",
+    "description": "Schema for RGM configuration validation",
+    "type": "object",
+    "required": ["model", "learning", "data", "validation"],
+    "properties": {
+        "model": {
+            "type": "object",
+            "required": ["hierarchy", "matrices"],
+            "properties": {
+                "hierarchy": {
+                    "type": "object",
+                    "required": ["n_levels", "dimensions"],
+                    "properties": {
+                        "n_levels": {
+                            "type": "integer",
+                            "minimum": 1
+                        },
+                        "dimensions": {
+                            "type": "object",
+                            "patternProperties": {
+                                "^level[0-9]+$": {
+                                    "type": "object",
+                                    "required": ["state", "factor"],
+                                    "properties": {
+                                        "state": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        },
+                                        "factor": {
+                                            "type": "integer",
+                                            "minimum": 1
+                                        },
+                                        "description": {
+                                            "type": "object",
+                                            "properties": {
+                                                "state_dim": {"type": "string"},
+                                                "factor_dim": {"type": "string"}
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                },
+                "matrices": {
+                    "type": "object",
+                    "required": ["A", "B", "D", "E"],
+                    "properties": {
+                        "A": {
+                            "type": "object",
+                            "required": ["type", "initialization", "constraints", "normalization"],
+                            "properties": {
+                                "type": {"type": "string"},
+                                "initialization": {
+                                    "type": "object",
+                                    "required": ["method", "distribution"],
+                                    "properties": {
+                                        "method": {
+                                            "type": "string",
+                                            "enum": ["random", "uniform", "zeros", "ones"]
+                                        },
+                                        "distribution": {
+                                            "type": "string",
+                                            "enum": ["truncated_normal", "uniform"]
+                                        },
+                                        "mean": {"type": "number"},
+                                        "std": {"type": "number"},
+                                        "min_val": {"type": "number"},
+                                        "max_val": {"type": "number"}
+                                    }
+                                },
+                                "constraints": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": [
+                                            "column_normalized",
+                                            "non_negative",
+                                            "symmetric",
+                                            "normalized"
+                                        ]
+                                    }
+                                },
+                                "normalization": {
+                                    "type": "object",
+                                    "required": ["type", "epsilon", "max_condition_number"],
+                                    "properties": {
+                                        "type": {
+                                            "type": "string",
+                                            "enum": ["svd"]
+                                        },
+                                        "epsilon": {"type": "number"},
+                                        "max_condition_number": {"type": "number"}
+                                    }
+                                }
+                            }
+                        },
+                        "B": {"$ref": "#/properties/model/properties/matrices/properties/A"},
+                        "D": {
+                            "type": "object",
+                            "required": ["type", "initialization", "constraints"],
+                            "properties": {
+                                "type": {"type": "string"},
+                                "initialization": {
+                                    "type": "object",
+                                    "required": ["method", "epsilon"],
+                                    "properties": {
+                                        "method": {
+                                            "type": "string",
+                                            "enum": ["uniform"]
+                                        },
+                                        "epsilon": {"type": "number"}
+                                    }
+                                },
+                                "constraints": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string",
+                                        "enum": ["normalized", "non_negative"]
+                                    }
+                                }
+                            }
+                        },
+                        "E": {"$ref": "#/properties/model/properties/matrices/properties/D"}
+                    }
+                }
+            }
+        },
+        "learning": {
+            "type": "object",
+            "required": ["active", "message_passing", "regularization"],
+            "properties": {
+                "active": {
+                    "type": "object",
+                    "required": [
+                        "enabled",
+                        "beta",
+                        "max_precision",
+                        "precision_growth",
+                        "precision_growth_rate",
+                        "min_precision"
+                    ],
+                    "properties": {
+                        "enabled": {"type": "boolean"},
+                        "beta": {"type": "number"},
+                        "max_precision": {"type": "number"},
+                        "precision_growth": {
+                            "type": "string",
+                            "enum": ["linear", "exponential"]
+                        },
+                        "precision_growth_rate": {"type": "number"},
+                        "min_precision": {"type": "number"}
+                    }
+                },
+                "message_passing": {
+                    "type": "object",
+                    "required": [
+                        "max_iterations",
+                        "convergence_threshold",
+                        "damping_factor",
+                        "min_iterations"
+                    ],
+                    "properties": {
+                        "max_iterations": {"type": "integer"},
+                        "convergence_threshold": {"type": "number"},
+                        "damping_factor": {"type": "number"},
+                        "min_iterations": {"type": "integer"}
+                    }
+                },
+                "regularization": {
+                    "type": "object",
+                    "required": [
+                        "l1_weight",
+                        "l2_weight",
+                        "dropout_rate",
+                        "gradient_clipping",
+                        "belief_regularization"
+                    ],
+                    "properties": {
+                        "l1_weight": {"type": "number"},
+                        "l2_weight": {"type": "number"},
+                        "dropout_rate": {"type": "number"},
+                        "gradient_clipping": {"type": "number"},
+                        "belief_regularization": {"type": "number"}
+                    }
+                }
+            }
+        },
+        "data": {
+            "type": "object",
+            "required": ["type", "input", "output", "augmentation", "batching"],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["mnist"]
+                },
+                "input": {
+                    "type": "object",
+                    "required": ["size", "channels", "preprocessing"],
+                    "properties": {
+                        "size": {
+                            "type": "array",
+                            "items": {"type": "integer"},
+                            "minItems": 2,
+                            "maxItems": 2
+                        },
+                        "channels": {"type": "integer"},
+                        "preprocessing": {
+                            "type": "object",
+                            "required": [
+                                "normalize",
+                                "center",
+                                "standardize",
+                                "pad_mode",
+                                "resize_mode"
+                            ],
+                            "properties": {
+                                "normalize": {"type": "boolean"},
+                                "center": {"type": "boolean"},
+                                "standardize": {"type": "boolean"},
+                                "pad_mode": {"type": "string"},
+                                "resize_mode": {"type": "string"}
+                            }
+                        }
+                    }
+                },
+                "output": {
+                    "type": "object",
+                    "required": ["classes", "encoding", "confidence_threshold"],
+                    "properties": {
+                        "classes": {"type": "integer"},
+                        "encoding": {
+                            "type": "string",
+                            "enum": ["one_hot"]
+                        },
+                        "confidence_threshold": {"type": "number"}
+                    }
+                },
+                "augmentation": {
+                    "type": "object",
+                    "required": [
+                        "enabled",
+                        "rotation_range",
+                        "width_shift",
+                        "height_shift",
+                        "zoom_range",
+                        "fill_mode"
+                    ],
+                    "properties": {
+                        "enabled": {"type": "boolean"},
+                        "rotation_range": {"type": "number"},
+                        "width_shift": {"type": "number"},
+                        "height_shift": {"type": "number"},
+                        "zoom_range": {"type": "number"},
+                        "fill_mode": {"type": "string"}
+                    }
+                },
+                "batching": {
+                    "type": "object",
+                    "required": [
+                        "batch_size",
+                        "shuffle",
+                        "num_workers",
+                        "pin_memory",
+                        "drop_last"
+                    ],
+                    "properties": {
+                        "batch_size": {"type": "integer"},
+                        "shuffle": {"type": "boolean"},
+                        "num_workers": {"type": "integer"},
+                        "pin_memory": {"type": "boolean"},
+                        "drop_last": {"type": "boolean"}
+                    }
+                }
+            }
+        },
+        "validation": {
+            "type": "object",
+            "required": ["frequency", "metrics", "early_stopping"],
+            "properties": {
+                "frequency": {"type": "integer"},
+                "metrics": {
+                    "type": "array",
+                    "items": {
+                        "type": "string",
+                        "enum": [
+                            "accuracy",
+                            "confusion_matrix",
+                            "precision",
+                            "recall",
+                            "f1_score"
+                        ]
+                    }
+                },
+                "early_stopping": {
+                    "type": "object",
+                    "required": [
+                        "enabled",
+                        "patience",
+                        "min_delta",
+                        "metric"
+                    ],
+                    "properties": {
+                        "enabled": {"type": "boolean"},
+                        "patience": {"type": "integer"},
+                        "min_delta": {"type": "number"},
+                        "metric": {"type": "string"}
+                    }
+                }
+            }
+        }
+    }
+} 

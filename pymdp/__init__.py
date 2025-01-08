@@ -1,38 +1,33 @@
 """
-PyMDP: Active Inference Framework
-===============================
+PyMDP Package
+============
 
-A Python implementation of Active Inference for Markov Decision Processes.
-
-Core Modules
------------
-gnn : Generalized Neural Notation
-    Model definition and matrix generation
-    
-agentmaker : Experiment Framework
-    Experiment orchestration and execution
-    
-visualization : Visualization Tools
-    Matrix and results visualization
+A Python implementation of Active Inference and Message Passing.
 """
 
 from pathlib import Path
-import logging
 
-# Configure root logger
-logging.basicConfig(
-    level=logging.INFO,
-    format='%(asctime)s | %(levelname)7s | %(message)s',
-    datefmt='%H:%M:%S'
+# Package metadata
+__version__ = '0.1.0'
+__author__ = 'PyMDP Contributors'
+
+# Package paths
+PACKAGE_ROOT = Path(__file__).parent.absolute()
+
+# Import core components
+from .rgm import (
+    RGMRenderer,
+    RGMExecutor,
+    RGMAnalyzer,
+    RGMExperimentUtils,
+    RGMPipelineManager
 )
 
-# Define package root for resource loading
-PACKAGE_ROOT = Path(__file__).parent
-
-# Import key modules
-from . import gnn
-from . import agentmaker
-from . import visualization
-
-__version__ = "0.1.0"
-__all__ = ['gnn', 'agentmaker', 'visualization']
+__all__ = [
+    'RGMRenderer',
+    'RGMExecutor', 
+    'RGMAnalyzer',
+    'RGMExperimentUtils',
+    'RGMPipelineManager',
+    'PACKAGE_ROOT'
+]
