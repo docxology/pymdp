@@ -1,223 +1,138 @@
 """
-RGM GNN Matrix Factory
-=====================
+RGM Matrix Factory
+===============
 
-Generates matrices from GNN specifications.
+Factory class for creating and validating RGM matrices.
+Handles initialization and constraints for recognition (R), generative (G), and lateral (L) matrices.
 """
 
-import numpy as np
-from typing import Dict, List, Tuple, Optional
+import torch
+from typing import Dict, List, Tuple
 from pathlib import Path
+import logging
 
-from .rgm_experiment_utils import RGMExperimentUtils
-from .rgm_matrix_validator import RGMMatrixValidator
-from .rgm_svd_utils import RGMSVDUtils
-from .rgm_matrix_normalizer import RGMMatrixNormalizer
+from .rgm_logging import RGMLogging
 
-class RGMGNNMatrixFactory:
-    """Generates matrices from GNN specifications"""
+class RGMMatrixFactory:
+    """Factory for creating RGM matrices with proper initialization and constraints."""
     
-    def __init__(self):
-        """Initialize GNN matrix factory"""
-        self.logger = RGMExperimentUtils.get_logger('gnn_matrix_factory')
-        self.validator = RGMMatrixValidator()
-        self.svd = RGMSVDUtils()
-        self.normalizer = RGMMatrixNormalizer()
+    MATRIX_PREFIXES = {
+        'recognition': 'R',
+        'generative': 'G',
+        'lateral': 'L'
+    }
+    
+    def __init__(self, device: torch.device = None):
+        """Initialize matrix factory."""
+        self.logger = RGMLogging.get_logger("rgm.matrix_factory")
+        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-    def generate_matrices(self, gnn_spec: Dict) -> Dict[str, np.ndarray]:
+    def create_matrices(self, specs: Dict) -> Dict[str, torch.Tensor]:
         """
-        Generate all matrices from GNN specification.
+        Create matrices from specifications.
         
         Args:
-            gnn_spec: GNN specification dictionary
+            specs: Dictionary containing matrix specifications
             
         Returns:
-            Dictionary of generated matrices
+            Dictionary of initialized matrices
         """
-        try:
-            self.logger.info("Generating matrices from GNN spec...")
-            
-            # Get hierarchy configuration
-            hierarchy = gnn_spec['hierarchy']
-            n_levels = hierarchy['n_levels']
-            
-            # Initialize matrices dictionary
-            matrices = {}
-            
-            # Generate matrices for each level
-            for level in range(n_levels):
-                level_matrices = self._generate_level_matrices(
-                    level,
-                    hierarchy['dimensions'][f'level{level}'],
-                    gnn_spec['hierarchy']['matrices']
-                )
-                matrices.update(level_matrices)
-                
-            # Validate matrices
-            is_valid, messages = self.validator.validate_matrices(matrices, gnn_spec)
-            if not is_valid:
-                raise ValueError(f"Invalid matrices: {'; '.join(messages)}")
-                
-            # Normalize matrices
-            matrices = self.normalizer.normalize_matrices(matrices)
-            
-            return matrices
-            
-        except Exception as e:
-            self.logger.error(f"Error generating matrices: {str(e)}")
-            raise
-            
-    def _generate_level_matrices(self, level: int, dims: Dict, matrix_specs: Dict) -> Dict[str, np.ndarray]:
-        """Generate matrices for a single level"""
-        try:
-            matrices = {}
-            
-            # Get dimensions
-            state_dim = dims['state']
-            factor_dim = dims['factor']
-            
-            # Generate A matrix (state transitions)
-            A = self._initialize_matrix(
-                (state_dim, factor_dim),
-                matrix_specs['A'],
-                f'A{level}'
-            )
-            matrices[f'A{level}'] = A
-            
-            # Generate B matrix (factor transitions)
-            B = self._initialize_matrix(
-                (factor_dim, factor_dim),
-                matrix_specs['B'],
-                f'B{level}'
-            )
-            matrices[f'B{level}'] = B
-            
-            # Generate D matrix (factor priors)
-            D = self._initialize_matrix(
-                (factor_dim,),
-                matrix_specs['D'],
-                f'D{level}'
-            )
-            matrices[f'D{level}'] = D
-            
-            # Generate E matrix for top level only
-            if level == 0:
-                E = self._initialize_matrix(
-                    (state_dim,),
-                    matrix_specs['E'],
-                    'E'
-                )
-                matrices['E'] = E
-                
-            return matrices
-            
-        except Exception as e:
-            self.logger.error(f"Error generating level {level} matrices: {str(e)}")
-            raise
-            
-    def _initialize_matrix(self, shape: Tuple[int, ...], spec: Dict, name: str) -> np.ndarray:
-        """Initialize matrix according to specification"""
-        try:
-            init_config = spec['initialization']
-            method = init_config['method']
-            
-            if method == 'random':
-                matrix = self._initialize_random(shape, init_config)
-            elif method == 'uniform':
-                matrix = self._initialize_uniform(shape, init_config)
-            elif method == 'zeros':
-                matrix = np.zeros(shape)
-            elif method == 'ones':
-                matrix = np.ones(shape)
-            else:
-                raise ValueError(f"Unknown initialization method: {method}")
-                
-            # Apply constraints
-            matrix = self._apply_constraints(matrix, spec['constraints'], name)
-            
-            # Apply normalization
-            if 'normalization' in spec:
-                matrix = self._apply_normalization(matrix, spec['normalization'])
-                
-            return matrix
-            
-        except Exception as e:
-            self.logger.error(f"Error initializing matrix {name}: {str(e)}")
-            raise
-            
-    def _initialize_random(self, shape: Tuple[int, ...], config: Dict) -> np.ndarray:
-        """Initialize random matrix"""
-        try:
-            if config['distribution'] == 'truncated_normal':
-                matrix = np.random.normal(
-                    config['mean'],
-                    config['std'],
-                    shape
-                )
-                matrix = np.clip(matrix, config['min_val'], config['max_val'])
-            else:
-                raise ValueError(f"Unknown distribution: {config['distribution']}")
-                
-            return matrix
-            
-        except Exception as e:
-            self.logger.error(f"Error in random initialization: {str(e)}")
-            raise
-            
-    def _initialize_uniform(self, shape: Tuple[int, ...], config: Dict) -> np.ndarray:
-        """Initialize uniform matrix"""
-        try:
-            matrix = np.ones(shape)
-            if len(shape) == 1:
-                matrix = matrix / shape[0]
-            else:
-                matrix = matrix / shape[0]  # Column normalization
-                
-            # Add small constant for stability
-            matrix = matrix + config.get('epsilon', 1e-12)
-            
-            return matrix
-            
-        except Exception as e:
-            self.logger.error(f"Error in uniform initialization: {str(e)}")
-            raise
-            
-    def _apply_constraints(self, matrix: np.ndarray, constraints: List[str], name: str) -> np.ndarray:
-        """Apply constraints to matrix"""
-        try:
-            for constraint in constraints:
-                if constraint == 'column_normalized':
-                    matrix = self.normalizer.normalize_matrix(matrix, method='column')
-                elif constraint == 'non_negative':
-                    matrix = np.maximum(matrix, 0)
-                elif constraint == 'symmetric':
-                    if matrix.ndim == 2:
-                        matrix = 0.5 * (matrix + matrix.T)
-                elif constraint == 'normalized':
-                    matrix = self.normalizer.normalize_matrix(matrix)
-                else:
-                    raise ValueError(f"Unknown constraint: {constraint}")
+        matrices = {}
+        hierarchy = specs['hierarchy']
+        matrix_specs = specs['matrices']
+        
+        # Validate matrix dimensions against hierarchy
+        self._validate_matrix_dimensions(matrix_specs, hierarchy)
+        
+        # Create each type of matrix
+        for matrix_type, type_specs in matrix_specs.items():
+            for level in range(hierarchy['levels']):
+                name = f"{matrix_type[0].upper()}{level}"  # A0, B0, D0, etc.
+                if name not in type_specs:
+                    raise ValueError(f"Missing {matrix_type} matrix for level {level}")
                     
-            return matrix
-            
-        except Exception as e:
-            self.logger.error(f"Error applying constraints to {name}: {str(e)}")
-            raise
-            
-    def _apply_normalization(self, matrix: np.ndarray, norm_config: Dict) -> np.ndarray:
-        """Apply normalization to matrix"""
-        try:
-            if norm_config['type'] == 'svd':
-                matrix = self.svd.condition_matrix(
-                    matrix,
-                    max_cond=norm_config['max_condition_number'],
-                    eps=norm_config['epsilon']
-                )
-            else:
-                raise ValueError(f"Unknown normalization type: {norm_config['type']}")
+                shape = type_specs[name]
+                matrix = self._initialize_matrix(shape, matrix_type)
+                matrices[name] = matrix
                 
-            return matrix
+        return matrices
+        
+    def _validate_matrix_dimensions(self, matrix_specs: Dict, hierarchy: Dict):
+        """Validate matrix dimensions against hierarchy specifications."""
+        dimensions = hierarchy['dimensions']
+        
+        for level in range(hierarchy['levels']):
+            level_dims = dimensions[f'level{level}']
             
-        except Exception as e:
-            self.logger.error(f"Error applying normalization: {str(e)}")
-            raise
+            # Recognition matrices (A)
+            a_name = f"A{level}"
+            if a_name in matrix_specs['recognition']:
+                shape = matrix_specs['recognition'][a_name]
+                if shape[1] != level_dims['input']:
+                    raise ValueError(
+                        f"Recognition matrix {a_name} input dimension mismatch: "
+                        f"expected {level_dims['input']}, got {shape[1]}"
+                    )
+                if shape[0] != level_dims['state']:
+                    raise ValueError(
+                        f"Recognition matrix {a_name} output dimension mismatch: "
+                        f"expected {level_dims['state']}, got {shape[0]}"
+                    )
+                    
+            # Generative matrices (B)
+            b_name = f"B{level}"
+            if b_name in matrix_specs['generative']:
+                shape = matrix_specs['generative'][b_name]
+                if shape[0] != level_dims['input']:
+                    raise ValueError(
+                        f"Generative matrix {b_name} output dimension mismatch: "
+                        f"expected {level_dims['input']}, got {shape[0]}"
+                    )
+                if shape[1] != level_dims['state']:
+                    raise ValueError(
+                        f"Generative matrix {b_name} input dimension mismatch: "
+                        f"expected {level_dims['state']}, got {shape[1]}"
+                    )
+                    
+            # Lateral matrices (D)
+            d_name = f"D{level}"
+            if d_name in matrix_specs['lateral']:
+                shape = matrix_specs['lateral'][d_name]
+                if shape[0] != level_dims['state'] or shape[1] != level_dims['state']:
+                    raise ValueError(
+                        f"Lateral matrix {d_name} dimension mismatch: "
+                        f"expected [{level_dims['state']}, {level_dims['state']}], "
+                        f"got {shape}"
+                    )
+                    
+    def _initialize_matrix(self, shape: List[int], matrix_type: str) -> torch.Tensor:
+        """
+        Initialize matrix with appropriate constraints.
+        
+        Args:
+            shape: Matrix dimensions [rows, cols]
+            matrix_type: Type of matrix ('recognition', 'generative', 'lateral')
+            
+        Returns:
+            Initialized torch.Tensor with appropriate constraints
+        """
+        matrix = torch.empty(shape, device=self.device)
+        torch.nn.init.xavier_uniform_(matrix)
+        
+        # Apply type-specific constraints
+        if matrix_type == 'lateral':
+            # Make symmetric for lateral connections
+            matrix = 0.5 * (matrix + matrix.t())
+        elif matrix_type == 'recognition':
+            # Ensure positive weights for recognition
+            matrix = torch.abs(matrix)
+        elif matrix_type == 'generative':
+            # Add small positive bias for generative
+            matrix = matrix + 0.01
+            
+        return matrix
+        
+    def _get_matrix_name(self, matrix_type: str, level: int) -> str:
+        """Get standardized matrix name."""
+        prefix = self.MATRIX_PREFIXES[matrix_type]
+        return f"{prefix}{level}"

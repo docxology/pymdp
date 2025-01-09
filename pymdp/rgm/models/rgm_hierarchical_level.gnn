@@ -1,14 +1,54 @@
-{
-    "modelType": "RenormalizationGenerativeModel",
-    "level": {
-        "name": "Hierarchical Level",
-        "description": "Defines the structure and operations for a level within the Renormalization Generative Model hierarchy",
-        "components": {
-            "state": {
-                "type": "continuous",
-                "dimensions": "dynamic",
-                "activation": "softmax"
-            }
-        }
-    }
-} 
+"""
+RGM Hierarchical Level Specification
+================================
+
+Defines the structure and parameters for each level in the hierarchy.
+"""
+
+# Hierarchical Structure
+hierarchy:
+  levels: 3  # Number of hierarchical levels
+  dimensions:
+    level0:
+      input: 784
+      state: 256
+      factor: 64
+    level1:
+      input: 256
+      state: 64
+      factor: 32
+    level2:
+      input: 64
+      state: 16
+      factor: 10
+
+# Level-specific Processing
+processing:
+  level0:
+    activation: "relu"
+    normalization: "batch_norm"
+    dropout: 0.1
+    
+  level1:
+    activation: "relu"
+    normalization: "layer_norm"
+    dropout: 0.2
+    
+  level2:
+    activation: "relu"
+    normalization: "layer_norm"
+    dropout: 0.3
+
+# Message Passing Configuration
+message_passing:
+  bottom_up:
+    type: "prediction_error"
+    precision_weighting: true
+    
+  top_down:
+    type: "prediction"
+    precision_weighting: true
+    
+  lateral:
+    type: "context"
+    iterations: 5 

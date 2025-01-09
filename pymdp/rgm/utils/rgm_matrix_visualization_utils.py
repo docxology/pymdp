@@ -1,188 +1,167 @@
 """
 RGM Matrix Visualization Utilities
-================================
+===============================
 
-Utilities for visualizing RGM matrices and results.
-Provides functions for:
-- Matrix heatmaps
-- Factor analysis plots
-- State evolution plots
-- Inference results visualization
+Visualization utilities for the Renormalization Generative Model matrices.
 """
 
-import os
 import numpy as np
+import matplotlib
+# Force matplotlib to not use any Xwindows backend
+matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
-
-from .rgm_experiment_utils import RGMExperimentUtils
+from typing import Optional, Tuple
 
 class RGMMatrixVisualizationUtils:
-    """Utilities for visualizing RGM matrices and results"""
+    """Visualization utilities for RGM matrices."""
     
-    def __init__(self):
-        """Initialize visualization utilities"""
-        self.logger = RGMExperimentUtils.get_logger('visualizer')
-        
-        # Set up matplotlib style with modern, clean aesthetics
-        plt.style.use('default')
-        plt.rcParams.update({
-            'figure.figsize': [10, 8],
-            'figure.dpi': 100,
-            'savefig.dpi': 300,
-            'font.size': 12,
-            'axes.titlesize': 14,
-            'axes.labelsize': 12,
-            'xtick.labelsize': 10,
-            'ytick.labelsize': 10,
-            'legend.fontsize': 10,
-            'figure.titlesize': 16,
-            'axes.grid': True,
-            'grid.alpha': 0.3,
-            'axes.facecolor': '#f0f0f0',
-            'figure.facecolor': 'white',
-            'lines.linewidth': 2,
-            'axes.spines.top': False,
-            'axes.spines.right': False,
-            'axes.prop_cycle': plt.cycler('color', ['#1f77b4', '#ff7f0e', '#2ca02c', '#d62728', '#9467bd'])
-        })
-        
-    def generate_visualizations(self, matrices: Dict[str, np.ndarray], save_dir: Path):
+    @staticmethod
+    def plot_matrix(matrix: np.ndarray, title: str = "", save_path: Optional[Path] = None,
+                   figsize: Tuple[int, int] = (10, 8), show_colorbar: bool = True):
         """
-        Generate visualizations for RGM matrices.
+        Plot a matrix as a heatmap.
         
         Args:
-            matrices: Dictionary of matrices to visualize
-            save_dir: Directory to save visualizations
+            matrix: Matrix to visualize
+            title: Title for the plot
+            save_path: Optional path to save the plot
+            figsize: Figure size (width, height)
+            show_colorbar: Whether to show colorbar
         """
         try:
-            self.logger.info("Generating matrix visualizations...")
+            # Create figure and axis
+            fig, ax = plt.subplots(figsize=figsize)
             
-            # Create visualizations directory
-            vis_dir = save_dir / "visualizations"
-            vis_dir.mkdir(exist_ok=True)
-            
-            # Generate heatmaps for each matrix
-            for name, matrix in matrices.items():
-                self.logger.debug(f"Generating heatmap for {name} matrix...")
-                fig = self._generate_heatmap(matrix, name)
-                
-                # Save figure
-                save_path = vis_dir / f"{name}_heatmap.png"
-                fig.savefig(save_path, bbox_inches='tight')
-                plt.close(fig)
-                
-            # Generate factor analysis plots
-            self.logger.debug("Generating factor analysis plots...")
-            self._generate_factor_plots(matrices, vis_dir)
-            
-            # Generate state evolution plots
-            self.logger.debug("Generating state evolution plots...")
-            self._generate_state_plots(matrices, vis_dir)
-            
-            self.logger.info(f"Visualizations saved to: {vis_dir}")
-            
-        except Exception as e:
-            self.logger.error(f"Error generating visualizations: {str(e)}")
-            raise
-            
-    def _generate_heatmap(self, matrix: np.ndarray, name: str) -> plt.Figure:
-        """Generate heatmap visualization"""
-        try:
-            # Create figure
-            fig, ax = plt.subplots()
-            
-            # Plot heatmap
+            # Plot matrix
             im = ax.imshow(matrix, cmap='viridis', aspect='auto')
             
-            # Add colorbar
-            plt.colorbar(im, ax=ax)
+            # Add colorbar if requested
+            if show_colorbar:
+                plt.colorbar(im, ax=ax)
             
-            # Set title and labels
-            ax.set_title(f"{name} Matrix")
-            ax.set_xlabel("Column Index")
-            ax.set_ylabel("Row Index")
+            # Set title
+            ax.set_title(title)
             
-            # Add grid
-            ax.grid(False)
+            # Add axis labels
+            ax.set_xlabel('Column Index')
+            ax.set_ylabel('Row Index')
             
-            return fig
+            # Adjust layout
+            plt.tight_layout()
             
-        except Exception as e:
-            self.logger.error(f"Error generating heatmap for {name}: {str(e)}")
-            raise
-            
-    def _generate_factor_plots(self, matrices: Dict[str, np.ndarray], save_dir: Path):
-        """Generate factor analysis plots"""
-        try:
-            # Get factor matrices
-            A = matrices.get('A')
-            B = matrices.get('B')
-            
-            if A is None or B is None:
-                self.logger.warning("Missing factor matrices, skipping factor plots")
-                return
+            # Save or show plot
+            if save_path:
+                # Ensure directory exists
+                save_path.parent.mkdir(parents=True, exist_ok=True)
+                plt.savefig(save_path, dpi=300, bbox_inches='tight')
+                plt.close(fig)
+            else:
+                plt.show()
                 
-            # Create figure
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+        except Exception as e:
+            print(f"Error plotting matrix: {str(e)}")
+            plt.close('all')  # Clean up any open figures
             
-            # Plot factor distributions
-            ax1.hist(A.flatten(), bins=50, alpha=0.5, label='A')
-            ax1.hist(B.flatten(), bins=50, alpha=0.5, label='B')
-            ax1.set_title("Factor Matrix Distributions")
-            ax1.set_xlabel("Value")
-            ax1.set_ylabel("Count")
-            ax1.legend()
+    @staticmethod
+    def plot_matrix_grid(matrices: dict, save_path: Path, 
+                        ncols: int = 3, figsize: Tuple[int, int] = (15, 10)):
+        """
+        Plot multiple matrices in a grid layout.
+        
+        Args:
+            matrices: Dictionary of matrices to plot
+            save_path: Path to save the plot
+            ncols: Number of columns in the grid
+            figsize: Figure size (width, height)
+        """
+        try:
+            n_matrices = len(matrices)
+            nrows = (n_matrices + ncols - 1) // ncols
             
-            # Plot factor correlations
-            ax2.scatter(A.flatten(), B.flatten(), alpha=0.1)
-            ax2.set_title("Factor Matrix Correlations")
-            ax2.set_xlabel("A Matrix Values")
-            ax2.set_ylabel("B Matrix Values")
+            # Create figure and axes
+            fig, axes = plt.subplots(nrows, ncols, figsize=figsize)
+            if nrows == 1:
+                axes = axes.reshape(1, -1)
             
-            # Save figure
-            save_path = save_dir / "factor_analysis.png"
-            fig.savefig(save_path, bbox_inches='tight')
+            # Plot each matrix
+            for idx, (name, matrix) in enumerate(matrices.items()):
+                row = idx // ncols
+                col = idx % ncols
+                ax = axes[row, col]
+                
+                im = ax.imshow(matrix, cmap='viridis', aspect='auto')
+                ax.set_title(name)
+                plt.colorbar(im, ax=ax)
+                
+            # Remove empty subplots
+            for idx in range(n_matrices, nrows * ncols):
+                row = idx // ncols
+                col = idx % ncols
+                fig.delaxes(axes[row, col])
+                
+            # Adjust layout
+            plt.tight_layout()
+            
+            # Save plot
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
             plt.close(fig)
             
         except Exception as e:
-            self.logger.error(f"Error generating factor plots: {str(e)}")
-            raise
+            print(f"Error plotting matrix grid: {str(e)}")
+            plt.close('all')  # Clean up any open figures
             
-    def _generate_state_plots(self, matrices: Dict[str, np.ndarray], save_dir: Path):
-        """Generate state evolution plots"""
+    @staticmethod
+    def plot_matrix_analysis(matrix: np.ndarray, title: str, save_path: Path):
+        """
+        Create detailed analysis plot for a matrix.
+        
+        Args:
+            matrix: Matrix to analyze
+            title: Plot title
+            save_path: Path to save the plot
+        """
         try:
-            # Get state matrices
-            D = matrices.get('D')
-            E = matrices.get('E')
+            fig, axes = plt.subplots(2, 2, figsize=(15, 12))
             
-            if D is None or E is None:
-                self.logger.warning("Missing state matrices, skipping state plots")
-                return
-                
-            # Create figure
-            fig, (ax1, ax2) = plt.subplots(1, 2, figsize=(15, 6))
+            # Original matrix heatmap
+            im0 = axes[0, 0].imshow(matrix, cmap='viridis', aspect='auto')
+            axes[0, 0].set_title(f"{title} - Heatmap")
+            plt.colorbar(im0, ax=axes[0, 0])
             
-            # Plot state distributions
-            ax1.hist(D.flatten(), bins=50, alpha=0.5, label='D')
-            ax1.hist(E.flatten(), bins=50, alpha=0.5, label='E')
-            ax1.set_title("State Matrix Distributions")
-            ax1.set_xlabel("Value")
-            ax1.set_ylabel("Count")
-            ax1.legend()
+            # Value distribution histogram
+            axes[0, 1].hist(matrix.flatten(), bins=50, density=True)
+            axes[0, 1].set_title(f"{title} - Value Distribution")
+            axes[0, 1].set_xlabel("Value")
+            axes[0, 1].set_ylabel("Density")
             
-            # Plot state correlations
-            ax2.scatter(D.flatten(), E.flatten(), alpha=0.1)
-            ax2.set_title("State Matrix Correlations")
-            ax2.set_xlabel("D Matrix Values")
-            ax2.set_ylabel("E Matrix Values")
+            # Row-wise statistics
+            row_means = matrix.mean(axis=1)
+            row_stds = matrix.std(axis=1)
+            x = np.arange(len(row_means))
+            axes[1, 0].errorbar(x, row_means, yerr=row_stds, fmt='o', capsize=5)
+            axes[1, 0].set_title(f"{title} - Row Statistics")
+            axes[1, 0].set_xlabel("Row Index")
+            axes[1, 0].set_ylabel("Mean ± Std")
             
-            # Save figure
-            save_path = save_dir / "state_evolution.png"
-            fig.savefig(save_path, bbox_inches='tight')
+            # Column-wise statistics
+            col_means = matrix.mean(axis=0)
+            col_stds = matrix.std(axis=0)
+            x = np.arange(len(col_means))
+            axes[1, 1].errorbar(x, col_means, yerr=col_stds, fmt='o', capsize=5)
+            axes[1, 1].set_title(f"{title} - Column Statistics")
+            axes[1, 1].set_xlabel("Column Index")
+            axes[1, 1].set_ylabel("Mean ± Std")
+            
+            # Adjust layout
+            plt.tight_layout()
+            
+            # Save plot
+            save_path.parent.mkdir(parents=True, exist_ok=True)
+            plt.savefig(save_path, dpi=300, bbox_inches='tight')
             plt.close(fig)
             
         except Exception as e:
-            self.logger.error(f"Error generating state plots: {str(e)}")
-            raise
+            print(f"Error plotting matrix analysis: {str(e)}")
+            plt.close('all')

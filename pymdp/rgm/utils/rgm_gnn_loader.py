@@ -1,280 +1,236 @@
 """
-RGM GNN Loader
-=============
+RGM GNN Specification Loader
+=========================
 
-Loads and parses GNN specifications for RGM.
-Handles file loading, validation, and merging of specifications.
+Loads and validates GNN specifications for the Renormalization Generative Model.
 """
 
-import os
-import json
+import yaml
 from pathlib import Path
-from typing import Dict, List, Optional, Tuple
+from typing import Dict, List
+import logging
 
-from rgm_experiment_utils import RGMExperimentUtils
-from rgm_gnn_validator import RGMGNNValidator
-from rgm_gnn_parser import RGMGNNParser
+from .rgm_logging import RGMLogging
 
 class RGMGNNLoader:
-    """Loads and processes GNN specifications"""
+    """Loads and validates GNN specifications."""
     
     def __init__(self):
-        """Initialize GNN loader"""
-        self.logger = RGMExperimentUtils.get_logger('gnn_loader')
-        self.experiment = RGMExperimentUtils.get_experiment()
-        self.validator = RGMGNNValidator()
-        self.parser = RGMGNNParser()
+        """Initialize GNN loader."""
+        self.logger = RGMLogging.get_logger("rgm.gnn_loader")
         
-    def load_gnn_specs(self) -> Dict[str, Dict]:
+    def load_specifications(self, gnn_dir: Path) -> Dict:
         """
-        Load all GNN specifications.
+        Load and merge GNN specifications from directory.
         
+        Args:
+            gnn_dir: Directory containing GNN specification files
+            
         Returns:
-            Dictionary of parsed GNN specifications
+            Merged specification dictionary
+            
+        Raises:
+            ValueError: If specifications are invalid
         """
         try:
-            self.logger.info("Loading GNN specifications...")
+            # Load base specification first
+            base_spec = self._load_base_spec(gnn_dir)
             
-            # Get GNN spec directory
-            spec_dir = self.experiment['dirs']['gnn_specs']
-            if not spec_dir.exists():
-                raise FileNotFoundError(f"GNN spec directory not found: {spec_dir}")
-                
-            # Load base spec first
-            base_spec = self._load_base_spec()
-            
-            # Load additional specs
-            specs = {'base': base_spec}
-            for spec_file in spec_dir.glob("*.gnn"):
-                if spec_file.name != 'rgm_base.gnn':
-                    spec_name = spec_file.stem
-                    spec = self._load_spec(spec_file)
-                    specs[spec_name] = spec
+            # Load and merge other specifications
+            for gnn_file in gnn_dir.glob("*.gnn"):
+                if gnn_file.name == "rgm_base.gnn":
+                    continue
                     
-            # Validate and merge specs
-            merged_specs = self._process_specs(specs)
+                spec = self._load_spec_file(gnn_file)
+                if spec:
+                    self._merge_specs(base_spec, spec)
+                    
+            # Validate final merged specification
+            self._validate_merged_spec(base_spec)
             
-            # Save merged specs
-            self._save_specs(merged_specs)
-            
-            return merged_specs
-            
-        except Exception as e:
-            self.logger.error(f"Error loading GNN specs: {str(e)}")
-            raise
-            
-    def _load_base_spec(self) -> Dict:
-        """Load base GNN specification"""
-        try:
-            # First try experiment directory
-            base_path = self.experiment['dirs']['gnn_specs'] / "rgm_base.gnn"
-            
-            # Fall back to package specs if not found
-            if not base_path.exists():
-                base_path = Path(__file__).parent.parent / "models" / "rgm_base.gnn"
-                
-            if not base_path.exists():
-                raise FileNotFoundError("Base GNN spec not found")
-                
-            with open(base_path) as f:
-                spec = json.load(f)
-                
-            # Validate base spec
-            is_valid, messages = self.validator.validate_gnn_spec(spec, "rgm_base.gnn")
-            if not is_valid:
-                raise ValueError(f"Invalid base GNN spec: {'; '.join(messages)}")
-                
-            return spec
+            return base_spec
             
         except Exception as e:
-            self.logger.error(f"Error loading base GNN spec: {str(e)}")
+            self.logger.error(f"Error loading specifications: {str(e)}")
             raise
             
-    def _load_spec(self, spec_path: Path) -> Dict:
-        """Load single GNN specification"""
-        try:
-            with open(spec_path) as f:
-                spec = json.load(f)
-                
-            # Validate spec
-            is_valid, messages = self.validator.validate_gnn_spec(spec, spec_path.name)
-            if not is_valid:
-                raise ValueError(f"Invalid GNN spec {spec_path.name}: {'; '.join(messages)}")
-                
-            return spec
+    def _load_base_spec(self, gnn_dir: Path) -> Dict:
+        """Load base GNN specification."""
+        base_file = gnn_dir / "rgm_base.gnn"
+        if not base_file.exists():
+            raise ValueError("Base specification (rgm_base.gnn) not found")
             
-        except Exception as e:
-            self.logger.error(f"Error loading GNN spec {spec_path}: {str(e)}")
+        return self._load_spec_file(base_file)
+        
+    def _load_spec_file(self, file_path: Path) -> Dict:
+        """Load single GNN specification file."""
+        try:
+            with open(file_path) as f:
+                content = f.read()
+                if content.startswith('"""'):
+                    _, content = content.split('"""', 2)[1:]
+                    
+                spec = yaml.safe_load(content)
+                if spec is None:
+                    self.logger.warning(f"Empty specification in {file_path.name}")
+                    return {}
+                    
+                return spec
+                
+        except yaml.YAMLError as e:
+            self.logger.error(f"Error parsing {file_path.name}: {str(e)}")
             raise
             
-    def _process_specs(self, specs: Dict[str, Dict]) -> Dict[str, Dict]:
-        """Process and merge GNN specifications"""
-        try:
-            # Parse specs
-            parsed_specs = {}
-            for name, spec in specs.items():
-                parsed = self.parser.parse_gnn_spec(spec)
-                parsed_specs[name] = parsed
-                
-            # Merge specs
-            merged = self._merge_specs(parsed_specs)
-            
-            # Validate merged specs
-            is_valid, messages = self.validator.validate_gnn_spec(merged, "merged")
-            if not is_valid:
-                raise ValueError(f"Invalid merged specs: {'; '.join(messages)}")
-                
-            return merged
-            
-        except Exception as e:
-            self.logger.error(f"Error processing GNN specs: {str(e)}")
-            raise
-            
-    def _merge_specs(self, specs: Dict[str, Dict]) -> Dict:
-        """Merge multiple GNN specifications"""
-        try:
-            # Start with base spec
-            merged = specs['base'].copy()
-            
-            def deep_merge(d1: Dict, d2: Dict):
-                """Recursively merge dictionaries"""
-                for k, v in d2.items():
-                    if k in d1 and isinstance(d1[k], dict) and isinstance(v, dict):
-                        deep_merge(d1[k], v)
-                    else:
-                        d1[k] = v
+    def _merge_specs(self, base_spec: Dict, new_spec: Dict):
+        """Merge new specification into base specification."""
+        for key, value in new_spec.items():
+            if key not in base_spec:
+                base_spec[key] = value
+            elif isinstance(value, dict):
+                if key == 'matrices':
+                    # Special handling for matrix specifications
+                    if 'matrices' not in base_spec:
+                        base_spec['matrices'] = {}
+                    for matrix_type, matrices in value.items():
+                        if matrix_type not in base_spec['matrices']:
+                            base_spec['matrices'][matrix_type] = {}
+                        base_spec['matrices'][matrix_type].update(matrices)
+                else:
+                    # Regular dictionary merge
+                    if isinstance(base_spec[key], dict):
+                        self._merge_specs(base_spec[key], value)
                         
-            # Merge additional specs
-            for name, spec in specs.items():
-                if name != 'base':
-                    deep_merge(merged, spec)
-                    
-            return merged
+    def _validate_merged_spec(self, spec: Dict):
+        """Validate merged specification."""
+        # Check required sections
+        required_sections = ['hierarchy', 'matrices']
+        missing = [s for s in required_sections if s not in spec]
+        if missing:
+            raise ValueError(f"Missing required sections: {missing}")
             
-        except Exception as e:
-            self.logger.error(f"Error merging GNN specs: {str(e)}")
-            raise
+        # Validate hierarchy
+        if 'hierarchy' in spec:
+            self._validate_hierarchy(spec)
             
-    def _save_specs(self, specs: Dict):
-        """Save processed GNN specifications"""
-        try:
-            # Create output directory
-            output_dir = self.experiment['dirs']['config'] / "processed_specs"
-            output_dir.mkdir(exist_ok=True)
+        # Validate matrices
+        if 'matrices' in spec:
+            self._validate_matrices(spec['matrices'])
             
-            # Save individual specs
-            for name, spec in specs.items():
-                spec_path = output_dir / f"{name}_processed.json"
-                with open(spec_path, 'w') as f:
-                    json.dump(spec, f, indent=2)
-                    
-            # Save merged specs
-            merged_path = output_dir / "merged_specs.json"
-            with open(merged_path, 'w') as f:
-                json.dump(specs, f, indent=2)
+    def _validate_matrices(self, matrices: Dict):
+        """
+        Validate matrix specifications.
+        
+        Args:
+            matrices: Dictionary of matrix specifications
+            
+        Raises:
+            ValueError: If matrix specifications are invalid
+        """
+        required_types = ['recognition', 'generative', 'lateral']
+        missing = [t for t in required_types if t not in matrices]
+        if missing:
+            raise ValueError(f"Missing matrix types: {missing}")
+            
+        # Matrix type prefixes
+        prefixes = {
+            'recognition': 'R',
+            'generative': 'G',
+            'lateral': 'L'
+        }
+        
+        # Validate each matrix type has complete specifications
+        for matrix_type, specs in matrices.items():
+            prefix = prefixes[matrix_type]
+            expected_names = [f"{prefix}{i}" for i in range(3)]
+            missing_matrices = [name for name in expected_names if name not in specs]
+            if missing_matrices:
+                raise ValueError(
+                    f"Missing {matrix_type} matrices: {missing_matrices}"
+                )
                 
-            self.logger.info(f"Saved processed specs to: {output_dir}")
-            
-        except Exception as e:
-            self.logger.error(f"Error saving GNN specs: {str(e)}")
-            raise
-            
-    def validate_spec_compatibility(self, specs: Dict[str, Dict]) -> Tuple[bool, List[str]]:
-        """Validate compatibility between specifications"""
-        try:
-            messages = []
-            
-            # Check hierarchy compatibility
-            if not self._check_hierarchy_compatibility(specs):
-                messages.append("Incompatible hierarchy specifications")
-                
-            # Check matrix shape compatibility
-            if not self._check_matrix_compatibility(specs):
-                messages.append("Incompatible matrix specifications")
-                
-            # Check learning parameter compatibility
-            if not self._check_learning_compatibility(specs):
-                messages.append("Incompatible learning parameters")
-                
-            return len(messages) == 0, messages
-            
-        except Exception as e:
-            self.logger.error(f"Error validating spec compatibility: {str(e)}")
-            raise
-            
-    def _check_hierarchy_compatibility(self, specs: Dict[str, Dict]) -> bool:
-        """Check hierarchy compatibility between specs"""
-        try:
-            base_hierarchy = specs['base']['hierarchy']
-            
-            for name, spec in specs.items():
-                if name != 'base':
-                    hierarchy = spec.get('hierarchy', {})
+            # Validate shape specifications
+            for name, shape in specs.items():
+                if not isinstance(shape, list) or len(shape) != 2:
+                    raise ValueError(
+                        f"Invalid shape specification for {name}: "
+                        f"expected [rows, cols], got {shape}"
+                    )
                     
-                    # Check level dimensions
-                    if 'dimensions' in hierarchy:
-                        for level, dims in hierarchy['dimensions'].items():
-                            if level in base_hierarchy['dimensions']:
-                                base_dims = base_hierarchy['dimensions'][level]
-                                if dims != base_dims:
-                                    self.logger.error(
-                                        f"Dimension mismatch in {name} for {level}: "
-                                        f"{dims} vs {base_dims}"
-                                    )
-                                    return False
-                                    
-            return True
-            
-        except Exception as e:
-            self.logger.error(f"Error checking hierarchy compatibility: {str(e)}")
-            raise
-            
-    def _check_matrix_compatibility(self, specs: Dict[str, Dict]) -> bool:
-        """Check matrix specification compatibility"""
-        try:
-            base_matrices = specs['base'].get('matrices', {})
-            
-            for name, spec in specs.items():
-                if name != 'base':
-                    matrices = spec.get('matrices', {})
+                if not all(isinstance(dim, int) and dim > 0 for dim in shape):
+                    raise ValueError(
+                        f"Invalid dimensions in {name}: "
+                        f"expected positive integers, got {shape}"
+                    )
                     
-                    # Check matrix shapes
-                    for matrix_name, matrix_spec in matrices.items():
-                        if matrix_name in base_matrices:
-                            base_spec = base_matrices[matrix_name]
-                            if matrix_spec != base_spec:
-                                self.logger.error(
-                                    f"Matrix spec mismatch in {name} for {matrix_name}"
-                                )
-                                return False
-                                
-            return True
+    def _validate_hierarchy(self, spec: Dict):
+        """
+        Validate hierarchy specification.
+        
+        Args:
+            spec: Specification dictionary containing hierarchy information
             
-        except Exception as e:
-            self.logger.error(f"Error checking matrix compatibility: {str(e)}")
-            raise
+        Raises:
+            ValueError: If hierarchy specification is invalid
+        """
+        hierarchy = spec['hierarchy']
+        
+        # Check required fields
+        required_fields = ['levels', 'dimensions']
+        missing = [f for f in required_fields if f not in hierarchy]
+        if missing:
+            raise ValueError(f"Missing required hierarchy fields: {missing}")
             
-    def _check_learning_compatibility(self, specs: Dict[str, Dict]) -> bool:
-        """Check learning parameter compatibility"""
-        try:
-            base_learning = specs['base'].get('learning', {})
+        # Validate levels
+        levels = hierarchy['levels']
+        if not isinstance(levels, int) or levels < 1:
+            raise ValueError(f"Invalid number of levels: {levels}")
             
-            for name, spec in specs.items():
-                if name != 'base':
-                    learning = spec.get('learning', {})
+        # Validate dimensions for each level
+        dimensions = hierarchy['dimensions']
+        for level in range(levels):
+            level_key = f'level{level}'
+            if level_key not in dimensions:
+                raise ValueError(f"Missing dimensions for {level_key}")
+                
+            level_dims = dimensions[level_key]
+            
+            # Check required dimension types
+            required_dims = ['input', 'state', 'factor']
+            missing_dims = [d for d in required_dims if d not in level_dims]
+            if missing_dims:
+                raise ValueError(f"Missing dimensions {missing_dims} for {level_key}")
+                
+            # Validate dimension values
+            for dim_name, value in level_dims.items():
+                if not isinstance(value, int) or value < 1:
+                    raise ValueError(
+                        f"Invalid {dim_name} dimension for {level_key}: "
+                        f"expected positive integer, got {value}"
+                    )
                     
-                    # Check required parameters
-                    required = ['active_learning', 'message_passing']
-                    for param in required:
-                        if param in learning and param in base_learning:
-                            if learning[param] != base_learning[param]:
-                                self.logger.error(
-                                    f"Learning parameter mismatch in {name} for {param}"
-                                )
-                                return False
-                                
-            return True
+            # Validate dimension relationships
+            if level > 0:
+                prev_level = dimensions[f'level{level-1}']
+                if level_dims['input'] != prev_level['state']:
+                    raise ValueError(
+                        f"Dimension mismatch between levels {level-1} and {level}: "
+                        f"state {prev_level['state']} ≠ input {level_dims['input']}"
+                    )
+                    
+        # Validate MNIST-specific dimensions
+        if dimensions['level0']['input'] != 784:  # 28x28 MNIST images
+            raise ValueError(
+                f"Invalid input dimension for MNIST: "
+                f"expected 784, got {dimensions['level0']['input']}"
+            )
             
-        except Exception as e:
-            self.logger.error(f"Error checking learning compatibility: {str(e)}")
-            raise
+        if dimensions['level2']['factor'] != 10:  # 10 digit classes
+            raise ValueError(
+                f"Invalid output dimension for MNIST: "
+                f"expected 10, got {dimensions['level2']['factor']}"
+            )
+            
+        self.logger.debug(
+            f"✓ Validated hierarchy: {levels} levels with dimensions "
+            f"{[dimensions[f'level{i}'] for i in range(levels)]}"
+        )

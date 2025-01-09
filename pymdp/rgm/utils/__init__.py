@@ -12,6 +12,7 @@ from .rgm_matrix_normalizer import RGMMatrixNormalizer
 from .rgm_message_utils import RGMMessageUtils
 from .rgm_experiment_state import RGMExperimentState
 from .rgm_experiment_utils import RGMExperimentUtils
+from .rgm_gnn_loader import RGMGNNLoader
 
 __all__ = [
     'RGMLogging',
@@ -19,5 +20,6 @@ __all__ = [
     'RGMMatrixNormalizer',
     'RGMMessageUtils',
     'RGMExperimentState',
-    'RGMExperimentUtils'
+    'RGMExperimentUtils',
+    'RGMGNNLoader'
 ] 

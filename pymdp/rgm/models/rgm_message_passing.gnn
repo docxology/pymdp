@@ -1,68 +1,63 @@
-{
-    "modelType": "RGM",
-    "messagePassing": {
-        "schedule": {
-            "type": "hierarchical",
-            "direction": "bidirectional",
-            "order": [
-                "bottom_up_pass",
-                "top_down_pass"
-            ],
-            "max_iterations": 50,
-            "convergence_tolerance": 1e-6
-        },
-        "precision": {
-            "scaling": {
-                "level0": 1.0,
-                "level1": 0.5,
-                "level2": 0.25,
-                "level3": 0.125
-            },
-            "temperature": 1.0
-        },
-        "updates": {
-            "bottom_up": {
-                "type": "likelihood_weighted",
-                "normalization": "column_wise"
-            },
-            "top_down": {
-                "type": "prediction_error",
-                "normalization": "belief_weighted"
-            }
-        },
-        "convergence": {
-            "metric": "kl_divergence",
-            "window_size": 5,
-            "threshold": 1e-6,
-            "min_iterations": 10,
-            "max_iterations": 50
-        }
-    },
-    "dimensions": {
-        "state_factors": [
-            "pixels",
-            "blocks",
-            "features",
-            "digits"
-        ],
-        "message_shapes": {
-            "bottom_up": {
-                "level0_to_1": [1024, 256],
-                "level1_to_2": [256, 64],
-                "level2_to_3": [64, 10]
-            },
-            "top_down": {
-                "level3_to_2": [10, 64],
-                "level2_to_1": [64, 256],
-                "level1_to_0": [256, 1024]
-            }
-        }
-    },
-    "_comments": {
-        "schedule": "Defines message passing sequence and control",
-        "precision": "Controls uncertainty weighting at each level",
-        "updates": "Specifies message computation methods",
-        "convergence": "Defines when message passing should stop",
-        "dimensions": "Specifies shapes for message tensors"
-    }
-} 
+"""
+RGM Message Passing Configuration
+=============================
+
+Defines message passing specifications for the Renormalization Generative Model.
+"""
+
+# Matrix Specifications
+matrices:
+  recognition:  # Bottom-up matrices (R)
+    R0: [256, 784]  # Level 0 → Level 1 (feature extraction)
+    R1: [64, 256]   # Level 1 → Level 2 (part composition)
+    R2: [16, 64]    # Level 2 → Output (digit classification)
+    
+  generative:   # Top-down matrices (G)
+    G0: [784, 256]  # Level 1 → Level 0 (image reconstruction)
+    G1: [256, 64]   # Level 2 → Level 1 (part generation)
+    G2: [64, 16]    # Output → Level 2 (digit generation)
+    
+  lateral:      # Within-level matrices (L)
+    L0: [256, 256]  # Level 0 lateral connections
+    L1: [64, 64]    # Level 1 lateral connections
+    L2: [16, 16]    # Level 2 lateral connections
+
+# Message Passing Configuration
+message_passing:
+  # Bottom-up Messages (Recognition)
+  bottom_up:
+    type: "prediction_error"
+    precision_weighting: true
+    normalization: "softmax"
+    
+  # Top-down Messages (Generation)
+  top_down:
+    type: "prediction"
+    precision_weighting: true
+    normalization: "none"
+    
+  # Lateral Messages (Context)
+  lateral:
+    type: "context"
+    iterations: 5
+    convergence_threshold: 1e-4
+
+# Update Rules
+updates:
+  # State Updates
+  state:
+    method: "gradient_descent"
+    learning_rate: 0.1
+    momentum: 0.9
+    
+  # Precision Updates
+  precision:
+    method: "empirical_bayes"
+    update_rate: 0.01
+    regularization: 1e-5
+
+# Convergence Criteria
+convergence:
+  max_iterations: 100
+  tolerance: 1e-6
+  check_interval: 10 

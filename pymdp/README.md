@@ -1,58 +1,58 @@
-# PyMDP: Active Inference Framework
+# Renormalization Generative Model (RGM)
 
 ## Overview
-PyMDP is a Python implementation of Active Inference, including Renormalization Generative Models (RGM) and other advanced inference methods.
 
-## Installation
+This implementation provides a hierarchical generative model based on renormalization group principles and the Free Energy Principle. The model learns to:
 
-```bash
-# Clone repository
-git clone https://github.com/versesresearch/pymdp.git
-cd pymdp
+1. Extract hierarchical features from data through successive coarse-graining
+2. Generate samples through top-down message passing
+3. Perform inference through bidirectional message passing
+4. Minimize variational free energy during learning
 
-# Install package
-pip install -e .
+## Architecture
 
-# Install development dependencies
-pip install -e .[dev]
+The model consists of multiple hierarchical levels, each containing:
+
+- Recognition model (bottom-up)
+- Generative model (top-down) 
+- Lateral connections within each level
+- Message passing between levels
+
+### Matrix Structure
+
+Each level l has three key matrices:
+- A[l]: Recognition weights (bottom-up)
+- B[l]: Generative weights (top-down)
+- D[l]: Lateral connections (within-level)
+
+### Dimensions
+
+For MNIST data (28x28 pixels):
+- Input: 784 dimensions (flattened 28x28)
+- Level 0: 784 → 256 dimensions
+- Level 1: 256 → 64 dimensions 
+- Level 2: 64 → 16 dimensions
+
+## Training
+
+The model is trained to:
+1. Minimize reconstruction error
+2. Regularize latent representations
+3. Maintain consistency across levels
+4. Minimize variational free energy
+
+## Usage
+
+```python
+from rgm.Run_RGM import RGMPipeline
+
+# Initialize and run pipeline
+pipeline = RGMPipeline()
+pipeline.run()
 ```
 
-## RGM MNIST Example
-The RGM implementation includes a complete example of MNIST digit classification:
+## References
 
-```bash
-# Run complete pipeline
-cd pymdp/rgm
-python Run_RGM.py
-
-# Or run stages individually
-python rgm_render.py
-python rgm_execute.py
-python rgm_analyze.py
-```
-
-## Project Structure
-```
-pymdp/
-├── rgm/                    # RGM Implementation
-│   ├── models/            # GNN Model Specifications
-│   ├── utils/             # Utility Modules
-│   ├── rgm_render.py      # Matrix Generation
-│   ├── rgm_execute.py     # Model Execution
-│   ├── rgm_analyze.py     # Analysis & Visualization
-│   └── Run_RGM.py         # Pipeline Runner
-├── tests/                 # Test Suite
-├── docs/                  # Documentation
-└── examples/              # Usage Examples
-```
-
-## Documentation
-- [RGM Technical Specification](rgm/docs/RGM_GNN_Tech_Spec.md)
-- [RGM MNIST Example](rgm/docs/RGM_MNIST.md)
-- [GNN Framework](gnn/docs/README_GNN.md)
-
-## Contributing
-Please see [CONTRIBUTING.md](CONTRIBUTING.md) for guidelines.
-
-## License
-This project is licensed under the MIT License - see [LICENSE](LICENSE) for details. 
+1. Friston, K. (2010). The free-energy principle: a unified brain theory?
+2. Hinton, G. E., & Salakhutdinov, R. R. (2006). Reducing the dimensionality of data with neural networks.
+3. Wilson, K. G. (1975). The renormalization group: Critical phenomena and the Kondo problem. 

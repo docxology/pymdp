@@ -28,3 +28,7 @@ The Renormalization Generative Model is defined using a hierarchical GNN specifi
 
 ### 2. Message Passing Protocol
 ...
+
+## Directory Structure
+
+The RGM pipeline expects the following directory structure:

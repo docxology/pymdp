@@ -1,75 +1,89 @@
 """
 RGM Experiment Utilities
-=======================
+======================
 
-Utilities for managing RGM experiments.
+Utility functions for managing Renormalization Generative Model experiments.
 """
 
-import os
 from pathlib import Path
-from typing import Optional
+from typing import Dict, Optional, List
+import shutil
 
 from .rgm_logging import RGMLogging
-from .rgm_experiment_state import RGMExperimentState
 
 class RGMExperimentUtils:
-    """Utilities for managing RGM experiments"""
+    """Utility functions for RGM experiments."""
     
-    def __init__(self):
-        """Initialize experiment utilities"""
-        self.logger = RGMLogging.get_logger("rgm.experiment")
-        
-    def create_experiment_state(self, name: str, base_dir: Optional[Path] = None) -> RGMExperimentState:
+    logger = RGMLogging.get_logger("rgm.experiment_utils")
+    
+    @staticmethod
+    def get_gnn_dir() -> Path:
+        """Get the directory containing GNN specification files."""
+        return Path(__file__).parent.parent / "models"
+    
+    @staticmethod
+    def copy_gnn_files(source_dir: Path, target_dir: Path) -> List[str]:
         """
-        Create new experiment state.
+        Copy GNN specification files to experiment directory.
         
         Args:
-            name: Name of the experiment
-            base_dir: Optional base directory for experiments
+            source_dir: Source directory containing GNN files
+            target_dir: Target directory to copy files to
             
         Returns:
-            Initialized experiment state
+            List of copied file names
         """
-        try:
-            self.logger.info(f"Creating experiment state: {name}")
-            exp_state = RGMExperimentState(name, base_dir)
-            self.logger.info(f"Created experiment in: {exp_state.exp_dir}")
-            return exp_state
+        target_dir.mkdir(parents=True, exist_ok=True)
+        copied_files = []
+        
+        RGMExperimentUtils.logger.info(f"📁 Copying GNN files from: {source_dir}")
+        RGMExperimentUtils.logger.info(f"📁 Target directory: {target_dir}")
+        
+        for gnn_file in source_dir.glob("*.gnn"):
+            target_path = target_dir / gnn_file.name
+            shutil.copy2(gnn_file, target_path)
+            copied_files.append(gnn_file.name)
+            RGMExperimentUtils.logger.info(f"   ↳ Copied: {gnn_file.name}")
             
-        except Exception as e:
-            self.logger.error(f"Failed to create experiment state: {str(e)}")
-            self.logger.debug("Traceback:", exc_info=True)
-            raise
-            
-    def load_experiment_state(self, exp_dir: Path) -> RGMExperimentState:
+        return copied_files
+    
+    def validate_gnn_directory(self, gnn_dir: Path) -> bool:
         """
-        Load existing experiment state.
+        Validate GNN specification directory.
         
         Args:
-            exp_dir: Path to experiment directory
+            gnn_dir: Path to GNN specification directory
             
         Returns:
-            Loaded experiment state
+            True if valid, raises error otherwise
         """
         try:
-            self.logger.info(f"Loading experiment state from: {exp_dir}")
-            exp_state = RGMExperimentState.load(exp_dir)
-            self.logger.info(f"Loaded experiment: {exp_state.name}")
-            return exp_state
+            # Check directory exists
+            if not gnn_dir.exists():
+                raise FileNotFoundError(f"GNN directory not found: {gnn_dir}")
+                
+            # Check required files
+            required_files = [
+                'rgm_base.gnn',
+                'rgm_mnist.gnn',
+                'rgm_message_passing.gnn',
+                'rgm_hierarchical_level.gnn'
+            ]
+            
+            for file in required_files:
+                file_path = gnn_dir / file
+                if not file_path.exists():
+                    raise FileNotFoundError(f"Missing required GNN file: {file}")
+                    
+                # Validate file content
+                with open(file_path) as f:
+                    content = f.read().strip()
+                    if not content:
+                        raise ValueError(f"Empty GNN file: {file}")
+                        
+            self.logger.info(f"✅ GNN directory validated: {gnn_dir}")
+            return True
             
         except Exception as e:
-            self.logger.error(f"Failed to load experiment state: {str(e)}")
-            self.logger.debug("Traceback:", exc_info=True)
+            self.logger.error(f"GNN directory validation failed: {str(e)}")
             raise
-            
-    @staticmethod
-    def get_logger(name: str) -> RGMLogging:
-        """Get logger for component"""
-        return RGMLogging.get_logger(f"rgm.{name}")
-
-    @staticmethod
-    def get_dir(name: str) -> Path:
-        """Get path to named directory"""
-        if name not in self.directories:
-            raise ValueError(f"Unknown directory: {name}")
-        return self.directories[name]

@@ -5,7 +5,6 @@ RGM Pipeline Runner
 Main script for running the Renormalization Generative Model pipeline on MNIST.
 """
 
-import os
 import sys
 import torch
 import logging
@@ -14,6 +13,7 @@ from datetime import datetime
 from typing import Optional, Dict
 import json
 import numpy as np
+import psutil
 
 # Add parent directory to Python path for imports
 file = Path(__file__).resolve()
@@ -29,7 +29,11 @@ from rgm.utils import (
 from rgm.utils.custom_json_encoder import CustomJSONEncoder
 from rgm.mnist_download import MNISTPreprocessor
 from rgm.rgm_render import RGMRenderer
-from rgm.rgm_execute import RGMExecutor
+from rgm.training.rgm_trainer import RGMTrainer
+from rgm.evaluation.rgm_evaluator import RGMEvaluator
+from rgm.utils.rgm_model_state import RGMModelState
+from rgm.utils.rgm_data_loader import RGMDataLoader
+from rgm.utils.rgm_model_initializer import RGMModelInitializer
 
 class RGMPipeline:
     """Main RGM pipeline runner."""
@@ -38,45 +42,79 @@ class RGMPipeline:
         """Initialize pipeline."""
         self.logger = RGMLogging.get_logger("rgm.runner")
         self.experiment = RGMExperimentState("rgm_mnist_pipeline", exp_dir)
-        self.logger.info(f"Initializing RGM pipeline in: {self.experiment.exp_dir}")
+        self.logger.info("\n" + "="*80)
+        self.logger.info("🚀 Initializing Renormalization Generative Model Pipeline")
+        self.logger.info(f"📂 Experiment directory: {self.experiment.exp_dir}")
+        self.logger.info("="*80 + "\n")
+        
+        # Copy GNN files to experiment directory
+        gnn_source_dir = RGMExperimentUtils.get_gnn_dir()
+        gnn_target_dir = self.experiment.get_dir('gnn_specs')
+        RGMExperimentUtils.copy_gnn_files(gnn_source_dir, gnn_target_dir)
         
         self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.logger.info(f"🖥️  Using device: {self.device}")
         self.model_state = None
         
     def run(self):
         """Run complete pipeline."""
         try:
-            # Download and preprocess MNIST
+            # Stage 1: Data Preparation
+            self.logger.info("\n" + "="*80)
+            self.logger.info("📊 Stage 1: Data Preparation")
+            self.logger.info("-"*80)
             mnist_data = self.prepare_data()
-            self.logger.info("MNIST data downloaded and verified")
+            self.logger.info("✅ MNIST data downloaded and verified")
             
-            # Verify GNN files
+            # Stage 2: GNN Verification
+            self.logger.info("\n" + "="*80)
+            self.logger.info("🔍 Stage 2: GNN Specification Verification")
+            self.logger.info("-"*80)
             self.verify_gnn_files()
-            self.logger.info("GNN files verified")
+            self.logger.info("✅ GNN files verified")
             
-            # Generate matrices from GNN specs
+            # Stage 3: Matrix Generation
+            self.logger.info("\n" + "="*80)
+            self.logger.info("🔢 Stage 3: Matrix Generation")
+            self.logger.info("-"*80)
             matrices_dir = self.render_matrices()
-            self.logger.info(f"GNN-based generative models created and saved in: {matrices_dir}")
+            self.logger.info(f"✅ Matrices generated and saved in: {matrices_dir}")
             
-            # Load and validate matrices
-            matrices = self._load_matrices(matrices_dir)
-            self._validate_matrices(matrices)
-            self.logger.info("Generated matrices loaded and validated")
+            # Stage 4: Model Initialization
+            self.logger.info("\n" + "="*80)
+            self.logger.info("🔧 Stage 4: Model Initialization")
+            self.logger.info("-" * 80)
             
-            # Initialize model state
-            self.model_state = self.initialize_model(matrices)
-            self.logger.info("RGM model state initialized")
+            # Initialize model
+            initializer = RGMModelInitializer(self.experiment.exp_dir, device=self.device)
+            matrices = initializer.load_matrices()
             
-            # Train model
+            self.logger.info(f"✅ Model initialized with {len(matrices)} matrices")
+            
+            # Stage 5: Training
+            self.logger.info("\n" + "="*80)
+            self.logger.info("🏃 Stage 5: Model Training")
+            self.logger.info("-"*80)
             self.train_model(mnist_data)
             
-            # Evaluate model
+            # Stage 6: Evaluation
+            self.logger.info("\n" + "="*80)
+            self.logger.info("📈 Stage 6: Model Evaluation")
+            self.logger.info("-"*80)
             self.evaluate_model(mnist_data)
             
+            # Pipeline Complete
+            self.logger.info("\n" + "="*80)
+            self.logger.info("🎉 Pipeline Execution Complete!")
+            self.logger.info("="*80 + "\n")
+            
         except Exception as e:
-            self.logger.error(f"Pipeline execution failed: {str(e)}")
+            self.logger.error("\n" + "="*80)
+            self.logger.error("❌ Pipeline Execution Failed!")
+            self.logger.error(f"Error: {str(e)}")
             self.logger.debug("Traceback:", exc_info=True)
             self._save_error_state()
+            self.logger.error("="*80 + "\n")
             raise
         
     def prepare_data(self) -> Dict:
@@ -94,55 +132,196 @@ class RGMPipeline:
             self.logger.debug("Traceback:", exc_info=True)
             raise
         
-    def render_matrices(self) -> Path:
-        """Generate matrices from GNN specifications."""
+    def render_matrices(self) -> Dict[str, torch.Tensor]:
+        """Render matrices from GNN specifications."""
         try:
             self.logger.info("Rendering matrices from GNN specs...")
-            renderer = RGMRenderer(self.experiment)
-            matrices_dir = renderer.render_matrices()
-            self.logger.info(f"Matrix rendering complete. Saved to: {matrices_dir}")
-            return matrices_dir
+            
+            # Get GNN directory from experiment
+            gnn_dir = self.experiment.get_dir('gnn_specs')
+            if not gnn_dir.exists():
+                raise FileNotFoundError(f"GNN specification directory not found: {gnn_dir}")
+            
+            # Initialize renderer with experiment directory
+            renderer = RGMRenderer(self.experiment.exp_dir)
+            
+            # Generate matrices using new method name
+            matrices = renderer.render_matrices()
+            
+            # Save matrices
+            matrix_dir = self.experiment.get_dir('matrices')
+            matrix_dir.mkdir(exist_ok=True)
+            
+            for name, matrix in matrices.items():
+                torch.save(matrix, matrix_dir / f"{name}.pt")
+                self.logger.debug(f"Saved matrix {name} with shape {matrix.shape}")
+                
+            self.logger.info(f"✅ Matrices generated and saved in: {matrix_dir}")
+            return matrices
             
         except Exception as e:
             self.logger.error(f"Failed to render matrices: {str(e)}")
-            self.logger.debug("Traceback:", exc_info=True)
             raise
         
-    def initialize_model(self, matrices: Dict) -> Dict:
-        """Initialize RGM model state."""
+    def initialize_model(self, matrices: Dict[str, torch.Tensor]) -> RGMModelState:
+        """Initialize RGM model."""
         try:
-            self.logger.info("Initializing RGM model...")
-            # TODO: Implement model initialization
-            self.logger.info("Model initialization complete")
-            return {}  # Placeholder
+            self.logger.info("🔧 Initializing model components...")
+            
+            # Model configuration
+            model_config = {
+                'input_size': matrices['A0'].size(0),
+                'hierarchy_levels': sum(1 for k in matrices if k.startswith('A')),
+                'latent_dims': [64, 32, 16],  # Example latent dimensions
+                'activation': 'relu',
+                'normalization': 'batch_norm',
+                'dropout_rate': 0.1
+            }
+            
+            # Initialize model state
+            model_state = RGMModelState(matrices, model_config)
+            
+            # Log model architecture
+            self.logger.info("\n📐 Model Architecture:")
+            self.logger.info("-"*40)
+            self.logger.info(f"   - Input Size: {model_config['input_size']}")
+            self.logger.info(f"   - Hierarchy Levels: {model_config['hierarchy_levels']}")
+            self.logger.info(f"   - Latent Dimensions: {model_config['latent_dims']}")
+            
+            # Log parameter counts
+            total_params = sum(p.numel() for p in model_state.get_parameters())
+            self.logger.info(f"\n📊 Model Statistics:")
+            self.logger.info("-"*40)
+            self.logger.info(f"   - Total Parameters: {total_params:,}")
+            self.logger.info(f"   - Device: {model_state.device}")
+            
+            return model_state
             
         except Exception as e:
-            self.logger.error(f"Failed to initialize model: {str(e)}")
-            self.logger.debug("Traceback:", exc_info=True)
+            self.logger.error(f"❌ Model initialization failed: {str(e)}")
             raise
         
     def train_model(self, mnist_data: Dict) -> None:
         """Train RGM model."""
         try:
-            self.logger.info("Training RGM model...")
-            executor = RGMExecutor(self.experiment, self.model_state, mnist_data)
-            executor.train()
-            self.logger.info("Model training complete")
+            self.logger.info("🎯 Starting model training...")
+            
+            # Training configuration
+            train_config = {
+                'n_epochs': 50,
+                'batch_size': 128,
+                'learning_rate': 0.001,
+                'log_interval': 10000,
+                'checkpoint_interval': 5,
+                'latent_dim': 64,
+                'validation_interval': 5,
+                'early_stopping': {
+                    'patience': 10,
+                    'min_delta': 0.001
+                },
+                'optimizer': {
+                    'type': 'adam',
+                    'betas': (0.9, 0.999),
+                    'weight_decay': 1e-5
+                },
+                'scheduler': {
+                    'type': 'plateau',
+                    'factor': 0.5,
+                    'patience': 5,
+                    'min_lr': 1e-6
+                }
+            }
+            
+            # Log training configuration
+            self.logger.info(f"📋 Training Configuration:")
+            for key, value in train_config.items():
+                self.logger.info(f"   - {key}: {value}")
+            
+            # Prepare data loaders
+            data_loader = RGMDataLoader(train_config)
+            data_loaders = data_loader.prepare_data_loaders(mnist_data)
+            
+            # Initialize trainer
+            trainer = RGMTrainer(
+                model_state=self.model_state,
+                config=train_config,
+                data_loaders=data_loaders
+            )
+            
+            # Training loop
+            for epoch in range(train_config['n_epochs']):
+                self.logger.info(f"\n📈 Epoch [{epoch+1}/{train_config['n_epochs']}]")
+                
+                # Training phase
+                train_metrics = trainer.train_epoch(data_loaders['train'])
+                
+                # Validation phase
+                if (epoch + 1) % train_config['validation_interval'] == 0:
+                    val_metrics = trainer.evaluate(data_loaders['val'])
+                    self.logger.info(f"   ↳ Validation Loss: {val_metrics['val_loss']:.4f}")
+                
+                # Log metrics
+                self.logger.info(f"   ↳ Train Loss: {train_metrics['avg_loss']:.4f}")
+                self.logger.info(f"   ↳ Time: {train_metrics['time']:.2f}s")
+                
+                # Save checkpoint
+                if (epoch + 1) % train_config['checkpoint_interval'] == 0:
+                    checkpoint_path = self.experiment.get_dir('checkpoints') / f"checkpoint_epoch_{epoch+1}.pt"
+                    self.model_state.save_checkpoint(checkpoint_path)
+                    self.logger.info(f"   ↳ Checkpoint saved: {checkpoint_path}")
+                
+                # Check for early stopping
+                if train_metrics.get('early_stop', False):
+                    self.logger.info("⚠️ Early stopping triggered!")
+                    break
+            
+            self.logger.info("✅ Model training complete")
             
         except Exception as e:
-            self.logger.error(f"Failed to train model: {str(e)}")
+            self.logger.error(f"❌ Training failed: {str(e)}")
             self.logger.debug("Traceback:", exc_info=True)
             raise
         
     def evaluate_model(self, mnist_data: Dict) -> None:
         """Evaluate RGM model."""
         try:
-            self.logger.info("Evaluating model performance...")
-            # TODO: Implement evaluation
-            self.logger.info("Evaluation complete")
+            self.logger.info("🔍 Starting model evaluation...")
+            
+            # Evaluation configuration
+            eval_config = {
+                'batch_size': 128,
+                'n_samples': 1000,
+                'latent_dims': [64, 32, 16]
+            }
+            
+            # Initialize evaluator
+            evaluator = RGMEvaluator(self.model_state, eval_config)
+            
+            # Compute metrics
+            metrics = evaluator.compute_metrics(mnist_data['test'])
+            
+            # Log results
+            self.logger.info("\n📊 Evaluation Results:")
+            self.logger.info("-"*40)
+            for metric, value in metrics.items():
+                self.logger.info(f"   - {metric.replace('_', ' ').title()}: {value}")
+            
+            # Generate visualizations
+            vis_dir = self.experiment.get_dir('analysis')
+            evaluator.generate_visualizations(vis_dir)
+            self.logger.info(f"\n🎨 Visualizations saved to: {vis_dir}")
+            
+            # Performance analysis
+            self.logger.info("\n📈 Performance Analysis:")
+            self.logger.info("-"*40)
+            self.logger.info(f"   - GPU Memory: {torch.cuda.max_memory_allocated()/1e9:.2f}GB")
+            self.logger.info(f"   - CPU Usage: {psutil.cpu_percent()}%")
+            self.logger.info(f"   - Memory Usage: {psutil.Process().memory_info().rss/1e9:.2f}GB")
+            
+            self.logger.info("✅ Evaluation complete")
             
         except Exception as e:
-            self.logger.error(f"Failed to evaluate model: {str(e)}")
+            self.logger.error(f"❌ Evaluation failed: {str(e)}")
             self.logger.debug("Traceback:", exc_info=True)
             raise
 
@@ -179,16 +358,37 @@ class RGMPipeline:
         try:
             error_info = {
                 'timestamp': datetime.now().isoformat(),
-                'model_state': self.model_state,
-                'last_metrics': getattr(self, '_last_metrics', None)
+                'model_state': {
+                    'config': self.model_state.state['config'],
+                    'hierarchy_levels': self.model_state.state['hierarchy_levels'],
+                    'parameter_shapes': {
+                        name: list(param.shape) 
+                        for name, param in self.model_state.state['parameters'].items()
+                    }
+                } if self.model_state else None,
+                'last_metrics': getattr(self, '_last_metrics', None),
+                'device': str(getattr(self, 'device', 'unknown')),
+                'cuda_available': torch.cuda.is_available(),
+                'cuda_device_count': torch.cuda.device_count(),
+                'cuda_memory': {
+                    'allocated': torch.cuda.memory_allocated() / 1e9,
+                    'cached': torch.cuda.memory_reserved() / 1e9
+                } if torch.cuda.is_available() else None,
+                'system_info': {
+                    'cpu_percent': psutil.cpu_percent(),
+                    'memory_percent': psutil.virtual_memory().percent,
+                    'memory_available': psutil.virtual_memory().available / 1e9
+                }
             }
             
             error_path = self.experiment.get_dir('simulation') / "error_state.json"
             with open(error_path, 'w') as f:
                 json.dump(error_info, f, indent=2, cls=CustomJSONEncoder)
             
+            self.logger.info(f"💾 Error state saved to: {error_path}")
+            
         except Exception as e:
-            self.logger.error(f"Error saving error state: {str(e)}")
+            self.logger.error(f"Failed to save error state: {str(e)}")
 
     def verify_gnn_files(self):
         """Verify the presence and validity of GNN specification files."""
@@ -222,7 +422,7 @@ def main():
         pipeline.run()
         
     except Exception as e:
-        logging.error(f"Pipeline execution failed: {str(e)}")
+        logging.error(f"❌ Pipeline execution failed: {str(e)}")
         sys.exit(1)
 
 if __name__ == "__main__":

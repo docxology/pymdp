@@ -1,12 +1,65 @@
-{
-    "modelType": "RenormalizationGenerativeModel",
-    "version": "1.0",
-    "description": "Base configuration for Renormalization Generative Model",
-    "architecture": {
-        "hierarchy": {
-            "type": "renormalization",
-            "levels": 4,
-            "connections": "bidirectional"
-        }
-    }
-} 
+"""
+RGM Base Configuration
+===================
+
+Base configuration for the Renormalization Generative Model.
+Defines core architecture and learning parameters.
+"""
+
+# Model Architecture
+hierarchy:
+  # Hierarchical Structure
+  levels: 3  # Number of hierarchical levels
+  dimensions:
+    level0:
+      input: 784    # MNIST image size (28x28)
+      state: 256    # First-level features
+      factor: 64    # First-level factors
+    level1:
+      input: 256
+      state: 64
+      factor: 32
+    level2:
+      input: 64
+      state: 16
+      factor: 10    # Final classification dimension
+
+# Matrix Specifications
+matrices:
+  recognition:  # Bottom-up matrices (A)
+    A0: [256, 784]  # Level 0 → Level 1
+    A1: [64, 256]   # Level 1 → Level 2
+    A2: [16, 64]    # Level 2 → Output
+    
+  generative:   # Top-down matrices (B)
+    B0: [784, 256]  # Level 1 → Level 0
+    B1: [256, 64]   # Level 2 → Level 1
+    B2: [64, 16]    # Output → Level 2
+    
+  lateral:      # Within-level matrices (D)
+    D0: [256, 256]  # Level 0 lateral connections
+    D1: [64, 64]    # Level 1 lateral connections
+    D2: [16, 16]    # Level 2 lateral connections
+
+# Initialization Configuration
+initialization:
+  method: "xavier_uniform"
+  gain: 1.0
+  distribution: "normal"
+  constraints:
+    orthogonal: true
+    symmetric_d: true
+    positive_definite: true
+
+# Learning Parameters
+learning:
+  optimizer: "adam"
+  learning_rate: 0.001
+  batch_size: 128
+  n_epochs: 100
+  
+  # Free Energy Components
+  free_energy:
+    accuracy_weight: 1.0
+    complexity_weight: 0.1
+    precision_weight: 0.01 
