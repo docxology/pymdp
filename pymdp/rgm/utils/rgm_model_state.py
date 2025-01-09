@@ -1,272 +1,296 @@
 """
-RGM Model State Manager
-===================
+RGM Model State
+=============
 
-Manages the state of the Renormalization Generative Model based on 
-renormalization group principles and the Free Energy Principle.
+Manages the state of the Renormalization Generative Model during training and inference.
 """
 
 import torch
 import torch.nn as nn
-from typing import Dict, Optional, List, Tuple
+import torch.nn.functional as F
+from typing import Dict, Optional, List, Iterator, Tuple
 from pathlib import Path
+import logging
+import matplotlib.pyplot as plt
 import numpy as np
 
 from .rgm_logging import RGMLogging
+from .visualization_utils import RGMVisualizationUtils
 
-class RGMModelState:
-    """Manages RGM model state and parameters."""
+class RGMModelState(nn.Module):
+    """
+    Maintains the computational state of the RGM model.
     
-    def __init__(self, matrices: Dict[str, torch.Tensor], config: Dict):
-        """Initialize model state."""
+    Inherits from nn.Module to support PyTorch training pipeline.
+    
+    Handles:
+    - Matrix storage and access
+    - Level state management
+    - Parameter management for training
+    - Forward/backward passes
+    - Device placement
+    - Dynamic variable tracking
+    """
+    
+    def __init__(self, matrices: Dict[str, torch.Tensor], device: Optional[torch.device] = None):
+        """
+        Initialize model state.
+        
+        Args:
+            matrices: Dictionary of model matrices (R/G/L)
+            device: Computation device (CPU/CUDA)
+        """
+        super().__init__()
         self.logger = RGMLogging.get_logger("rgm.model_state")
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-        # Validate and reshape input matrices
-        self._validate_matrices(matrices)
-        matrices = self._reshape_matrices(matrices)
-        
-        # Initialize model components
-        self.state = {
-            'matrices': {k: v.to(self.device) for k, v in matrices.items()},
-            'parameters': nn.ParameterDict(),
-            'buffers': {},
-            'config': config,
-            'hierarchy_levels': self._determine_hierarchy_levels(matrices)
-        }
-        
-        # Initialize trainable parameters
-        self._initialize_parameters()
-        
-        # Build the model
-        self.model = RGMModel(self.state).to(self.device)
-        
-    def _validate_matrices(self, matrices: Dict[str, torch.Tensor]):
-        """Validate matrix dimensions and relationships."""
-        # Check matrix existence
-        required = ['A0', 'B0', 'D0']
-        for name in required:
-            if name not in matrices:
-                raise ValueError(f"Missing required matrix: {name}")
-        
-        # Expected dimensions for each level
-        dimensions = {
-            0: {'input': 784, 'latent': 256},
-            1: {'input': 256, 'latent': 64},
-            2: {'input': 64, 'latent': 16}
-        }
-        
-        # Validate dimensions
-        levels = sum(1 for k in matrices if k.startswith('A'))
-        for l in range(levels):
-            A = matrices[f'A{l}']
-            B = matrices[f'B{l}']
-            D = matrices[f'D{l}']
-            
-            expected_input = dimensions[l]['input']
-            expected_latent = dimensions[l]['latent']
-            
-            # Check recognition matrix (A)
-            if A.size() != (expected_input, expected_latent):
-                raise ValueError(
-                    f"A{l} has wrong dimensions: {A.size()}, "
-                    f"expected ({expected_input}, {expected_latent})"
-                )
-            
-            # Check generative matrix (B)
-            if B.size() != (expected_latent, expected_input):
-                raise ValueError(
-                    f"B{l} has wrong dimensions: {B.size()}, "
-                    f"expected ({expected_latent}, {expected_input})"
-                )
-            
-            # Check lateral connections (D)
-            if D.size() != (expected_latent, expected_latent):
-                raise ValueError(
-                    f"D{l} must be square {expected_latent}x{expected_latent}, "
-                    f"got {D.size()}"
-                )
-            
-            # Additional checks
-            if not torch.allclose(D, D.t()):
-                self.logger.warning(f"D{l} is not symmetric")
-            
-            if torch.any(D < 0):
-                self.logger.warning(f"D{l} contains negative values")
-                
-    def _reshape_matrices(self, matrices: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
-        """Reshape matrices for proper dimensions."""
-        reshaped = {}
+        # Register matrices as parameters
         for name, matrix in matrices.items():
-            if name.startswith('A'):
-                # Recognition matrices (bottom-up)
-                level = int(name[1])
-                input_size = 784 if level == 0 else 256 // (4 ** (level-1))
-                output_size = 256 // (4 ** level)
-                reshaped[name] = matrix.reshape(input_size, output_size)
-                
-            elif name.startswith('B'):
-                # Generative matrices (top-down)
-                level = int(name[1])
-                input_size = 256 // (4 ** level)
-                output_size = 784 if level == 0 else 256 // (4 ** (level-1))
-                reshaped[name] = matrix.reshape(input_size, output_size)
-                
-            elif name.startswith('D'):
-                # Lateral connection matrices
-                level = int(name[1])
-                size = 256 // (4 ** level)
-                reshaped[name] = matrix.reshape(size, size)
-                
-        return reshaped
+            self.register_parameter(
+                name, 
+                nn.Parameter(matrix.to(self.device))
+            )
         
-    def _determine_hierarchy_levels(self, matrices: Dict[str, torch.Tensor]) -> int:
-        """Determine number of hierarchy levels from matrices."""
-        levels = 0
-        while f'A{levels}' in matrices:
-            levels += 1
-        return levels
-        
-    def _initialize_parameters(self):
-        """Initialize trainable parameters."""
-        # Initialize hierarchy level parameters
-        for level in range(self.state['hierarchy_levels']):
-            # Weight matrices for each level
-            self.state['parameters'][f'W{level}'] = nn.Parameter(
-                torch.randn_like(self.state['matrices'][f'A{level}']) * 0.01,
+        # Initialize hierarchical states
+        self.states = {}
+        for level in range(3):
+            state_size = getattr(self, f"L{level}").shape[0]
+            self.states[f"level{level}"] = torch.zeros(
+                state_size, 
+                device=self.device,
                 requires_grad=True
             )
             
-            # Bias terms
-            self.state['parameters'][f'b{level}'] = nn.Parameter(
-                torch.zeros(self.state['matrices'][f'B{level}'].size(0)),
-                requires_grad=True
-            )
-            
-            # Scale factors
-            self.state['parameters'][f'scale{level}'] = nn.Parameter(
-                torch.ones(1),
-                requires_grad=True
-            )
+        # Initialize dynamic variables
+        self.prediction_errors = {f"level{i}": None for i in range(3)}
+        self.predictions = {f"level{i}": None for i in range(3)}
+        self.factors = {f"level{i}": None for i in range(3)}
         
-        # Initialize global parameters
-        self.state['parameters']['global_scale'] = nn.Parameter(
-            torch.ones(1),
-            requires_grad=True
+        # Training state
+        self.training = True
+        self.epoch = 0
+        self.global_step = 0
+        
+        # Loss functions
+        self.reconstruction_loss = nn.MSELoss()
+        self.prediction_loss = nn.MSELoss()
+        self.sparsity_loss = nn.L1Loss()
+        
+        # Visualization directory
+        self.vis_dir = None
+        
+        self.logger.debug(
+            f"Initialized model state on {self.device} with "
+            f"{len(matrices)} matrices and {len(self.states)} state tensors"
         )
         
-        self.logger.info(f"✓ Initialized {len(self.state['parameters'])} parameter groups")
+    def set_visualization_dir(self, vis_dir: Path):
+        """Set directory for saving visualizations."""
+        self.vis_dir = vis_dir
+        self.vis_dir.mkdir(exist_ok=True)
         
-    def get_parameters(self) -> List[nn.Parameter]:
-        """Get list of trainable parameters."""
-        return list(self.state['parameters'].values())
+    def visualize_batch(self, x: torch.Tensor, outputs: Dict[str, torch.Tensor], batch_idx: int):
+        """
+        Visualize input batch and model outputs.
         
-    def save_checkpoint(self, path: Path):
-        """Save model checkpoint."""
-        checkpoint = {
-            'matrices': {k: v.cpu() for k, v in self.state['matrices'].items()},
-            'parameters': {k: v.cpu() for k, v in self.state['parameters'].items()},
-            'buffers': {k: v.cpu() for k, v in self.state['buffers'].items()},
-            'config': self.state['config'],
-            'hierarchy_levels': self.state['hierarchy_levels']
-        }
-        torch.save(checkpoint, path)
-        
-    @classmethod
-    def load_checkpoint(cls, path: Path, device: Optional[torch.device] = None):
-        """Load model checkpoint."""
-        if device is None:
-            device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        Args:
+            x: Input batch (B, 784)
+            outputs: Model outputs dictionary
+            batch_idx: Current batch index
+        """
+        if not self.vis_dir:
+            return
             
-        checkpoint = torch.load(path, map_location=device)
-        model_state = cls(checkpoint['matrices'], checkpoint['config'])
+        # Reshape images to 28x28
+        input_images = x.reshape(-1, 28, 28).cpu().numpy()
+        recon_images = outputs['predictions']['level0'].reshape(-1, 28, 28).detach().cpu().numpy()
         
-        # Load parameters and buffers
-        for k, v in checkpoint['parameters'].items():
-            model_state.state['parameters'][k] = nn.Parameter(v.to(device))
-        for k, v in checkpoint['buffers'].items():
-            model_state.state['buffers'][k] = v.to(device)
-            
-        return model_state
-
-class RGMModel(nn.Module):
-    """RGM Neural Network Model."""
-    
-    def __init__(self, state: Dict):
-        """Initialize RGM model."""
-        super().__init__()
-        self.state = state
-        self.hierarchy_levels = state['hierarchy_levels']
+        # Create figure with input-reconstruction pairs
+        n_samples = min(5, len(input_images))
+        fig, axes = plt.subplots(2, n_samples, figsize=(2*n_samples, 4))
         
-        # Create neural network layers
-        self.layers = nn.ModuleList([
-            RGMHierarchyLevel(
-                state['matrices'][f'A{i}'],
-                state['matrices'][f'B{i}'],
-                state['matrices'][f'D{i}'],
-                state['parameters'][f'W{i}'],
-                state['parameters'][f'b{i}'],
-                state['parameters'][f'scale{i}']
-            )
-            for i in range(self.hierarchy_levels)
-        ])
+        for i in range(n_samples):
+            # Original
+            axes[0,i].imshow(input_images[i], cmap='gray')
+            axes[0,i].axis('off')
+            if i == 0:
+                axes[0,i].set_title('Input')
+                
+            # Reconstruction
+            axes[1,i].imshow(recon_images[i], cmap='gray')
+            axes[1,i].axis('off')
+            if i == 0:
+                axes[1,i].set_title('Reconstruction')
+                
+        plt.tight_layout()
+        save_path = self.vis_dir / f"batch_{batch_idx:04d}.png"
+        plt.savefig(save_path)
+        plt.close()
         
-        # Add batch normalization layers
-        self.batch_norms = nn.ModuleList([
-            nn.BatchNorm1d(state['matrices'][f'B{i}'].size(0))
-            for i in range(self.hierarchy_levels)
-        ])
-        
-        # Add dropout
-        self.dropout = nn.Dropout(p=state['config'].get('dropout_rate', 0.1))
+        # Log reconstruction error
+        mse = F.mse_loss(
+            torch.tensor(input_images), 
+            torch.tensor(recon_images)
+        ).item()
+        self.logger.debug(f"Batch {batch_idx} MSE: {mse:.4f}")
         
     def forward(self, x: torch.Tensor) -> Dict[str, torch.Tensor]:
-        """Forward pass through the model."""
-        batch_size = x.size(0)
-        outputs = {'layer_outputs': [], 'latents': []}
-        current = x
+        """
+        Forward pass through the model.
         
-        # Forward through hierarchy
-        for i, (layer, bn) in enumerate(zip(self.layers, self.batch_norms)):
-            current, latent = layer(current)
-            current = bn(current)
-            current = self.dropout(current)
-            outputs['layer_outputs'].append(current)
-            outputs['latents'].append(latent)
+        Args:
+            x: Input tensor (batch_size, 784)
+            
+        Returns:
+            Dictionary containing:
+            - output: Final output tensor (batch_size, 10)
+            - states: Intermediate states
+            - predictions: Generated predictions
+            - errors: Prediction errors
+            - loss: Total loss value
+        """
+        batch_size = x.shape[0]
         
-        # Final reconstruction
-        outputs['reconstructed'] = self.layers[0].reconstruct(outputs['latents'][0])
+        # Bottom-up pass (Recognition)
+        h0 = F.relu(x @ self.R0.t())  # Level 0 state
+        h1 = F.relu(h0 @ self.R1.t())  # Level 1 state
+        h2 = F.relu(h1 @ self.R2.t())  # Level 2 state
         
-        return outputs
-
-class RGMHierarchyLevel(nn.Module):
-    """Single level of the RGM hierarchy."""
-    
-    def __init__(self, A: torch.Tensor, B: torch.Tensor, D: torch.Tensor,
-                 W: nn.Parameter, b: nn.Parameter, scale: nn.Parameter):
-        """Initialize hierarchy level."""
-        super().__init__()
-        self.A = A
-        self.B = B
-        self.D = D
-        self.W = W
-        self.b = b
-        self.scale = scale
+        # Store states
+        states = {
+            'level0': h0,
+            'level1': h1,
+            'level2': h2
+        }
         
-        # Activation function
-        self.activation = nn.ReLU()
+        # Top-down pass (Generation)
+        p2 = F.relu(h2 @ self.G2.t())  # Level 2 prediction
+        p1 = F.relu(p2 @ self.G1.t())  # Level 1 prediction
+        p0 = torch.sigmoid(p1 @ self.G0.t())  # Level 0 prediction (image reconstruction)
         
-    def forward(self, x: torch.Tensor) -> tuple:
-        """Forward pass through hierarchy level."""
-        # Compute latent representation
-        latent = self.activation(torch.matmul(x, self.W) + self.b)
-        latent = latent * self.scale
+        # Store predictions
+        predictions = {
+            'level0': p0,
+            'level1': p1,
+            'level2': p2
+        }
         
-        # Transform through level matrices
-        output = torch.matmul(latent, self.B)
+        # Compute prediction errors
+        e0 = x - p0
+        e1 = h0 - p1
+        e2 = h1 - p2
         
-        return output, latent
+        # Store prediction errors
+        errors = {
+            'level0': e0,
+            'level1': e1,
+            'level2': e2
+        }
         
-    def reconstruct(self, latent: torch.Tensor) -> torch.Tensor:
-        """Reconstruct input from latent representation."""
-        return torch.matmul(latent, self.A)
+        # Compute losses
+        recon_loss = self.reconstruction_loss(p0, x)
+        pred_loss = (
+            self.prediction_loss(p1, h0) + 
+            self.prediction_loss(p2, h1)
+        )
+        sparsity_loss = (
+            self.sparsity_loss(h0, torch.zeros_like(h0)) +
+            self.sparsity_loss(h1, torch.zeros_like(h1)) +
+            self.sparsity_loss(h2, torch.zeros_like(h2))
+        )
+        
+        total_loss = recon_loss + pred_loss + 0.1 * sparsity_loss
+        
+        return {
+            'output': h2,
+            'states': states,
+            'predictions': predictions,
+            'errors': errors,
+            'loss': total_loss,
+            'loss_components': {
+                'reconstruction': recon_loss.item(),
+                'prediction': pred_loss.item(),
+                'sparsity': sparsity_loss.item()
+            }
+        }
+        
+    def get_parameters(self) -> Iterator[nn.Parameter]:
+        """Get trainable parameters for optimizer."""
+        return self.parameters()
+        
+    def get_matrix(self, name: str) -> torch.Tensor:
+        """Get matrix by name."""
+        if not hasattr(self, name):
+            raise KeyError(f"Matrix not found: {name}")
+        return getattr(self, name)
+        
+    def get_state(self, level: int) -> torch.Tensor:
+        """Get state tensor for given level."""
+        key = f"level{level}"
+        if key not in self.states:
+            raise KeyError(f"State not found: {key}")
+        return self.states[key]
+        
+    def set_state(self, level: int, state: torch.Tensor):
+        """
+        Set state tensor for given level.
+        
+        Args:
+            level: Hierarchy level
+            state: New state tensor
+        """
+        key = f"level{level}"
+        if key not in self.states:
+            raise KeyError(f"Invalid level: {level}")
+        self.states[key] = state.to(self.device)
+        
+    def reset_states(self):
+        """Reset all state tensors to zero."""
+        for level in range(3):
+            state_size = self.matrices[f"L{level}"].shape[0]
+            self.states[f"level{level}"] = torch.zeros(
+                state_size,
+                device=self.device,
+                requires_grad=True
+            )
+        self.logger.debug("Reset all state tensors to zero")
+        
+    def train(self, mode: bool = True):
+        """Set training mode."""
+        self.training = mode
+        
+    def eval(self):
+        """Set evaluation mode."""
+        self.training = False
+        
+    def state_dict(self) -> Dict:
+        """
+        Get state dictionary for checkpointing.
+        
+        Returns:
+            Dictionary containing model state
+        """
+        return {
+            'matrices': self.matrices,
+            'states': self.states,
+            'epoch': self.epoch,
+            'global_step': self.global_step
+        }
+        
+    def load_state_dict(self, state_dict: Dict):
+        """
+        Load state from dictionary.
+        
+        Args:
+            state_dict: Dictionary containing model state
+        """
+        self.matrices = {
+            k: v.to(self.device) 
+            for k, v in state_dict['matrices'].items()
+        }
+        self.states = {
+            k: v.to(self.device)
+            for k, v in state_dict['states'].items()
+        }
+        self.epoch = state_dict['epoch']
+        self.global_step = state_dict['global_step']

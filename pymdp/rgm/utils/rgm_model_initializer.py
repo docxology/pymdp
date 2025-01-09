@@ -15,6 +15,13 @@ from .rgm_logging import RGMLogging
 class RGMModelInitializer:
     """Initializes RGM model components."""
     
+    # Matrix name mappings (old -> new)
+    MATRIX_MAPPINGS = {
+        'A': 'R',  # Recognition (bottom-up)
+        'B': 'G',  # Generative (top-down)
+        'D': 'L'   # Lateral (contextual)
+    }
+    
     def __init__(self, exp_dir: Path, device: Optional[torch.device] = None):
         """
         Initialize model loader.
@@ -32,28 +39,56 @@ class RGMModelInitializer:
         Load saved matrices from experiment directory.
         
         Returns:
-            Dictionary of loaded matrices
+            Dictionary of loaded matrices with standardized naming
         """
         try:
             matrices_dir = self.exp_dir / "matrices"
             if not matrices_dir.exists():
                 raise FileNotFoundError(f"Matrices directory not found: {matrices_dir}")
                 
-            matrices = {}
+            # Load matrices with original names
+            raw_matrices = {}
             for matrix_file in matrices_dir.glob("*.npy"):
                 name = matrix_file.stem
                 matrix = torch.from_numpy(np.load(matrix_file)).to(self.device)
-                matrices[name] = matrix
+                raw_matrices[name] = matrix
                 
+            # Convert to standardized naming
+            matrices = self._standardize_matrix_names(raw_matrices)
+            
             self._validate_loaded_matrices(matrices)
             
-            self.logger.info(f"Loaded {len(matrices)} matrices from {matrices_dir}")
+            self.logger.info(
+                f"Loaded {len(matrices)} matrices from {matrices_dir} "
+                f"with standardized naming (R/G/L)"
+            )
             return matrices
             
         except Exception as e:
             self.logger.error(f"Error loading matrices: {str(e)}")
             raise
             
+    def _standardize_matrix_names(self, matrices: Dict[str, torch.Tensor]) -> Dict[str, torch.Tensor]:
+        """
+        Convert matrix names to standardized format.
+        
+        Args:
+            matrices: Dictionary of matrices with original names
+            
+        Returns:
+            Dictionary of matrices with standardized names
+        """
+        standardized = {}
+        for old_name, matrix in matrices.items():
+            prefix = old_name[0]
+            if prefix in self.MATRIX_MAPPINGS:
+                new_name = old_name.replace(prefix, self.MATRIX_MAPPINGS[prefix], 1)
+                standardized[new_name] = matrix
+            else:
+                standardized[old_name] = matrix
+                
+        return standardized
+        
     def _validate_loaded_matrices(self, matrices: Dict[str, torch.Tensor]):
         """
         Validate loaded matrices.

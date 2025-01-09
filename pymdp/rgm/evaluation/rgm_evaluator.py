@@ -1,91 +1,124 @@
 """
 RGM Model Evaluator
-================
+=================
 
-Evaluation utilities for the Renormalization Generative Model.
+Handles evaluation and analysis of trained RGM models.
 """
 
 import torch
-import numpy as np
+import torch.nn.functional as F
+from torch.utils.data import DataLoader
 from pathlib import Path
-from typing import Dict, Optional
-import time
-from sklearn.metrics import confusion_matrix
+import numpy as np
 import matplotlib.pyplot as plt
+from typing import Dict, Optional
+from sklearn.metrics import confusion_matrix
 import seaborn as sns
 
-from rgm.utils import RGMLogging
+from ..utils.rgm_logging import RGMLogging
+from ..utils.visualization_utils import RGMVisualizationUtils
 
 class RGMEvaluator:
-    """Handles evaluation for the Renormalization Generative Model."""
+    """Evaluates trained RGM models."""
     
-    def __init__(self, model_state: Dict, config: Dict):
-        """
-        Initialize evaluator.
-        
-        Args:
-            model_state: Model state dictionary
-            config: Evaluation configuration
-        """
+    def __init__(
+        self,
+        model,
+        test_loader: DataLoader,
+        exp_dir: Path,
+        device: Optional[torch.device] = None
+    ):
+        """Initialize evaluator."""
         self.logger = RGMLogging.get_logger("rgm.evaluator")
-        self.model_state = model_state
-        self.config = config
-        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        self.model = model
+        self.test_loader = test_loader
+        self.exp_dir = exp_dir
+        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-    def compute_metrics(self, test_data: Dict) -> Dict:
-        """
-        Compute comprehensive evaluation metrics.
+        # Create evaluation directory
+        self.eval_dir = exp_dir / "evaluation"
+        self.eval_dir.mkdir(exist_ok=True, parents=True)
         
-        Args:
-            test_data: Test dataset
-            
-        Returns:
-            Dictionary of evaluation metrics
-        """
-        metrics = {}
+    def evaluate(self):
+        """Run complete evaluation."""
+        self.logger.info("Starting model evaluation...")
+        self.model.eval()
         
-        # Reconstruction Error
-        metrics['reconstruction_error'] = self._compute_reconstruction_error(test_data)
+        # Collect predictions and targets
+        all_preds = []
+        all_targets = []
+        reconstruction_error = 0.0
         
-        # Generation Quality
-        metrics['generation_quality'] = self._compute_generation_quality()
+        with torch.no_grad():
+            for data, targets in self.test_loader:
+                data = data.to(self.device)
+                outputs = self.model(data)
+                
+                # Store predictions and targets
+                preds = outputs['output'].argmax(dim=1)
+                all_preds.extend(preds.cpu().numpy())
+                all_targets.extend(targets.numpy())
+                
+                # Calculate reconstruction error
+                reconstruction_error += F.mse_loss(
+                    outputs['predictions']['level0'],
+                    data
+                ).item()
+                
+                # Visualize sample reconstructions
+                if len(all_preds) <= 100:  # Only first batch
+                    self._visualize_reconstructions(
+                        data,
+                        outputs['predictions']['level0'],
+                        targets,
+                        batch_idx=len(all_preds)//len(data)
+                    )
+                    
+        # Calculate metrics
+        reconstruction_error /= len(self.test_loader)
+        accuracy = np.mean(np.array(all_preds) == np.array(all_targets))
         
-        # Classification Accuracy
-        metrics['classification_accuracy'] = self._compute_classification_accuracy(test_data)
+        # Log results
+        self.logger.info("\n📊 Evaluation Results:")
+        self.logger.info(f"   • Accuracy: {accuracy:.4f}")
+        self.logger.info(f"   • Reconstruction Error: {reconstruction_error:.4f}")
         
-        # Latent Space Analysis
-        metrics['latent_space'] = self._analyze_latent_space()
+        # Generate confusion matrix
+        self._plot_confusion_matrix(all_targets, all_preds)
         
-        return metrics
+        self.logger.info(f"\n💾 Evaluation results saved to: {self.eval_dir}")
         
-    def generate_visualizations(self, output_dir: Path):
-        """
-        Generate evaluation visualizations.
+    def _visualize_reconstructions(
+        self,
+        inputs: torch.Tensor,
+        reconstructions: torch.Tensor,
+        labels: torch.Tensor,
+        batch_idx: int
+    ):
+        """Visualize input-reconstruction pairs."""
+        save_path = self.eval_dir / f"reconstructions_batch_{batch_idx:03d}.png"
+        RGMVisualizationUtils.plot_mnist_grid(
+            images=inputs,
+            reconstructions=reconstructions,
+            save_path=save_path,
+            title=f"Test Set Reconstructions (Batch {batch_idx})"
+        )
         
-        Args:
-            output_dir: Directory to save visualizations
-        """
-        vis_dir = output_dir / "evaluation_visualizations"
-        vis_dir.mkdir(exist_ok=True)
-        
-        # TODO: Implement visualization generation
-        
-    def _compute_reconstruction_error(self, test_data: Dict) -> float:
-        """Compute reconstruction error."""
-        # TODO: Implement reconstruction error computation
-        return 0.0
-        
-    def _compute_generation_quality(self) -> float:
-        """Compute generation quality metric."""
-        # TODO: Implement generation quality computation
-        return 0.0
-        
-    def _compute_classification_accuracy(self, test_data: Dict) -> float:
-        """Compute classification accuracy."""
-        # TODO: Implement classification accuracy computation
-        return 0.0
-        
-    def _analyze_latent_space(self) -> Dict:
-        """Analyze latent space structure."""
-        # TODO: Implement latent space analysis
-        return {} 
+    def _plot_confusion_matrix(self, targets: list, predictions: list):
+        """Generate and save confusion matrix plot."""
+        cm = confusion_matrix(targets, predictions)
+        plt.figure(figsize=(10, 8))
+        sns.heatmap(
+            cm,
+            annot=True,
+            fmt='d',
+            cmap='Blues',
+            xticklabels=range(10),
+            yticklabels=range(10)
+        )
+        plt.title('Confusion Matrix')
+        plt.xlabel('Predicted')
+        plt.ylabel('True')
+        plt.tight_layout()
+        plt.savefig(self.eval_dir / "confusion_matrix.png")
+        plt.close() 

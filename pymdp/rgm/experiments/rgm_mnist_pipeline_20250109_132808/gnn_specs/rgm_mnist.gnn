@@ -1,0 +1,64 @@
+"""
+RGM MNIST Configuration
+====================
+
+MNIST-specific configuration for the Renormalization Generative Model.
+Extends base configuration with MNIST-specific parameters and architecture.
+"""
+
+# MNIST-specific Hierarchy
+hierarchy:
+  levels: 3  # Number of hierarchical levels
+  dimensions:
+    level0:
+      input: 784    # MNIST image size (28x28)
+      state: 256    # First-level features
+      factor: 64    # First-level factors
+    level1:
+      input: 256
+      state: 64
+      factor: 32
+    level2:
+      input: 64
+      state: 16
+      factor: 10    # Final classification dimension (10 digits)
+
+# MNIST-specific Matrix Configurations
+matrices:
+  recognition:  # Bottom-up feature extraction
+    A0: [256, 784]  # Edge and basic shape detection
+    A1: [64, 256]   # Part composition
+    A2: [16, 64]    # Digit classification
+    
+  generative:   # Top-down reconstruction
+    B0: [784, 256]  # Image reconstruction
+    B1: [256, 64]   # Part generation
+    B2: [64, 16]    # Digit generation
+    
+  lateral:      # Within-level feature refinement
+    D0: [256, 256]  # Low-level feature relationships
+    D1: [64, 64]    # Mid-level feature relationships
+    D2: [16, 16]    # High-level digit relationships
+
+# MNIST-specific Learning Parameters
+learning:
+  batch_size: 128
+  n_epochs: 100
+  learning_rate: 0.001
+  
+  # MNIST-specific Free Energy Components
+  free_energy:
+    accuracy_weight: 1.0     # Reconstruction accuracy
+    complexity_weight: 0.1   # Latent space regularization
+    precision_weight: 0.01   # Uncertainty weighting
+
+# MNIST Data Processing
+data:
+  preprocessing:
+    normalize: true
+    center: true
+    flatten: true
+  augmentation:
+    enable: false
+    rotation: 10
+    scale: 0.1 

@@ -68,9 +68,17 @@ class RGMRenderer:
         return matrices
         
     def _save_matrices(self, matrices: Dict[str, torch.Tensor]):
-        """Save matrices to files."""
+        """
+        Save matrices to files.
+        
+        Note: Matrices are saved with legacy naming (A/B/D) for backward compatibility.
+        The model initializer will convert these to standardized names (R/G/L) during loading.
+        """
+        matrices_dir = self.exp_dir / "matrices"
+        matrices_dir.mkdir(exist_ok=True)
+        
         for name, matrix in matrices.items():
-            file_path = self.exp_dir / f"{name}.npy"
+            file_path = matrices_dir / f"{name}.npy"
             np.save(file_path, matrix.cpu().numpy())
             
     def _generate_visualizations(self, matrices: Dict[str, torch.Tensor]):

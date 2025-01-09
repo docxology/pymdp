@@ -1,248 +1,293 @@
 """
 RGM Model Trainer
-==============
+=================
 
-Training implementation for the Renormalization Generative Model.
+Handles training loop and optimization for the RGM model.
 """
 
 import torch
 import torch.nn as nn
 from torch.utils.data import DataLoader
 from pathlib import Path
+import logging
 from typing import Dict, Optional
-import time
-import psutil
-import numpy as np
 from tqdm import tqdm
+import json
+from datetime import datetime
+import matplotlib.pyplot as plt
 
-from rgm.utils import RGMLogging
-from rgm.utils.rgm_model_state import RGMModelState
-from rgm.utils.rgm_progress_tracker import RGMProgressTracker
+from ..utils.rgm_logging import RGMLogging
+from ..utils.rgm_model_state import RGMModelState
+from ..utils.visualization_utils import RGMVisualizationUtils
 
 class RGMTrainer:
-    """Handles training for the Renormalization Generative Model."""
+    """Manages training of the RGM model."""
     
-    def __init__(self, model_state: RGMModelState, config: Dict, data_loaders: Dict[str, DataLoader]):
-        """Initialize trainer."""
-        self.logger = RGMLogging.get_logger("rgm.trainer")
-        self.model_state = model_state
-        self.config = config
-        self.device = model_state.device
-        self.data_loaders = data_loaders
+    def __init__(
+        self,
+        model_state: RGMModelState,  # Changed from 'model' to 'model_state'
+        train_loader: DataLoader,
+        val_loader: DataLoader,
+        config: Dict,
+        exp_dir: Path,
+        device: Optional[torch.device] = None
+    ):
+        """
+        Initialize trainer.
         
-        # Initialize optimizer and scheduler
-        self.optimizer = self._initialize_optimizer()
-        self.scheduler = self._initialize_scheduler()
+        Args:
+            model_state: RGM model state
+            train_loader: Training data loader
+            val_loader: Validation data loader
+            config: Training configuration
+            exp_dir: Experiment directory
+            device: Computation device
+        """
+        self.logger = RGMLogging.get_logger("rgm.trainer")
+        self.device = device or torch.device("cuda" if torch.cuda.is_available() else "cpu")
+        
+        # Model and data
+        self.model_state = model_state
+        self.train_loader = train_loader
+        self.val_loader = val_loader
+        
+        # Training config
+        self.config = config
+        self.n_epochs = config["n_epochs"]
+        self.batch_size = config["batch_size"]
+        self.learning_rate = config["learning_rate"]
+        
+        # Setup directories
+        self.exp_dir = exp_dir
+        self.checkpoint_dir = exp_dir / "checkpoints"
+        self.vis_dir = exp_dir / "visualizations" / "training"
+        self.log_dir = exp_dir / "logs"
+        
+        # Create directories
+        self.checkpoint_dir.mkdir(exist_ok=True)
+        self.vis_dir.mkdir(exist_ok=True, parents=True)
+        self.log_dir.mkdir(exist_ok=True)
+        
+        # Set visualization directory in model
+        self.model_state.set_visualization_dir(self.vis_dir)
         
         # Training state
         self.current_epoch = 0
-        self.best_loss = float('inf')
-        self.epochs_without_improvement = 0
+        self.global_step = 0
+        self.best_val_loss = float('inf')
+        self.patience_counter = 0
         
-        # Initialize progress tracker
-        self.progress_tracker = RGMProgressTracker(
-            self.config.get('output_dir', Path('training_progress'))
-        )
+        # Initialize optimizer and scheduler
+        self._setup_training()
         
         self.logger.info(f"🔧 Trainer initialized on device: {self.device}")
         
-    def _initialize_optimizer(self) -> torch.optim.Optimizer:
-        """Initialize optimizer."""
-        optimizer_config = self.config.get('optimizer', {})
-        optimizer_type = optimizer_config.get('type', 'adam').lower()
+    def _setup_training(self):
+        """Setup optimizer and learning rate scheduler."""
+        # Get optimizer config
+        opt_config = self.config["optimizer"]
         
-        if optimizer_type == 'adam':
-            return torch.optim.Adam(
-                self.model_state.get_parameters(),
-                lr=self.config['learning_rate'],
-                betas=optimizer_config.get('betas', (0.9, 0.999)),
-                weight_decay=optimizer_config.get('weight_decay', 1e-5)
-            )
-        # Add other optimizer types as needed
+        # Setup optimizer
+        self.optimizer = torch.optim.Adam(
+            self.model_state.parameters(),
+            lr=self.learning_rate,
+            betas=tuple(opt_config["betas"]),
+            weight_decay=opt_config["weight_decay"]
+        )
         
-        raise ValueError(f"Unsupported optimizer type: {optimizer_type}")
+        # Setup scheduler
+        sched_config = self.config["scheduler"]
+        self.scheduler = torch.optim.lr_scheduler.ReduceLROnPlateau(
+            self.optimizer,
+            mode='min',
+            factor=sched_config["factor"],
+            patience=sched_config["patience"],
+            min_lr=sched_config["min_lr"]
+        )
         
-    def _initialize_scheduler(self) -> torch.optim.lr_scheduler._LRScheduler:
-        """Initialize learning rate scheduler."""
-        scheduler_config = self.config.get('scheduler', {})
-        scheduler_type = scheduler_config.get('type', 'plateau').lower()
+    def _log_training_state(self, epoch: int, batch_idx: int, loss: float, outputs: Dict):
+        """Log training progress."""
+        # Calculate progress
+        progress = batch_idx / len(self.train_loader) * 100
         
-        if scheduler_type == 'plateau':
-            return torch.optim.lr_scheduler.ReduceLROnPlateau(
-                self.optimizer,
-                mode='min',
-                factor=scheduler_config.get('factor', 0.5),
-                patience=scheduler_config.get('patience', 5),
-                min_lr=scheduler_config.get('min_lr', 1e-6)
-            )
-        # Add other scheduler types as needed
+        # Log to console
+        self.logger.info(
+            f"Epoch [{epoch+1}/{self.n_epochs}] "
+            f"[{batch_idx:>4d}/{len(self.train_loader):<4d} ({progress:>3.0f}%)] "
+            f"Loss: {loss:.6f}"
+        )
         
-        raise ValueError(f"Unsupported scheduler type: {scheduler_type}")
-        
-    def train_epoch(self, train_loader: DataLoader) -> Dict:
-        """Train for one epoch."""
-        self.current_epoch += 1
-        epoch_metrics = {
-            'loss': 0.0,
-            'reconstruction_error': 0.0,
-            'samples_processed': 0,
-            'batch_losses': []
+        # Save training state
+        state = {
+            'timestamp': datetime.now().isoformat(),
+            'epoch': epoch,
+            'batch': batch_idx,
+            'loss': loss,
+            'learning_rate': self.optimizer.param_groups[0]['lr'],
+            'loss_components': outputs['loss_components']
         }
         
-        start_time = time.time()
-        n_batches = len(train_loader)
-        log_interval = max(n_batches // 10, 1)  # Log roughly 10 times per epoch
+        with open(self.log_dir / 'training_log.jsonl', 'a') as f:
+            f.write(json.dumps(state) + '\n')
+            
+    def train_epoch(self):
+        """Train for one epoch."""
+        self.model_state.train()
+        epoch_loss = 0.0
         
-        # Use tqdm for progress bar
-        pbar = tqdm(train_loader, desc=f"Epoch {self.current_epoch}/{self.config['n_epochs']}", 
-                   leave=False)
-        
-        for batch_idx, (data, labels) in enumerate(pbar):
-            try:
+        with tqdm(self.train_loader, desc=f"Epoch {self.current_epoch+1}/{self.n_epochs}") as pbar:
+            for batch_idx, (data, _) in enumerate(pbar):
                 data = data.to(self.device)
-                labels = labels.to(self.device)
                 
                 # Forward pass
-                self.optimizer.zero_grad()
-                outputs = self._forward_pass(data)
-                loss = self._compute_loss(outputs, data, labels)
+                outputs = self.model_state(data)
+                loss = outputs['loss']
                 
                 # Backward pass
+                self.optimizer.zero_grad()
                 loss.backward()
-                torch.nn.utils.clip_grad_norm_(self.model_state.get_parameters(), 1.0)
                 self.optimizer.step()
                 
                 # Update metrics
-                batch_loss = loss.item()
-                epoch_metrics['loss'] += batch_loss
-                epoch_metrics['batch_losses'].append(batch_loss)
-                epoch_metrics['samples_processed'] += len(data)
+                epoch_loss += loss.item()
+                self.global_step += 1
                 
-                # Update progress bar
-                avg_loss = epoch_metrics['loss'] / (batch_idx + 1)
-                pbar.set_postfix({
-                    'loss': f"{batch_loss:.4f}",
-                    'avg_loss': f"{avg_loss:.4f}",
-                    'lr': f"{self.optimizer.param_groups[0]['lr']:.6f}"
-                })
-                
-                # Periodic logging
-                if batch_idx % self.config['log_interval'] == 0:
-                    self.logger.info(
-                        f"   ↳ Batch [{batch_idx:>5}/{n_batches}] "
-                        f"Loss: {batch_loss:.4f} "
-                        f"Avg Loss: {avg_loss:.4f}"
+                # Log progress
+                if batch_idx % self.config["log_interval"] == 0:
+                    self._log_training_state(
+                        self.current_epoch,
+                        batch_idx,
+                        loss.item(),
+                        outputs
                     )
                     
-            except torch.cuda.OutOfMemoryError:
-                self.logger.error("❌ GPU out of memory!")
-                torch.cuda.empty_cache()
-                raise
+                    # Visualize batch
+                    self.model_state.visualize_batch(data, outputs, batch_idx)
+                    
+                # Update progress bar
+                pbar.set_postfix({
+                    'loss': f"{loss.item():.4f}",
+                    'recon': f"{outputs['loss_components']['reconstruction']:.4f}",
+                    'pred': f"{outputs['loss_components']['prediction']:.4f}",
+                    'sparse': f"{outputs['loss_components']['sparsity']:.4f}"
+                })
                 
-            except Exception as e:
-                self.logger.error(f"❌ Error in batch {batch_idx}: {str(e)}")
-                raise
+        return epoch_loss / len(self.train_loader) 
         
-        # Compute epoch statistics
-        epoch_metrics.update({
-            'time': time.time() - start_time,
-            'avg_loss': epoch_metrics['loss'] / n_batches,
-            'loss_std': np.std(epoch_metrics['batch_losses']),
-            'learning_rate': self.optimizer.param_groups[0]['lr']
-        })
+    def train(self):
+        """
+        Execute complete training loop.
         
-        # Update learning rate scheduler
-        old_lr = self.optimizer.param_groups[0]['lr']
-        self.scheduler.step(epoch_metrics['avg_loss'])
-        new_lr = self.optimizer.param_groups[0]['lr']
+        This method:
+        1. Runs training epochs
+        2. Performs validation
+        3. Handles checkpointing
+        4. Manages early stopping
+        5. Updates learning rate
+        """
+        self.logger.info("\n🏃 Starting training loop...")
         
-        if new_lr != old_lr:
-            self.logger.info(f"📉 Learning rate adjusted: {old_lr:.6f} → {new_lr:.6f}")
-        
-        # Early stopping check
-        if epoch_metrics['avg_loss'] < self.best_loss - self.config['early_stopping']['min_delta']:
-            self.best_loss = epoch_metrics['avg_loss']
-            self.epochs_without_improvement = 0
-        else:
-            self.epochs_without_improvement += 1
+        try:
+            for epoch in range(self.n_epochs):
+                self.current_epoch = epoch
+                
+                # Training phase
+                train_loss = self.train_epoch()
+                
+                # Validation phase
+                if (epoch + 1) % self.config["validation_interval"] == 0:
+                    val_loss = self.validate()
+                    
+                    # Update learning rate
+                    self.scheduler.step(val_loss)
+                    
+                    # Check for early stopping
+                    if self._check_early_stopping(val_loss):
+                        self.logger.info("⚠️ Early stopping triggered!")
+                        break
+                    
+                    # Log validation results
+                    self.logger.info(
+                        f"\n📊 Epoch {epoch+1} Results:\n"
+                        f"   • Train Loss: {train_loss:.6f}\n"
+                        f"   • Val Loss:   {val_loss:.6f}\n"
+                        f"   • LR:         {self.optimizer.param_groups[0]['lr']:.6f}"
+                    )
+                
+                # Save checkpoint
+                if (epoch + 1) % self.config["checkpoint_interval"] == 0:
+                    self._save_checkpoint(f'epoch_{epoch+1}.pt')
+                    self.logger.info(f"💾 Checkpoint saved at epoch {epoch+1}")
+                    
+                # Plot training curves
+                if (epoch + 1) % self.config.get("plot_frequency", 5) == 0:
+                    self._plot_training_curves()
+                    
+        except Exception as e:
+            self.logger.error(f"❌ Training failed: {str(e)}")
+            raise
             
-        if self.epochs_without_improvement >= self.config['early_stopping']['patience']:
-            self.logger.info("⚠️ Early stopping triggered!")
-            epoch_metrics['early_stop'] = True
+        self.logger.info("✅ Training complete!")
         
-        # Update progress tracker
-        self.progress_tracker.update(self.current_epoch, epoch_metrics)
-        
-        return epoch_metrics
-    
-    def _forward_pass(self, data: torch.Tensor) -> Dict[str, torch.Tensor]:
-        """Perform forward pass through the model."""
-        return self.model_state.model(data)
-    
-    def _compute_loss(self, outputs: Dict[str, torch.Tensor], 
-                     data: torch.Tensor, labels: torch.Tensor) -> torch.Tensor:
-        """
-        Compute the total loss based on the Free Energy Principle.
-        
-        The loss consists of:
-        1. Reconstruction error (accuracy term)
-        2. KL divergence of latent states (complexity term)
-        3. Hierarchical consistency (message passing term)
-        4. Precision weighting of each term
-        """
-        # Flatten input data
-        batch_size = data.size(0)
-        data_flat = data.reshape(batch_size, -1)
-        
-        # 1. Reconstruction error (accuracy)
-        recon_loss = nn.MSELoss()(outputs['reconstructed'], data_flat)
-        
-        # 2. KL divergence (complexity)
-        kl_loss = sum(
-            -0.5 * torch.sum(1 + latent_log_var - latent_mean.pow(2) - latent_log_var.exp())
-            for latent_mean, latent_log_var in outputs['latent_params']
-        ) / batch_size
-        
-        # 3. Hierarchical consistency
-        consistency_loss = sum(
-            nn.MSELoss()(
-                outputs['top_down'][i],
-                outputs['bottom_up'][i]
-            )
-            for i in range(len(outputs['top_down']))
-        )
-        
-        # Combine losses with learned precision weights
-        total_loss = (
-            self.model_state.state['parameters']['precision_recon'] * recon_loss +
-            self.model_state.state['parameters']['precision_kl'] * kl_loss +
-            self.model_state.state['parameters']['precision_consistency'] * consistency_loss
-        )
-        
-        return total_loss
-    
-    def evaluate(self, val_loader: DataLoader) -> Dict:
-        """Evaluate model performance."""
-        self.model_state['model'].eval()
-        eval_metrics = {
-            'val_loss': 0.0,
-            'reconstruction_error': 0.0,
-            'generation_quality': 0.0
-        }
+    def validate(self):
+        """Run validation loop."""
+        self.model_state.eval()
+        val_loss = 0.0
         
         with torch.no_grad():
-            for data, labels in val_loader:
+            for data, _ in self.val_loader:
                 data = data.to(self.device)
-                labels = labels.to(self.device)
+                outputs = self.model_state(data)
+                val_loss += outputs['loss'].item()
                 
-                # Forward pass
-                outputs = self._forward_pass(data)
-                loss = self._compute_loss(outputs, data, labels)
-                
-                # Update metrics
-                eval_metrics['val_loss'] += loss.item()
-                
-        # Average metrics
-        eval_metrics['val_loss'] /= len(val_loader)
+        return val_loss / len(self.val_loader)
         
-        return eval_metrics 
+    def _check_early_stopping(self, val_loss: float) -> bool:
+        """Check early stopping conditions."""
+        if val_loss < self.best_val_loss - self.config["early_stopping"]["min_delta"]:
+            self.best_val_loss = val_loss
+            self.patience_counter = 0
+            return False
+            
+        self.patience_counter += 1
+        return self.patience_counter >= self.config["early_stopping"]["patience"]
+        
+    def _plot_training_curves(self):
+        """Generate training visualization plots."""
+        # Load training log
+        log_file = self.log_dir / 'training_log.jsonl'
+        if not log_file.exists():
+            return
+            
+        # Read log data
+        losses = {'train': [], 'val': []}
+        lrs = []
+        with open(log_file) as f:
+            for line in f:
+                entry = json.loads(line)
+                losses['train'].append(entry['loss'])
+                if 'val_loss' in entry:
+                    losses['val'].append(entry['val_loss'])
+                lrs.append(entry['learning_rate'])
+                
+        # Plot losses
+        plt.figure(figsize=(10, 5))
+        plt.plot(losses['train'], label='Train')
+        if losses['val']:
+            plt.plot(losses['val'], label='Validation')
+        plt.title('Training Progress')
+        plt.xlabel('Step')
+        plt.ylabel('Loss')
+        plt.legend()
+        plt.savefig(self.vis_dir / 'training_curves.png')
+        plt.close()
+        
+        # Plot learning rate
+        plt.figure(figsize=(10, 5))
+        plt.plot(lrs)
+        plt.title('Learning Rate Schedule')
+        plt.xlabel('Step')
+        plt.ylabel('Learning Rate')
+        plt.yscale('log')
+        plt.savefig(self.vis_dir / 'learning_rate.png')
+        plt.close() 
