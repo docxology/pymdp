@@ -3,6 +3,12 @@ PyMDP Package
 ============
 
 A Python implementation of Active Inference and Message Passing.
+
+This package includes:
+- Core Active Inference algorithms
+- Relational Generative Models (RGM)
+- Multi-agent systems
+- Visualization tools
 """
 
 from pathlib import Path
@@ -20,12 +26,19 @@ from .control import sample_action, infer_policies
 from .utils import obj_array_zeros, sample
 from .maths import softmax
 
+# Import RGM components
+from . import rgm
+
 __all__ = [
+    # Core components
     'infer_states',
     'sample_action',
     'infer_policies',
     'obj_array_zeros',
     'sample',
     'softmax',
-    'PACKAGE_ROOT'
+    'PACKAGE_ROOT',
+    
+    # Major modules
+    'rgm'
 ]

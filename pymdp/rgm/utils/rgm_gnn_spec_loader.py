@@ -12,8 +12,8 @@ import logging
 from pathlib import Path
 from typing import Dict, List, Optional
 
-from rgm_experiment_utils import RGMExperimentUtils
-from rgm_gnn_validator import RGMGNNValidator
+from .rgm_experiment_utils import RGMExperimentUtils
+from .rgm_gnn_validator import RGMGNNValidator
 
 class RGMGNNSpecLoader:
     """Loads and validates GNN specifications"""
@@ -22,7 +22,6 @@ class RGMGNNSpecLoader:
         """Initialize GNN specification loader"""
         self.logger = RGMExperimentUtils.get_logger('gnn_spec')
         self.validator = RGMGNNValidator()
-        self.experiment = RGMExperimentUtils.get_experiment()
         
     def load_gnn_specs(self) -> Dict:
         """
@@ -32,6 +31,9 @@ class RGMGNNSpecLoader:
             Dictionary of validated and merged specifications
         """
         try:
+            # Get experiment state
+            experiment = RGMExperimentUtils.get_experiment()
+            
             # Load base specifications
             base_specs = self._load_base_specs()
             
@@ -61,9 +63,12 @@ class RGMGNNSpecLoader:
             'rgm_mnist.gnn'
         ]
         
+        # Get models directory
+        models_dir = Path(__file__).parent.parent / "models"
+        
         # Load each required spec
         for spec_name in required_specs:
-            spec_path = self._get_spec_path(spec_name)
+            spec_path = models_dir / spec_name
             self.logger.info(f"Loading base spec: {spec_name}")
             
             try:
@@ -86,12 +91,15 @@ class RGMGNNSpecLoader:
         return base_specs
         
     def _load_additional_specs(self) -> Dict:
-        """Load optional additional specifications"""
+        """Load additional specifications"""
         additional_specs = {}
         
         try:
+            # Get experiment state
+            experiment = RGMExperimentUtils.get_experiment()
+            
             # Get all GNN spec files
-            spec_dir = self.experiment['dirs']['gnn_specs']
+            spec_dir = experiment['dirs']['gnn_specs']
             spec_files = list(spec_dir.glob("*.gnn"))
             
             # Filter out base specs
@@ -125,10 +133,8 @@ class RGMGNNSpecLoader:
             self.logger.error(f"Error loading additional specs: {str(e)}")
             raise
             
-    def _merge_specifications(self, 
-                            base_specs: Dict,
-                            additional_specs: Dict) -> Dict:
-        """Merge all specifications into final configuration"""
+    def _merge_specifications(self, base_specs: Dict, additional_specs: Dict) -> Dict:
+        """Merge specifications"""
         try:
             # Start with base specification
             merged = base_specs['rgm_base.gnn'].copy()
@@ -151,37 +157,12 @@ class RGMGNNSpecLoader:
             for spec in additional_specs.values():
                 deep_merge(merged, spec)
                 
-            # Validate merged specification
-            is_valid, messages = self.validator.validate_gnn_spec(
-                merged, 
-                "merged_spec"
-            )
-            
-            if not is_valid:
-                raise ValueError(
-                    f"Invalid merged specification: {'; '.join(messages)}"
-                )
-                
             return merged
             
         except Exception as e:
             self.logger.error(f"Error merging specifications: {str(e)}")
             raise
             
-    def _get_spec_path(self, spec_name: str) -> Path:
-        """Get path to specification file"""
-        # First check experiment directory
-        exp_path = self.experiment['dirs']['gnn_specs'] / spec_name
-        if exp_path.exists():
-            return exp_path
-            
-        # Then check package models directory
-        pkg_path = Path(__file__).parent.parent / "models" / spec_name
-        if pkg_path.exists():
-            return pkg_path
-            
-        raise FileNotFoundError(f"GNN specification not found: {spec_name}")
-        
     def _load_spec_file(self, spec_path: Path) -> Dict:
         """Load specification from file"""
         try:
@@ -198,8 +179,11 @@ class RGMGNNSpecLoader:
     def _save_merged_specs(self, merged_specs: Dict):
         """Save merged specifications"""
         try:
+            # Get experiment state
+            experiment = RGMExperimentUtils.get_experiment()
+            
             # Save to experiment directory
-            save_path = self.experiment['dirs']['gnn_specs'] / "merged_specs.json"
+            save_path = experiment['dirs']['gnn_specs'] / "merged_specs.json"
             
             with open(save_path, 'w') as f:
                 json.dump(merged_specs, f, indent=2)

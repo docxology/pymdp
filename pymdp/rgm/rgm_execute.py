@@ -10,6 +10,14 @@ This module:
 3. Implements active learning for MNIST
 4. Tracks learning progress and performance
 5. Handles checkpointing and state management
+
+Components:
+----------
+- RGMExecutor: Main execution engine
+- Message Passing: Hierarchical belief propagation
+- Active Learning: Online parameter updates
+- Metrics: Performance tracking and analysis
+- Checkpointing: State persistence and recovery
 """
 
 import os
@@ -23,12 +31,13 @@ from datetime import datetime
 from typing import Dict, Optional, Tuple, List
 from tqdm import tqdm
 
-from utils.rgm_experiment_utils import RGMExperimentUtils
-from utils.rgm_model_initializer import RGMModelInitializer
-from utils.rgm_data_manager import RGMDataManager
-from utils.rgm_message_passing import RGMMessagePassing
-from utils.rgm_matrix_normalizer import RGMMatrixNormalizer
-from utils.rgm_metrics_utils import RGMMetricsUtils
+# Local imports using relative imports
+from .utils.rgm_experiment_utils import RGMExperimentUtils
+from .utils.rgm_model_initializer import RGMModelInitializer
+from .utils.rgm_data_manager import RGMDataManager
+from .utils.rgm_message_passing import RGMMessagePassing
+from .utils.rgm_matrix_normalizer import RGMMatrixNormalizer
+from .utils.rgm_metrics_utils import RGMMetricsUtils
 
 class RGMExecutor:
     """Executes RGM inference and learning"""

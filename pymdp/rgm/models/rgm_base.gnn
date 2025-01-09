@@ -5,192 +5,112 @@
         "dimensions": {
             "level0": {
                 "state": 1024,
-                "factor": 256,
-                "description": {
-                    "state_dim": "32x32 input",
-                    "factor_dim": "16x16 features"
-                },
-                "processing": {
-                    "type": "input",
-                    "receptive_field": [8, 8],
-                    "stride": [4, 4],
-                    "pooling": {
-                        "type": "max",
-                        "size": [2, 2],
-                        "stride": [2, 2]
-                    }
-                }
+                "factor": 256
             },
             "level1": {
                 "state": 256,
-                "factor": 64,
-                "description": {
-                    "state_dim": "16x16 features",
-                    "factor_dim": "8x8 features"
-                },
-                "processing": {
-                    "type": "hidden",
-                    "receptive_field": [4, 4],
-                    "stride": [2, 2],
-                    "pooling": {
-                        "type": "max",
-                        "size": [2, 2],
-                        "stride": [2, 2]
-                    }
-                }
+                "factor": 64
             },
             "level2": {
                 "state": 64,
-                "factor": 16,
-                "description": {
-                    "state_dim": "8x8 features",
-                    "factor_dim": "4x4 features"
-                },
-                "processing": {
-                    "type": "hidden",
-                    "receptive_field": [2, 2],
-                    "stride": [2, 2],
-                    "pooling": {
-                        "type": "average",
-                        "size": [2, 2],
-                        "stride": [2, 2]
-                    }
-                }
+                "factor": 16
             },
             "level3": {
                 "state": 16,
-                "factor": 10,
-                "description": {
-                    "state_dim": "4x4 features",
-                    "factor_dim": "class labels"
-                },
-                "processing": {
-                    "type": "output",
-                    "activation": "softmax"
-                }
+                "factor": 10
             }
         },
         "matrices": {
             "A": {
-                "type": "state_transition",
                 "initialization": {
                     "method": "random",
                     "distribution": "truncated_normal",
                     "mean": 0.0,
-                    "std": 0.02,
-                    "min_val": -0.1,
-                    "max_val": 0.1
+                    "std": 0.01,
+                    "min_val": -0.02,
+                    "max_val": 0.02
                 },
                 "constraints": [
-                    "column_normalized",
-                    "non_negative"
+                    "non_negative",
+                    "column_normalized"
                 ],
                 "normalization": {
                     "type": "svd",
-                    "epsilon": 1e-12,
-                    "max_condition_number": 1e4
+                    "max_condition_number": 1000,
+                    "epsilon": 1e-12
                 }
             },
             "B": {
-                "type": "factor_transition",
                 "initialization": {
                     "method": "random",
                     "distribution": "truncated_normal",
                     "mean": 0.0,
-                    "std": 0.02,
-                    "min_val": -0.1,
-                    "max_val": 0.1
+                    "std": 0.01,
+                    "min_val": -0.02,
+                    "max_val": 0.02
                 },
                 "constraints": [
-                    "column_normalized",
                     "non_negative",
-                    "symmetric"
+                    "column_normalized"
                 ],
                 "normalization": {
                     "type": "svd",
-                    "epsilon": 1e-12,
-                    "max_condition_number": 1e4
+                    "max_condition_number": 1000,
+                    "epsilon": 1e-12
                 }
             },
             "D": {
-                "type": "factor_prior",
                 "initialization": {
                     "method": "uniform",
                     "epsilon": 1e-12
                 },
                 "constraints": [
-                    "normalized",
-                    "non_negative"
+                    "non_negative",
+                    "normalized"
                 ]
             },
             "E": {
-                "type": "output_mapping",
                 "initialization": {
                     "method": "uniform",
                     "epsilon": 1e-12
                 },
                 "constraints": [
-                    "normalized",
-                    "non_negative"
+                    "non_negative",
+                    "normalized"
                 ]
-            }
-        },
-        "connections": {
-            "bottom_up": {
-                "enabled": true,
-                "type": "dense"
-            },
-            "top_down": {
-                "enabled": true,
-                "type": "dense"
-            },
-            "lateral": {
-                "enabled": true,
-                "type": "sparse",
-                "sparsity": 0.9
             }
         }
     },
     "learning": {
-        "active": {
-            "enabled": true,
-            "beta": 0.1,
-            "max_precision": 100.0,
-            "precision_growth": "exponential",
-            "precision_growth_rate": 1.1,
-            "min_precision": 0.01
+        "precision_init": 1.0,
+        "learning_rate": 0.001,
+        "momentum": 0.9,
+        "weight_decay": 1e-4,
+        "scheduler": {
+            "type": "exponential",
+            "gamma": 0.95,
+            "step_size": 1
         },
-        "message_passing": {
-            "max_iterations": 10,
-            "convergence_threshold": 1e-6,
-            "damping_factor": 0.9,
-            "min_iterations": 3,
-            "scheduling": {
-                "type": "adaptive",
-                "patience": 3,
-                "factor": 0.5,
-                "min_iterations": 2
-            }
-        },
-        "regularization": {
-            "l1_weight": 0.0001,
-            "l2_weight": 0.0001,
-            "dropout_rate": 0.1,
-            "gradient_clipping": 1.0,
-            "belief_regularization": 0.01
+        "early_stopping": {
+            "patience": 10,
+            "min_delta": 0.001
+        }
+    },
+    "inference": {
+        "max_iterations": 50,
+        "convergence_threshold": 1e-6,
+        "precision": {
+            "initial": 1.0,
+            "growth_rate": 1.1,
+            "max_value": 100.0
         }
     },
     "validation": {
-        "matrix_properties": {
-            "check_normalization": true,
-            "check_conditioning": true,
-            "check_symmetry": true,
-            "check_non_negative": true
-        },
-        "numerical_stability": {
-            "epsilon": 1e-12,
-            "max_condition_number": 1e4,
-            "min_eigenvalue": 1e-6
-        }
+        "frequency": 1,
+        "metrics": [
+            "accuracy",
+            "confusion_matrix",
+            "reconstruction_error"
+        ]
     }
 } 

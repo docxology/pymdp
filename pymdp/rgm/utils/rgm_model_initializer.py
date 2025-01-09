@@ -10,8 +10,8 @@ import numpy as np
 from typing import Dict, List, Optional
 from pathlib import Path
 
-from rgm_experiment_utils import RGMExperimentUtils
-from rgm_validation_utils import RGMValidationUtils
+from .rgm_experiment_utils import RGMExperimentUtils
+from .rgm_validation_utils import RGMValidationUtils
 
 class RGMModelInitializer:
     """Initializes and validates RGM model state"""

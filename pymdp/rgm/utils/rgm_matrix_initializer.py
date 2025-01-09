@@ -10,9 +10,9 @@ import numpy as np
 from typing import Dict, List, Tuple, Optional
 from pathlib import Path
 
-from rgm_experiment_utils import RGMExperimentUtils
-from rgm_svd_utils import RGMSVDUtils
-from rgm_matrix_normalizer import RGMMatrixNormalizer
+from .rgm_experiment_utils import RGMExperimentUtils
+from .rgm_svd_utils import RGMSVDUtils
+from .rgm_matrix_normalizer import RGMMatrixNormalizer
 
 class RGMMatrixInitializer:
     """Handles matrix initialization and conditioning"""

@@ -1,0 +1,65 @@
+{
+    "model": {
+        "hierarchy": {
+            "n_levels": 3,
+            "dimensions": [784, 256, 10],
+            "activation": "relu"
+        },
+        "learning": {
+            "learning_rate": 0.001,
+            "momentum": 0.9,
+            "weight_decay": 1e-4
+        }
+    },
+    "data": {
+        "mnist": {
+            "batch_size": 64,
+            "shuffle": true,
+            "num_workers": 4,
+            "augmentation": {
+                "enabled": true,
+                "random_rotation": 10,
+                "random_translation": 0.1
+            }
+        }
+    },
+    "training": {
+        "n_epochs": 50,
+        "checkpoint_frequency": 5,
+        "validation_frequency": 1,
+        "early_stopping": {
+            "enabled": true,
+            "patience": 10,
+            "min_delta": 0.001
+        }
+    },
+    "visualization": {
+        "plot_frequency": 5,
+        "save_samples": true,
+        "n_samples": 100,
+        "plot_types": [
+            "loss_curves",
+            "accuracy_curves",
+            "confusion_matrix",
+            "latent_space",
+            "reconstructions"
+        ]
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s | %(levelname)8s | %(name)s | %(message)s",
+        "file_logging": {
+            "enabled": true,
+            "filename": "rgm_mnist.log",
+            "max_bytes": 10485760,
+            "backup_count": 5
+        }
+    },
+    "experiment": {
+        "name": "rgm_mnist",
+        "description": "RGM MNIST digit recognition pipeline",
+        "tags": ["mnist", "rgm", "digit_recognition"],
+        "save_dir": "experiments",
+        "random_seed": 42
+    }
+} 

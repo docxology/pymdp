@@ -1,0 +1,61 @@
+{
+    "data": {
+        "dataset": "mnist",
+        "batch_size": 64,
+        "shuffle": true,
+        "validation_split": 0.1,
+        "preprocessing": {
+            "normalize": true,
+            "augment": false
+        }
+    },
+    "model": {
+        "architecture": "hierarchical",
+        "parameters": {
+            "n_levels": 4,
+            "state_sizes": [784, 400, 100, 10],
+            "factor_sizes": [400, 100, 10, 1],
+            "activation": "relu",
+            "dropout": 0.2
+        }
+    },
+    "training": {
+        "epochs": 100,
+        "learning_rate": 0.001,
+        "optimizer": "adam",
+        "early_stopping": {
+            "enabled": true,
+            "patience": 10,
+            "min_delta": 0.001
+        },
+        "checkpoints": {
+            "enabled": true,
+            "frequency": 10,
+            "keep_best": true
+        }
+    },
+    "inference": {
+        "iterations": 50,
+        "precision": 1.0,
+        "temperature": 1.0,
+        "message_passing": {
+            "algorithm": "belief_propagation",
+            "max_iterations": 100,
+            "convergence_threshold": 1e-6
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "format": "%(asctime)s | %(levelname)8s | %(name)s | %(message)s",
+        "handlers": {
+            "console": {
+                "enabled": true,
+                "level": "INFO"
+            },
+            "file": {
+                "enabled": true,
+                "level": "DEBUG"
+            }
+        }
+    }
+} 
