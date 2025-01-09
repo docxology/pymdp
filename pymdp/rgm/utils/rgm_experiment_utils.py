@@ -66,3 +66,10 @@ class RGMExperimentUtils:
     def get_logger(name: str) -> RGMLogging:
         """Get logger for component"""
         return RGMLogging.get_logger(f"rgm.{name}")
+
+    @staticmethod
+    def get_dir(name: str) -> Path:
+        """Get path to named directory"""
+        if name not in self.directories:
+            raise ValueError(f"Unknown directory: {name}")
+        return self.directories[name]

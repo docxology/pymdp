@@ -9,3 +9,7 @@ __pycache__
 env/
 pymdp.egg-info
 inferactively_pymdp.egg-info
+*.gz
+pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/data/MNIST/raw/train-images-idx3-ubyte
+pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/data/processed/exemplars.pt
+*.pt

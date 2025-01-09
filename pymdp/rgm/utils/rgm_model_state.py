@@ -2,59 +2,34 @@
 RGM Model State
 ==============
 
-Manages RGM model state and belief updates.
+Manages state information for the Renormalization Generative Model (RGM).
+This module provides functionality for initializing, updating, and maintaining
+the state of the Renormalization Generative Model during training and inference.
 """
 
-import numpy as np
-from typing import Dict, List, Optional, Tuple
+import torch
+from typing import Dict, Optional
 from pathlib import Path
 
-from .rgm_experiment_utils import RGMExperimentUtils
-from .rgm_core_utils import RGMCoreUtils
-from .rgm_matrix_normalizer import RGMMatrixNormalizer
-
 class RGMModelState:
-    """Manages RGM model state"""
+    """Manages the state of the Renormalization Generative Model."""
     
-    def __init__(self, config: Dict):
+    def __init__(self, model_config: Dict, initial_state: Optional[Dict] = None):
         """
-        Initialize model state.
+        Initialize the Renormalization Generative Model state.
         
         Args:
-            config: Configuration dictionary
+            model_config: Configuration dictionary for the model
+            initial_state: Optional initial state dictionary
         """
-        self.logger = RGMExperimentUtils.get_logger('model_state')
-        self.config = config
-        self.core = RGMCoreUtils()
-        self.normalizer = RGMMatrixNormalizer()
+        self.model_config = model_config
+        self.device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
         
-        # Initialize state components
-        self.beliefs = self._initialize_beliefs()
-        self.learning = self._initialize_learning()
-        self.metrics = self._initialize_metrics()
-        
-    def _initialize_beliefs(self) -> Dict[str, List[np.ndarray]]:
-        """Initialize belief states"""
-        try:
-            hierarchy = self.config['model']['hierarchy']
-            beliefs = {
-                'states': [],
-                'factors': []
-            }
+        if initial_state is None:
+            self.state = self._initialize_state()
+        else:
+            self.state = initial_state
             
-            # Initialize each level
-            for level in range(hierarchy['n_levels']):
-                level_config = hierarchy['dimensions'][f'level{level}']
-                
-                # Initialize with uniform distributions
-                state_dim = level_config['state']
-                factor_dim = level_config['factor']
-                
-                beliefs['states'].append(np.ones(state_dim) / state_dim)
-                beliefs['factors'].append(np.ones(factor_dim) / factor_dim)
-                
-            return beliefs
-            
-        except Exception as e:
-            self.logger.error(f"Error initializing beliefs: {str(e)}")
-            raise
+    def _initialize_state(self) -> Dict:
+        """Initialize the model state based on the configuration."""
+        # Implementation details...

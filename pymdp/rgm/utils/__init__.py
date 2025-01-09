@@ -1,14 +1,23 @@
 """
-RGM Utilities
-============
+Utilities for Renormalization Generative Model (RGM)
+================================================
 
-Core utility modules for RGM pipeline.
+This package provides utility functions and classes for implementing and 
+running the Renormalization Generative Model.
 """
 
 from .rgm_logging import RGMLogging
-from .rgm_experiment_utils import RGMExperimentUtils
-from .rgm_config_utils import RGMConfigUtils
+from .rgm_config_loader import RGMConfigLoader
+from .rgm_matrix_normalizer import RGMMatrixNormalizer
+from .rgm_message_utils import RGMMessageUtils
 from .rgm_experiment_state import RGMExperimentState
+from .rgm_experiment_utils import RGMExperimentUtils
 
-# Expose key functions at package level
-get_logger = RGMLogging.get_logger 
+__all__ = [
+    'RGMLogging',
+    'RGMConfigLoader',
+    'RGMMatrixNormalizer',
+    'RGMMessageUtils',
+    'RGMExperimentState',
+    'RGMExperimentUtils'
+] 

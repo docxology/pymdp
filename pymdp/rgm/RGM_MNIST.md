@@ -1,14 +1,12 @@
-# RGM MNIST Implementation with GNN Framework
-## Recursive Generative Model for MNIST using Generalized Notation Notation
+# Renormalization Generative Model MNIST Implementation
+## Using Generalized Notation Notation (GNN) Framework
 
 ### Overview
+The Renormalization Generative Model (RGM) MNIST implementation leverages the GNN framework to define and implement a hierarchical generative model for MNIST digit recognition and generation. This document outlines the complete pipeline, architecture, and technical specifications.
 
-The RGM MNIST implementation leverages the GNN (Generalized Notation Notation) framework to define and implement a hierarchical generative model for MNIST digit recognition and generation. This document outlines the complete pipeline, architecture, and technical specifications.
-
-### GNN Integration
-
+### GNN Integration for Renormalization Generative Model
 1. **GNN Framework Role**
-   - Formal specification language for RGM architecture
+   - Formal specification language for Renormalization Generative Model architecture
    - Standardized notation for model components
    - Executable model generation
    - Mathematical rigor preservation
@@ -16,7 +14,7 @@ The RGM MNIST implementation leverages the GNN (Generalized Notation Notation) f
 2. **Specification Structure**
    ```json
    {
-     "modelType": "RGM",
+     "modelType": "RenormalizationGenerativeModel",
      "hierarchy": {
        "n_levels": 4,
        "dimensions": {
@@ -29,7 +27,7 @@ The RGM MNIST implementation leverages the GNN (Generalized Notation Notation) f
    }
    ```
 
-### Pipeline Stages
+### Renormalization Generative Model Pipeline Stages
 
 1. **Data Preparation**
    - MNIST dataset download and preprocessing

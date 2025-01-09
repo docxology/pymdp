@@ -1,0 +1,19 @@
+{
+    "name": "rgm_mnist_pipeline",
+    "timestamp": "20250109_094150",
+    "start_time": 1736444510.2225337,
+    "directories": {
+        "root": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150",
+        "logs": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/logs",
+        "data": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/data",
+        "models": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/models",
+        "matrices": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/matrices",
+        "results": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/results",
+        "analysis": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/analysis",
+        "render": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/render",
+        "config": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/config",
+        "gnn_specs": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/gnn_specs",
+        "checkpoints": "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/experiments/rgm_mnist_pipeline_20250109_094150/checkpoints"
+    },
+    "status": "initialized"
+}

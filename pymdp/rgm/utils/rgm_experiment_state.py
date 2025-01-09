@@ -1,8 +1,10 @@
 """
 RGM Experiment State
-===================
+==================
 
-Manages experiment state and directory structure.
+Manages experiment state for the Renormalization Generative Model (RGM).
+This module handles experiment directory structure, state persistence,
+and experiment metadata.
 """
 
 import os
@@ -12,8 +14,11 @@ from pathlib import Path
 from datetime import datetime
 from typing import Dict, Optional
 
+from .rgm_logging import RGMLogging
+from .custom_json_encoder import CustomJSONEncoder
+
 class RGMExperimentState:
-    """Manages state and directory structure for RGM experiments"""
+    """Manages experiment state for the Renormalization Generative Model."""
     
     def __init__(self, name: str, base_dir: Optional[Path] = None):
         """
@@ -26,6 +31,7 @@ class RGMExperimentState:
         self.name = name
         self.start_time = time.time()
         self.timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        self.logger = RGMLogging.get_logger("rgm.experiment")
         
         # Set up directory structure
         if base_dir is None:
@@ -49,7 +55,7 @@ class RGMExperimentState:
         self._save_state()
         
     def _create_directory_structure(self):
-        """Create experiment directory structure"""
+        """Create experiment directory structure."""
         # Create main directories
         dirs = {
             "root": self.exp_dir,
@@ -62,7 +68,8 @@ class RGMExperimentState:
             "render": self.exp_dir / "render",
             "config": self.exp_dir / "config",
             "gnn_specs": self.exp_dir / "gnn_specs",
-            "checkpoints": self.exp_dir / "checkpoints"
+            "checkpoints": self.exp_dir / "checkpoints",
+            "simulation": self.exp_dir / "simulation"
         }
         
         # Create all directories
@@ -72,46 +79,36 @@ class RGMExperimentState:
         self.directories = dirs
         
     def _get_directories(self) -> Dict[str, str]:
-        """Get dictionary of directory paths"""
-        return {
-            name: str(path) for name, path in self.directories.items()
-        }
+        """Get dictionary of directory paths."""
+        return {name: str(path) for name, path in self.directories.items()}
         
     def _save_state(self):
-        """Save experiment state to file"""
+        """Save experiment state to file."""
         state_file = self.exp_dir / "experiment_state.json"
         with open(state_file, "w") as f:
-            json.dump(self.state, f, indent=4)
+            json.dump(self.state, f, indent=4, cls=CustomJSONEncoder)
             
     def get_dir(self, name: str) -> Path:
-        """Get path to named directory"""
+        """
+        Get path to named directory.
+        
+        Args:
+            name: Name of directory to retrieve
+            
+        Returns:
+            Path to requested directory
+        """
         if name not in self.directories:
             raise ValueError(f"Unknown directory: {name}")
         return self.directories[name]
         
-    def get_log_dir(self) -> Path:
-        """Get path to log directory"""
-        return self.directories["logs"]
-        
-    def elapsed_time(self) -> float:
-        """Get elapsed time in seconds"""
-        return time.time() - self.start_time
-        
     def update_status(self, status: str):
-        """Update experiment status"""
+        """
+        Update experiment status.
+        
+        Args:
+            status: New status string
+        """
         self.state["status"] = status
         self.state["last_update"] = datetime.now().isoformat()
-        self._save_state()
-        
-    def add_metadata(self, key: str, value: any):
-        """Add metadata to experiment state"""
-        if "metadata" not in self.state:
-            self.state["metadata"] = {}
-        self.state["metadata"][key] = value
-        self._save_state()
-        
-    def get_metadata(self, key: str) -> any:
-        """Get metadata value"""
-        if "metadata" not in self.state or key not in self.state["metadata"]:
-            raise KeyError(f"Metadata key not found: {key}")
-        return self.state["metadata"][key] 
+        self._save_state() 

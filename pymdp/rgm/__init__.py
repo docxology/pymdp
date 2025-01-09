@@ -1,13 +1,17 @@
 """
-RGM Package
-==========
+Renormalization Generative Model (RGM)
+====================================
 
-Recursive Generative Models for MNIST processing.
+Implementation of the Renormalization Generative Model for hierarchical pattern
+recognition and generation. This package provides the core functionality for
+building and training models using renormalization group principles.
 """
 
-from .utils import RGMLogging, RGMExperimentUtils, RGMConfigUtils, RGMExperimentState
-from .rgm_render import RGMRenderer
-from .rgm_execute import RGMExecutor
-from .rgm_analyze import RGMAnalyzer
+from .models import RGMMNISTModel
+from .utils import RGMLogging, RGMConfigLoader
 
-__version__ = "0.1.0"
+__all__ = [
+    'RGMMNISTModel',
+    'RGMLogging',
+    'RGMConfigLoader'
+]

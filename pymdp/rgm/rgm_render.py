@@ -50,6 +50,8 @@ from rgm.utils.rgm_experiment_utils import RGMExperimentUtils
 from rgm.utils.rgm_experiment_state import RGMExperimentState
 from rgm.utils.rgm_gnn_matrix_factory import RGMGNNMatrixFactory
 from rgm.utils.rgm_gnn_spec_loader import RGMGNNSpecLoader
+from rgm.utils.rgm_gnn_loader import RGMGNNLoader
+from rgm.utils.rgm_matrix_visualization_utils import RGMMatrixVisualizationUtils
 
 class RGMRenderer:
     """
@@ -64,55 +66,52 @@ class RGMRenderer:
     and validated before being used in the training process.
     """
     
-    def __init__(self, exp_state: RGMExperimentState):
+    def __init__(self, experiment: RGMExperimentState):
         """
         Initialize renderer.
         
         Args:
-            exp_state: Experiment state manager that provides:
+            experiment: Experiment state manager that provides:
                      - Directory management
                      - Logging configuration
                      - State persistence
         """
-        self.exp_state = exp_state
         self.logger = RGMLogging.get_logger("rgm.renderer")
+        self.experiment = experiment
+        self.gnn_loader = RGMGNNLoader()
         self.matrix_factory = RGMGNNMatrixFactory()
-        self.spec_loader = RGMGNNSpecLoader()
         
     def render_matrices(self) -> Path:
         """
-        Render matrices from GNN specifications.
-        
-        This method:
-        1. Loads GNN specifications from config files
-        2. Generates matrices using the factory
-        3. Saves matrices to experiment directory
+        Generate matrices from GNN specifications.
         
         Returns:
-            Path to directory containing rendered matrices
-            
-        Raises:
-            RuntimeError: If matrix generation fails
-            ValueError: If specifications are invalid
+            Path to directory containing generated matrices
         """
         try:
-            self.logger.info("Loading GNN specifications...")
-            gnn_specs = self.spec_loader.load_specs()
+            # Load GNN specifications
+            gnn_specs = self.gnn_loader.load_gnn_specs()
+            self.logger.info(f"Loaded GNN specifications: {list(gnn_specs.keys())}")
             
-            self.logger.info("Generating matrices...")
+            # Generate matrices
             matrices = self.matrix_factory.generate_matrices(gnn_specs)
+            self.logger.info(f"Generated matrices: {list(matrices.keys())}")
             
             # Save matrices
-            matrices_dir = self.exp_state.get_dir("matrices")
-            self._save_matrices(matrices, matrices_dir)
+            output_dir = self.experiment.get_dir('matrices')
+            self._save_matrices(matrices, output_dir)
+            self.logger.info(f"Saved matrices to: {output_dir}")
             
-            return matrices_dir
+            # Generate matrix visualizations
+            self._visualize_matrices(matrices, output_dir)
+            self.logger.info(f"Generated matrix visualizations in: {output_dir}")
+            
+            return output_dir
             
         except Exception as e:
             self.logger.error(f"Error rendering matrices: {str(e)}")
-            self.logger.debug("Traceback:", exc_info=True)
             raise
-            
+        
     def _save_matrices(self, matrices: Dict[str, np.ndarray], output_dir: Path):
         """
         Save matrices to output directory.
@@ -141,4 +140,22 @@ class RGMRenderer:
         except Exception as e:
             self.logger.error(f"Error saving matrices: {str(e)}")
             self.logger.debug("Traceback:", exc_info=True)
+            raise
+        
+    def _visualize_matrices(self, matrices: Dict[str, np.ndarray], output_dir: Path):
+        """Generate visualizations for matrices."""
+        try:
+            visualizer = RGMMatrixVisualizationUtils()
+            
+            # Visualize matrix structures
+            structure_plot = output_dir / "matrix_structures.png"
+            visualizer.plot_matrix_structures(matrices, structure_plot)
+            
+            # Visualize matrix heatmaps
+            for name, matrix in matrices.items():
+                heatmap_plot = output_dir / f"{name}_heatmap.png"
+                visualizer.plot_matrix_heatmap(matrix, heatmap_plot, title=name)
+                
+        except Exception as e:
+            self.logger.error(f"Error visualizing matrices: {str(e)}")
             raise

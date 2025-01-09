@@ -1,29 +1,10 @@
 """
-RGM Model Specifications
-======================
+Renormalization Generative Model Components
+========================================
 
-GNN model specifications for RGM implementation.
+Model implementations for the Renormalization Generative Model (RGM).
 """
 
-from pathlib import Path
+from .rgm_mnist import RGMMNISTModel
 
-# Get model directory
-MODEL_DIR = Path(__file__).parent
-
-# Model file paths
-BASE_MODEL = MODEL_DIR / "rgm_base.gnn"
-SVD_BLOCK_MODEL = MODEL_DIR / "rgm_svd_block.gnn"
-HIERARCHICAL_MODEL = MODEL_DIR / "rgm_hierarchical_level.gnn"
-MNIST_MODEL = MODEL_DIR / "rgm_mnist.gnn"
-MESSAGE_PASSING_MODEL = MODEL_DIR / "rgm_message_passing.gnn"
-ACTIVE_LEARNING_MODEL = MODEL_DIR / "rgm_active_learning.gnn"
-
-__all__ = [
-    'MODEL_DIR',
-    'BASE_MODEL',
-    'SVD_BLOCK_MODEL',
-    'HIERARCHICAL_MODEL',
-    'MNIST_MODEL',
-    'MESSAGE_PASSING_MODEL',
-    'ACTIVE_LEARNING_MODEL'
-] 
+__all__ = ['RGMMNISTModel'] 

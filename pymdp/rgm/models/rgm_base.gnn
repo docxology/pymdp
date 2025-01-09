@@ -1,116 +1,12 @@
 {
-    "modelType": "RGM",
-    "hierarchy": {
-        "n_levels": 4,
-        "dimensions": {
-            "level0": {
-                "state": 1024,
-                "factor": 256
-            },
-            "level1": {
-                "state": 256,
-                "factor": 64
-            },
-            "level2": {
-                "state": 64,
-                "factor": 16
-            },
-            "level3": {
-                "state": 16,
-                "factor": 10
-            }
-        },
-        "matrices": {
-            "A": {
-                "initialization": {
-                    "method": "random",
-                    "distribution": "truncated_normal",
-                    "mean": 0.0,
-                    "std": 0.01,
-                    "min_val": -0.02,
-                    "max_val": 0.02
-                },
-                "constraints": [
-                    "non_negative",
-                    "column_normalized"
-                ],
-                "normalization": {
-                    "type": "svd",
-                    "max_condition_number": 1000,
-                    "epsilon": 1e-12
-                }
-            },
-            "B": {
-                "initialization": {
-                    "method": "random",
-                    "distribution": "truncated_normal",
-                    "mean": 0.0,
-                    "std": 0.01,
-                    "min_val": -0.02,
-                    "max_val": 0.02
-                },
-                "constraints": [
-                    "non_negative",
-                    "column_normalized"
-                ],
-                "normalization": {
-                    "type": "svd",
-                    "max_condition_number": 1000,
-                    "epsilon": 1e-12
-                }
-            },
-            "D": {
-                "initialization": {
-                    "method": "uniform",
-                    "epsilon": 1e-12
-                },
-                "constraints": [
-                    "non_negative",
-                    "normalized"
-                ]
-            },
-            "E": {
-                "initialization": {
-                    "method": "uniform",
-                    "epsilon": 1e-12
-                },
-                "constraints": [
-                    "non_negative",
-                    "normalized"
-                ]
-            }
+    "modelType": "RenormalizationGenerativeModel",
+    "version": "1.0",
+    "description": "Base configuration for Renormalization Generative Model",
+    "architecture": {
+        "hierarchy": {
+            "type": "renormalization",
+            "levels": 4,
+            "connections": "bidirectional"
         }
-    },
-    "learning": {
-        "precision_init": 1.0,
-        "learning_rate": 0.001,
-        "momentum": 0.9,
-        "weight_decay": 1e-4,
-        "scheduler": {
-            "type": "exponential",
-            "gamma": 0.95,
-            "step_size": 1
-        },
-        "early_stopping": {
-            "patience": 10,
-            "min_delta": 0.001
-        }
-    },
-    "inference": {
-        "max_iterations": 50,
-        "convergence_threshold": 1e-6,
-        "precision": {
-            "initial": 1.0,
-            "growth_rate": 1.1,
-            "max_value": 100.0
-        }
-    },
-    "validation": {
-        "frequency": 1,
-        "metrics": [
-            "accuracy",
-            "confusion_matrix",
-            "reconstruction_error"
-        ]
     }
 } 
