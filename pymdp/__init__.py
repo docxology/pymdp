@@ -15,19 +15,17 @@ __author__ = 'PyMDP Contributors'
 PACKAGE_ROOT = Path(__file__).parent.absolute()
 
 # Import core components
-from .rgm import (
-    RGMRenderer,
-    RGMExecutor,
-    RGMAnalyzer,
-    RGMExperimentUtils,
-    RGMPipelineManager
-)
+from .inference import infer_states
+from .control import sample_action, infer_policies
+from .utils import obj_array_zeros, sample
+from .maths import softmax
 
 __all__ = [
-    'RGMRenderer',
-    'RGMExecutor', 
-    'RGMAnalyzer',
-    'RGMExperimentUtils',
-    'RGMPipelineManager',
+    'infer_states',
+    'sample_action',
+    'infer_policies',
+    'obj_array_zeros',
+    'sample',
+    'softmax',
     'PACKAGE_ROOT'
 ]
