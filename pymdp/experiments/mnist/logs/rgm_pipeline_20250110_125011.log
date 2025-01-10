@@ -1,0 +1,15 @@
+2025-01-10 12:50:11,373 [INFO    ] rgm.runner - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_125011.log (rgm_logging.py:125)
+2025-01-10 12:50:11,373 [INFO    ] rgm.runner - Starting RGM pipeline... (run_rgm.py:90)
+2025-01-10 12:50:11,373 [INFO    ] rgm.pipeline - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_125011.log (rgm_logging.py:125)
+2025-01-10 12:50:11,373 [INFO    ] rgm.pipeline - ✓ Logging initialized (pipeline.py:85)
+2025-01-10 12:50:11,373 [ERROR   ] rgm.runner - Pipeline failed: 'architecture' (run_rgm.py:120)
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/run_rgm.py", line 94, in main
+    pipeline = RGMPipeline(
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 60, in __init__
+    self.config = self._load_and_validate_config(config_path)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 129, in _load_and_validate_config
+    validator._validate_config(config)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_config_validator.py", line 70, in _validate_config
+    RGMConfigValidator._validate_architecture_config(config['architecture'])
+KeyError: 'architecture'

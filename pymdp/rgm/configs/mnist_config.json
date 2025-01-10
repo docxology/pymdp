@@ -2,39 +2,93 @@
     "model": {
         "hierarchy_levels": 3,
         "latent_dims": [256, 64, 16],
+        "input_dim": 784,
         "activation": "relu",
         "normalization": "batch_norm",
-        "dropout_rate": 0.1
+        "dropout_rate": 0.1,
+        "initialization": {
+            "recognition": "xavier_uniform",
+            "generative": "xavier_uniform",
+            "lateral": "identity_with_noise",
+            "lateral_noise": 0.01
+        }
     },
     "data": {
         "batch_size": 128,
         "train_val_split": 0.9,
         "num_workers": 4,
-        "pin_memory": true
+        "pin_memory": true,
+        "apply_augmentation": false,
+        "normalization": {
+            "mean": 0.1307,
+            "std": 0.3081
+        },
+        "random_seed": 42
+    },
+    "matrices": {
+        "dimensions": {
+            "input": 784,
+            "hidden": [256, 64, 16]
+        },
+        "initialization": {
+            "recognition": {
+                "method": "xavier_uniform",
+                "gain": 1.0
+            },
+            "generative": {
+                "method": "xavier_uniform",
+                "gain": 1.0
+            },
+            "lateral": {
+                "method": "identity_with_noise",
+                "noise_std": 0.01
+            },
+            "association": {
+                "method": "identity_with_noise",
+                "noise_std": 0.01
+            }
+        }
     },
     "training": {
-        "n_epochs": 50,
         "batch_size": 128,
+        "n_epochs": 100,
+        "min_epochs": 10,
         "learning_rate": 0.001,
-        "log_interval": 10000,
+        "log_interval": 10,
         "checkpoint_interval": 5,
-        "latent_dim": 64,
-        "validation_interval": 5,
+        "validation_interval": 1,
         "early_stopping": {
             "patience": 10,
-            "min_delta": 0.001
+            "min_delta": 1e-6,
+            "monitor": "val_loss",
+            "min_epochs": 20
+        },
+        "loss_weights": {
+            "reconstruction": 1.0,
+            "prediction": 0.1,
+            "sparsity": 0.01
         },
         "optimizer": {
             "type": "adam",
             "betas": [0.9, 0.999],
-            "weight_decay": 1e-5
+            "weight_decay": 1e-5,
+            "amsgrad": true
         },
         "scheduler": {
             "type": "plateau",
             "factor": 0.5,
             "patience": 5,
-            "min_lr": 1e-6
-        }
+            "min_lr": 1e-6,
+            "monitor": "val_loss",
+            "mode": "min",
+            "threshold": 1e-4,
+            "cooldown": 0
+        },
+        "metrics": {
+            "train": ["loss", "mse", "psnr", "sparsity"],
+            "validation": ["loss", "mse", "psnr", "sparsity"]
+        },
+        "gradient_clip_val": 1.0
     },
     "visualization": {
         "plot_frequency": 5,
@@ -46,7 +100,10 @@
             "confusion_matrix",
             "latent_space",
             "reconstructions"
-        ]
+        ],
+        "sample_grid_size": [10, 10],
+        "save_format": "png",
+        "dpi": 300
     },
     "logging": {
         "level": "INFO",
@@ -56,6 +113,12 @@
             "filename": "rgm_mnist.log",
             "max_bytes": 10485760,
             "backup_count": 5
+        },
+        "tensorboard": {
+            "enabled": true,
+            "log_dir": "runs",
+            "flush_secs": 10,
+            "update_frequency": 10
         }
     },
     "experiment": {
@@ -63,6 +126,13 @@
         "description": "RGM MNIST digit recognition pipeline",
         "tags": ["mnist", "rgm", "digit_recognition"],
         "save_dir": "experiments",
-        "random_seed": 42
+        "random_seed": 42,
+        "device": "auto",
+        "deterministic": true,
+        "checkpoint": {
+            "save_best": true,
+            "save_last": true,
+            "save_frequency": 5
+        }
     }
 } 

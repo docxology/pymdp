@@ -38,10 +38,17 @@
         }
     },
     "training": {
-        "n_epochs": 100,
-        "batch_size": 64,
-        "eval_frequency": 5,
-        "checkpoint_frequency": 10
+        "epochs": 10,
+        "learning_rate": 0.01,
+        "weight_decay": 0.0001,
+        "patience": 10,
+        "save_interval": 5,
+        "grad_clip": 1.0,
+        "scheduler": {
+            "type": "StepLR",
+            "step_size": 30,
+            "gamma": 0.1
+        }
     },
     "learning": {
         "precision_init": 1.0,
@@ -58,6 +65,7 @@
         }
     },
     "data": {
+        "batch_size": 64,
         "mnist": {
             "training_samples": 10000,
             "test_samples": 1000,
@@ -80,6 +88,42 @@
                 "dtype": "float32",
                 "range": [0, 1]
             }
-        }
+        },
+        "train_split": 0.8,
+        "val_split": 0.1
+    },
+    "architecture": {
+        "type": "default_architecture",
+        "layers": [
+            {
+                "name": "layer1",
+                "type": "convolutional",
+                "filters": 64,
+                "kernel_size": 3,
+                "activation": "relu"
+            },
+            {
+                "name": "layer2",
+                "type": "pooling",
+                "pool_size": 2
+            },
+            {
+                "name": "layer3",
+                "type": "fully_connected",
+                "units": 128,
+                "activation": "relu"
+            },
+            {
+                "name": "output_layer",
+                "type": "fully_connected",
+                "units": 10,
+                "activation": "softmax"
+            }
+        ],
+        "optimizer": {
+            "type": "Adam",
+            "learning_rate": 0.001
+        },
+        "loss_function": "categorical_crossentropy"
     }
 } 

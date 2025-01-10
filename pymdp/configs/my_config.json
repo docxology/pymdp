@@ -1,0 +1,18 @@
+{
+    "data": {
+        "dataset": "mnist",
+        "batch_size": 64,
+        "num_workers": 4
+    },
+    "model": {
+        "hidden_size": 256,
+        "num_layers": 4,
+        "dropout": 0.1
+    },
+    "training": {
+        "epochs": 100,
+        "learning_rate": 0.001,
+        "weight_decay": 0.0001,
+        "patience": 10
+    }
+}

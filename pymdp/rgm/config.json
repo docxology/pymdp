@@ -1,0 +1,55 @@
+{
+    "architecture": {
+        "layer_dims": [784, 500, 200],
+        "association_dims": []
+    },
+    "initialization": {
+        "recognition": {
+            "method": "xavier_uniform",
+            "gain": 1.4
+        },
+        "generative": {
+            "method": "xavier_uniform",
+            "gain": 0.8
+        },
+        "lateral": {
+            "method": "identity_with_noise",
+            "noise_std": 0.01
+        }
+    },
+    "training": {
+        "batch_size": 128,
+        "num_epochs": 11,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-5,
+        "num_workers": 4,
+        "pin_memory": true,
+        "checkpoint_interval": 10,
+        "validation_interval": 1
+    },
+    "data": {
+        "dataset": "MNIST",
+        "validation_split": 0.1,
+        "normalization": {
+            "mean": [0.1307],
+            "std": [0.3081]
+        },
+        "augmentation": {
+            "enabled": false,
+            "random_rotation": 10,
+            "random_translation": 0.1
+        }
+    },
+    "logging": {
+        "level": "INFO",
+        "save_frequency": {
+            "model": 10,
+            "visualization": 50
+        },
+        "metrics": [
+            "loss",
+            "accuracy",
+            "reconstruction_error"
+        ]
+    }
+} 

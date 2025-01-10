@@ -11,7 +11,7 @@ from torch.utils.data import DataLoader
 from pathlib import Path
 import numpy as np
 import matplotlib.pyplot as plt
-from typing import Dict, Optional
+from typing import Optional
 from sklearn.metrics import confusion_matrix
 import seaborn as sns
 

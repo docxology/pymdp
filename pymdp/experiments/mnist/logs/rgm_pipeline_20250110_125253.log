@@ -1,0 +1,20 @@
+2025-01-10 12:52:53,517 [INFO    ] rgm.runner - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_125253.log (rgm_logging.py:125)
+2025-01-10 12:52:53,517 [INFO    ] rgm.runner - Starting RGM pipeline... (run_rgm.py:90)
+2025-01-10 12:52:53,518 [INFO    ] rgm.pipeline - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_125253.log (rgm_logging.py:125)
+2025-01-10 12:52:53,518 [INFO    ] rgm.pipeline - ✓ Logging initialized (pipeline.py:85)
+2025-01-10 12:52:53,518 [ERROR   ] rgm.pipeline - Configuration validation failed: Missing required field 'epochs' in training section (pipeline.py:132)
+2025-01-10 12:52:53,518 [ERROR   ] rgm.runner - Pipeline failed: Missing required field 'epochs' in training section (run_rgm.py:120)
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/run_rgm.py", line 94, in main
+    pipeline = RGMPipeline(
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 60, in __init__
+    self.config = self._load_and_validate_config(config_path)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 129, in _load_and_validate_config
+    validator._validate_config(config)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_config_validator.py", line 71, in _validate_config
+    RGMConfigValidator._validate_training_config(config['training'])
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_config_validator.py", line 161, in _validate_training_config
+    RGMConfigValidator._validate_section(config, 'training', required_fields)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_config_validator.py", line 210, in _validate_section
+    raise ValueError(f"Missing required field '{field}' in {section_name} section")
+ValueError: Missing required field 'epochs' in training section

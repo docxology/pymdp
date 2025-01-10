@@ -1,0 +1,20 @@
+2025-01-10 13:13:17,573 [INFO    ] rgm.runner - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_131317.log (rgm_logging.py:125)
+2025-01-10 13:13:17,573 [INFO    ] rgm.runner - Starting RGM pipeline... (run_rgm.py:90)
+2025-01-10 13:13:17,573 [INFO    ] rgm.pipeline - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_131317.log (rgm_logging.py:125)
+2025-01-10 13:13:17,573 [INFO    ] rgm.pipeline - ✓ Logging initialized (pipeline.py:85)
+2025-01-10 13:13:17,574 [INFO    ] rgm.pipeline - ✓ Configuration validated successfully (pipeline.py:130)
+2025-01-10 13:13:17,578 [INFO    ] rgm.pipeline - 💻 Using device: cpu (pipeline.py:64)
+2025-01-10 13:13:17,579 [ERROR   ] rgm.pipeline - Failed to initialize components: Missing config section: architecture (pipeline.py:184)
+2025-01-10 13:13:17,579 [ERROR   ] rgm.runner - Pipeline failed: Missing config section: architecture (run_rgm.py:120)
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/run_rgm.py", line 94, in main
+    pipeline = RGMPipeline(
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 67, in __init__
+    self._initialize_components()
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 156, in _initialize_components
+    self.data_loader = RGMDataLoader(
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_data_loader.py", line 36, in __init__
+    self._validate_config(config)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/utils/rgm_data_loader.py", line 104, in _validate_config
+    raise ValueError(f"Missing config section: {section}")
+ValueError: Missing config section: architecture

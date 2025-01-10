@@ -1,0 +1,14 @@
+Metadata-Version: 2.1
+Name: rgm
+Version: 0.1.0
+Summary: Renormalization Generative Model (RGM)
+Home-page: https://github.com/versesresearch/pymdp
+Author: RGM Team
+Author-email: research@verses.ai
+License: UNKNOWN
+Platform: UNKNOWN
+Requires-Python: >=3.8
+Provides-Extra: dev
+
+UNKNOWN
+

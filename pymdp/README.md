@@ -1,58 +1,132 @@
 # Renormalization Generative Model (RGM)
 
-## Overview
+A PyTorch implementation of the Renormalization Generative Model for hierarchical pattern recognition and generation.
 
-This implementation provides a hierarchical generative model based on renormalization group principles and the Free Energy Principle. The model learns to:
+## Features
 
-1. Extract hierarchical features from data through successive coarse-graining
-2. Generate samples through top-down message passing
-3. Perform inference through bidirectional message passing
-4. Minimize variational free energy during learning
+- Matrix-based hierarchical generative model
+- Message passing inference
+- MNIST training pipeline
+- Visualization and analysis tools
 
-## Architecture
+## Installation
 
-The model consists of multiple hierarchical levels, each containing:
+1. Clone the repository:
+```bash
+git clone https://github.com/yourusername/rgm.git
+cd rgm
+```
 
-- Recognition model (bottom-up)
-- Generative model (top-down) 
-- Lateral connections within each level
-- Message passing between levels
-
-### Matrix Structure
-
-Each level l has three key matrices:
-- A[l]: Recognition weights (bottom-up)
-- B[l]: Generative weights (top-down)
-- D[l]: Lateral connections (within-level)
-
-### Dimensions
-
-For MNIST data (28x28 pixels):
-- Input: 784 dimensions (flattened 28x28)
-- Level 0: 784 → 256 dimensions
-- Level 1: 256 → 64 dimensions 
-- Level 2: 64 → 16 dimensions
-
-## Training
-
-The model is trained to:
-1. Minimize reconstruction error
-2. Regularize latent representations
-3. Maintain consistency across levels
-4. Minimize variational free energy
+2. Install the package:
+```bash
+pip install -e .
+```
 
 ## Usage
 
-```python
-from rgm.Run_RGM import RGMPipeline
+### Running the MNIST Pipeline
 
-# Initialize and run pipeline
-pipeline = RGMPipeline()
-pipeline.run()
+1. Configure the model in `rgm/config.json` (a default configuration is provided)
+
+2. Run the pipeline:
+```bash
+cd rgm
+python Run_RGM.py
 ```
 
-## References
+The pipeline will:
+1. Prepare MNIST data
+2. Verify GNN specifications
+3. Generate and visualize matrices
+4. Train the model
+5. Save results in the experiments directory
 
-1. Friston, K. (2010). The free-energy principle: a unified brain theory?
-2. Hinton, G. E., & Salakhutdinov, R. R. (2006). Reducing the dimensionality of data with neural networks.
-3. Wilson, K. G. (1975). The renormalization group: Critical phenomena and the Kondo problem. 
+### Configuration
+
+The model can be configured through `config.json` with the following sections:
+
+```json
+{
+    "architecture": {
+        "layer_dims": [784, 500, 200],
+        "association_dims": []
+    },
+    "initialization": {
+        "recognition": {
+            "method": "xavier_uniform",
+            "gain": 1.4
+        },
+        "generative": {
+            "method": "xavier_uniform",
+            "gain": 0.8
+        },
+        "lateral": {
+            "method": "identity_with_noise",
+            "noise_std": 0.01
+        }
+    },
+    "training": {
+        "batch_size": 128,
+        "num_epochs": 100,
+        "learning_rate": 0.001,
+        "weight_decay": 1e-5
+    },
+    "data": {
+        "dataset": "MNIST",
+        "validation_split": 0.1,
+        "normalization": {
+            "mean": [0.1307],
+            "std": [0.3081]
+        }
+    }
+}
+```
+
+### Project Structure
+
+```
+rgm/
+├── __init__.py           # Package initialization
+├── Run_RGM.py           # Main pipeline runner
+├── rgm_render.py        # Matrix generation and visualization
+├── models/              # GNN model specifications
+├── utils/               # Utility modules
+│   ├── rgm_logging.py   # Logging configuration
+│   ├── rgm_data_loader.py  # Data loading utilities
+│   └── rgm_config_validator.py  # Configuration validation
+└── experiments/         # Generated experiment directories
+```
+
+## Development
+
+### Running Tests
+
+```bash
+pytest tests/
+```
+
+### Code Style
+
+This project follows PEP 8 guidelines. Use black for formatting:
+
+```bash
+black rgm/
+```
+
+## License
+
+MIT License - see LICENSE file for details.
+
+## Citation
+
+If you use this code in your research, please cite:
+
+```bibtex
+@misc{rgm2023,
+    title={Renormalization Generative Model Implementation},
+    author={RGM Team},
+    year={2023},
+    publisher={GitHub},
+    howpublished={\url{https://github.com/yourusername/rgm}}
+}
+``` 

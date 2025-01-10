@@ -3,7 +3,7 @@
     "title": "RGM Configuration Schema",
     "description": "Schema for RGM configuration validation",
     "type": "object",
-    "required": ["model", "learning", "data", "validation"],
+    "required": ["model", "learning", "data", "validation", "architecture"],
     "properties": {
         "model": {
             "type": "object",
@@ -191,7 +191,7 @@
         },
         "data": {
             "type": "object",
-            "required": ["type", "input", "output", "augmentation", "batching"],
+            "required": ["type", "input", "output", "augmentation", "batching", "train_split", "val_split"],
             "properties": {
                 "type": {
                     "type": "string",
@@ -274,8 +274,61 @@
                         "pin_memory": {"type": "boolean"},
                         "drop_last": {"type": "boolean"}
                     }
+                },
+                "train_split": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Proportion of the dataset to use for training."
+                },
+                "val_split": {
+                    "type": "number",
+                    "minimum": 0,
+                    "maximum": 1,
+                    "description": "Proportion of the dataset to use for validation."
                 }
             }
+        },
+        "architecture": {
+            "type": "object",
+            "required": ["type", "layers", "optimizer", "loss_function"],
+            "properties": {
+                "type": {
+                    "type": "string",
+                    "enum": ["default_architecture", "custom_architecture"]
+                },
+                "layers": {
+                    "type": "array",
+                    "items": {
+                        "type": "object",
+                        "required": ["name", "type"],
+                        "properties": {
+                            "name": {"type": "string"},
+                            "type": {"type": "string", "enum": ["convolutional", "pooling", "fully_connected"]},
+                            "filters": {"type": "integer"},
+                            "kernel_size": {"type": "integer"},
+                            "activation": {"type": "string"},
+                            "pool_size": {"type": "integer"},
+                            "units": {"type": "integer"}
+                        },
+                        "additionalProperties": false
+                    }
+                },
+                "optimizer": {
+                    "type": "object",
+                    "required": ["type", "learning_rate"],
+                    "properties": {
+                        "type": {"type": "string", "enum": ["Adam", "SGD", "RMSprop"]},
+                        "learning_rate": {"type": "number"}
+                    },
+                    "additionalProperties": false
+                },
+                "loss_function": {
+                    "type": "string",
+                    "enum": ["categorical_crossentropy", "binary_crossentropy", "mean_squared_error"]
+                }
+            },
+            "additionalProperties": false
         },
         "validation": {
             "type": "object",

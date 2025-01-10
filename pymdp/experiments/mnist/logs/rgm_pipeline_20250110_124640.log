@@ -1,0 +1,13 @@
+2025-01-10 12:46:40,786 [INFO    ] rgm.runner - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_124640.log (rgm_logging.py:125)
+2025-01-10 12:46:40,786 [INFO    ] rgm.runner - Starting RGM pipeline... (run_rgm.py:90)
+2025-01-10 12:46:40,786 [INFO    ] rgm.pipeline - Log file created at: experiments/mnist/logs/rgm_pipeline_20250110_124640.log (rgm_logging.py:125)
+2025-01-10 12:46:40,786 [INFO    ] rgm.pipeline - ✓ Logging initialized (pipeline.py:85)
+2025-01-10 12:46:40,786 [ERROR   ] rgm.runner - Pipeline failed: 'RGMConfigValidator' object has no attribute 'validate_config' (run_rgm.py:120)
+Traceback (most recent call last):
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/run_rgm.py", line 94, in main
+    pipeline = RGMPipeline(
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 60, in __init__
+    self.config = self._load_and_validate_config(config_path)
+  File "/home/trim/Documents/GitHub/pymdp/pymdp/rgm/pipeline.py", line 129, in _load_and_validate_config
+    validator.validate_config(config)
+AttributeError: 'RGMConfigValidator' object has no attribute 'validate_config'
