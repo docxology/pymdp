@@ -1,0 +1,122 @@
+{
+  "pymdp_validation": {
+    "all_validations_passed": true,
+    "educational_implementations_verified": true,
+    "methods_validated": [
+      "entropy",
+      "softmax",
+      "kl_divergence",
+      "obj_array_operations",
+      "sampling"
+    ]
+  },
+  "categorical_distributions": {
+    "manual": [
+      0.2,
+      0.3,
+      0.5
+    ],
+    "uniform": [
+      0.3333333333333333,
+      0.3333333333333333,
+      0.3333333333333333
+    ],
+    "normalized": [
+      1.0,
+      2.0,
+      3.0
+    ],
+    "entropies": [
+      1.0986122886681096,
+      0.6390318596501771,
+      7.368272297580947e-15,
+      1.0549201679861442
+    ]
+  },
+  "gaussian_distributions": {
+    "Standard Normal": {
+      "mean": 0.0,
+      "std": 1.0,
+      "entropy": 1.4189385332046727
+    },
+    "Shifted Right": {
+      "mean": 2.0,
+      "std": 1.0,
+      "entropy": 1.4189385332046727
+    },
+    "Shifted Left": {
+      "mean": -1.0,
+      "std": 1.0,
+      "entropy": 1.4189385332046727
+    },
+    "Wide Distribution": {
+      "mean": 0.0,
+      "std": 2.0,
+      "entropy": 2.112085713764618
+    },
+    "Narrow Distribution": {
+      "mean": 0.0,
+      "std": 0.5,
+      "entropy": 0.7257913526447274
+    },
+    "Bimodal Mixture": {
+      "mean": "mixed",
+      "std": "mixed",
+      "entropy": "complex"
+    }
+  },
+  "poisson_distributions": {
+    "\u03bb=0.5": {
+      "lambda": 0.5,
+      "entropy": 0.9276374674957975
+    },
+    "\u03bb=1.0": {
+      "lambda": 1.0,
+      "entropy": 1.3048422422562516
+    },
+    "\u03bb=2.0": {
+      "lambda": 2.0,
+      "entropy": 1.7048826439329836
+    },
+    "\u03bb=4.0": {
+      "lambda": 4.0,
+      "entropy": 2.086672699837521
+    },
+    "\u03bb=8.0": {
+      "lambda": 8.0,
+      "entropy": 2.4586593040445908
+    },
+    "\u03bb=12.0": {
+      "lambda": 12.0,
+      "entropy": 2.6613918580986726
+    }
+  },
+  "softmax_result": [
+    0.09003057317038046,
+    0.6652409557748218,
+    0.24472847105479764
+  ],
+  "operations": {
+    "product": [
+      0.3999999999999999,
+      0.4999999999999999,
+      0.09999999999999998
+    ],
+    "kl_divergence": 0.39605845720425736
+  },
+  "pymdp_integration": {
+    "obj_array_shapes": [
+      [
+        3
+      ],
+      [
+        2
+      ],
+      [
+        4
+      ]
+    ],
+    "supports_multi_factor": true,
+    "discrete_preferred": true
+  }
+}

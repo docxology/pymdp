@@ -1,0 +1,255 @@
+# PyMDP Textbook Development Rules
+# ================================
+
+## Project Philosophy
+- Use test-driven development (TDD) with unified modular approach
+- Documentation should be understated and "show not tell"
+- Write modular, well-documented, clearly reasoned code
+- Follow professional, functional, intelligent, and elegant coding practices
+- Avoid redundant code sections and scripts
+- No mock methods - always use real data analysis
+- Scan the entire repository before acting to ensure intelligent decisions
+
+## Code Quality Standards
+
+### Python Code Style
+- Use python3 for all scripts
+- Follow PEP 8 style guidelines with 88-character line length
+- Use type hints where appropriate
+- Write comprehensive docstrings in NumPy/SciPy style
+- Include clear, concise comments explaining the reasoning behind complex logic
+- Use meaningful variable and function names
+
+### Testing Requirements
+- All new functions must have corresponding tests in tests/ directory
+- Tests must cover normal cases, edge cases, and error conditions
+- Use pytest framework with fixtures from conftest.py
+- Aim for >95% test coverage
+- Tests should be fast-running by default (mark slow tests appropriately)
+
+### Documentation Standards
+- All modules, classes, and functions must have docstrings
+- Documentation files should be in Markdown format
+- Include mathematical formulations where relevant
+- Provide working code examples in documentation
+- Cross-reference related concepts and files
+- Keep explanations progressive (simple to complex)
+
+## Project Structure Rules
+
+### Directory Organization
+```
+textbook/
+├── setup.sh              # Main setup script - must be kept current
+├── test_installation.py  # Quick verification script
+├── tests/                 # Test framework - comprehensive coverage
+│   ├── __init__.py
+│   ├── conftest.py       # Shared test fixtures
+│   ├── test_*.py         # Individual test modules
+│   ├── run_tests.py      # Test runner with options
+│   └── pytest.ini       # Test configuration
+├── docs/                  # Documentation - progressive learning
+│   ├── README.md         # Overview and reading paths
+│   ├── *.md              # Topic-specific documentation
+│   └── ...               # Cross-referenced materials
+├── src/                   # Additional methods and utilities
+│   ├── __init__.py       # Main exports
+│   ├── model_utils.py    # Model construction utilities
+│   ├── visualization.py  # Plotting and visualization
+│   ├── analysis.py       # Analysis and diagnostics
+│   └── educational.py    # Educational demonstrations
+├── examples/              # Step-by-step learning examples
+│   ├── README.md         # Learning path and usage guide
+│   ├── 01_*.py           # Foundation examples
+│   ├── 10_*.py           # Complete POMDP examples
+│   └── ...               # Progressive complexity
+└── .cursorrules          # This file - development guidelines
+```
+
+### File Naming Conventions
+- Examples: `##_descriptive_name.py` (numbered for progression)
+- Tests: `test_module_name.py`
+- Documentation: `topic_name.md` (lowercase with underscores)
+- Source modules: `descriptive_name.py` (lowercase with underscores)
+
+## Development Workflow
+
+### Before Making Changes
+1. Run `bash setup.sh` to ensure environment is correct
+2. Scan existing code and documentation to understand context
+3. Check tests to understand expected behavior
+4. Read relevant documentation to understand theoretical background
+
+### When Adding New Features
+1. Start with tests (TDD approach)
+2. Implement minimal working version
+3. Add comprehensive documentation
+4. Create examples demonstrating usage
+5. Run full test suite to ensure no regressions
+6. Update relevant documentation and README files
+
+### When Fixing Bugs
+1. Write a test that reproduces the bug
+2. Fix the bug while maintaining test passing
+3. Verify fix doesn't break existing functionality
+4. Document the fix and its reasoning
+
+## PyMDP Specific Guidelines
+
+### Real PyMDP Integration
+- **ALWAYS use authentic PyMDP methods wherever possible**
+- Follow patterns from official PyMDP examples (agent_demo.py, A_matrix_demo.py, etc.)
+- Use the standard PyMDP Agent class: `pymdp.agent.Agent`
+- Implement the canonical agent loop: `infer_states()` -> `infer_policies()` -> `sample_action()`
+- Use PyMDP utilities: `utils.obj_array_zeros`, `utils.sample`, `utils.onehot`, etc.
+- Use PyMDP algorithms: `algos.run_vanilla_fpi` for inference when appropriate
+- Use PyMDP math functions: `maths.softmax`, `maths.kl_div`, `maths.spm_log`, etc.
+
+### Model Building
+- Always validate models using `validate_model()` from model_utils
+- Use PyMDP's object array structure consistently (`obj_array_zeros`, `obj_array_uniform`)
+- Build matrices using PyMDP utilities, not just raw NumPy
+- Provide clear documentation of model dimensions and interpretation
+- Include visualization of models where helpful
+- Reference official PyMDP examples for matrix construction patterns
+
+### Agent Implementation
+- **Prefer real PyMDP Agent class over custom implementations**
+- When showing custom implementations, also demonstrate equivalent PyMDP usage
+- Use `pymdp_agent_utils.py` for bridging between educational and production code
+- Follow the environment interaction pattern from agent_demo.py:
+  ```python
+  # Standard PyMDP agent loop
+  beliefs = agent.infer_states(observation)
+  agent.infer_policies()  
+  action = agent.sample_action()
+  
+  # Environment updates using PyMDP utilities
+  new_state = utils.sample(B[f][:, old_state, action])
+  observation = utils.sample(A[g][:, state])
+  ```
+
+### Mathematical Notation
+- Follow established notation from docs/mathematical_notation.md
+- Use consistent variable names across examples
+- Provide mathematical background in docstrings
+- Include references to relevant papers/textbooks
+- Connect custom implementations to underlying PyMDP methods
+
+### Examples and Tutorials
+- Build examples progressively from simple to complex
+- Each example should be self-contained but build on previous concepts
+- Include both scripted and interactive modes
+- **Always demonstrate both educational and real PyMDP implementations**
+- Show thin orchestration of real PyMDP methods
+- Provide clear learning objectives and key takeaways
+- Use realistic but understandable scenarios
+- Reference and build upon official PyMDP notebooks
+
+## Code Review Standards
+
+### Required Elements
+- [ ] Code follows style guidelines
+- [ ] Comprehensive tests included
+- [ ] Documentation is complete and accurate
+- [ ] Examples work correctly
+- [ ] No breaking changes to existing API
+- [ ] Performance is reasonable
+- [ ] Error handling is appropriate
+
+### Before Committing
+1. Run all tests: `python tests/run_tests.py`
+2. Verify examples work: `python examples/01_probability_basics.py`
+3. Check documentation builds correctly
+4. Ensure setup.sh works on clean environment
+5. Run linting and fix any issues
+
+## Dependencies and Environment
+
+### Core Dependencies
+- PyMDP (local development version)
+- NumPy, SciPy, Matplotlib (visualization)
+- pytest (testing)
+- Jupyter (optional notebooks)
+
+### Version Management
+- Pin dependency versions in requirements files
+- Test with Python 3.7+ (minimum PyMDP requirement)
+- Ensure cross-platform compatibility
+- Document any OS-specific requirements
+
+### Environment Setup
+- Use setup.sh for consistent environment setup
+- Maintain test_installation.py for quick verification
+- Document any special installation procedures
+- Provide troubleshooting guide for common issues
+
+## Educational Philosophy
+
+### Progressive Learning
+- Start with fundamental concepts (probability, Bayes rule)
+- Build complexity gradually
+- Provide multiple perspectives on same concept
+- Include both theoretical and practical viewpoints
+
+### Interactive Elements
+- Support both scripted and interactive modes
+- Provide step-by-step demonstrations
+- Include visualization wherever helpful
+- Allow parameter exploration and what-if scenarios
+
+### Real Understanding
+- Focus on conceptual understanding over rote learning
+- Provide intuitive explanations alongside mathematical formalism
+- Use realistic examples that connect to practical applications
+- Encourage experimentation and exploration
+
+## Maintenance and Updates
+
+### Regular Maintenance
+- Keep dependencies up to date
+- Review and update documentation regularly
+- Ensure examples continue to work with latest PyMDP
+- Add tests for any reported issues
+
+### Documentation Updates
+- Keep README files current with project structure
+- Update learning paths as examples are added
+- Cross-reference new examples in existing documentation
+- Maintain consistency in mathematical notation
+
+### Community Guidelines
+- Welcome contributions that follow these guidelines
+- Provide clear feedback on pull requests
+- Maintain high standards while being helpful to newcomers
+- Document decisions and rationale for future reference
+
+## Error Handling and Debugging
+
+### Robust Error Handling
+- Provide informative error messages
+- Include suggestions for fixing common problems
+- Validate inputs where appropriate
+- Fail gracefully with useful diagnostics
+
+### Debugging Support
+- Include verbose modes in examples for debugging
+- Provide logging and tracing capabilities
+- Include performance profiling hooks where relevant
+- Document common issues and solutions
+
+## Performance Considerations
+
+### Efficiency Guidelines
+- Use vectorized operations where possible
+- Avoid unnecessary copying of large arrays
+- Profile performance-critical sections
+- Document computational complexity where relevant
+
+### Scalability
+- Design examples to work with different problem sizes
+- Provide guidance on scaling to larger problems
+- Include performance benchmarks for complex examples
+- Document memory usage for large-scale applications
+
+Remember: The goal is to create an educational resource that helps people understand active inference and PyMDP through clear, progressive, well-tested examples and documentation. Every change should serve this educational mission.

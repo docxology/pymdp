@@ -1,0 +1,301 @@
+{
+  "pymdp_agent_integration": {
+    "agent_creation_successful": false,
+    "preference_driven_control_tested": true,
+    "multi_step_policies_demonstrated": true,
+    "methods_demonstrated": [
+      "Agent",
+      "infer_policies",
+      "construct_policies",
+      "sample_action"
+    ]
+  },
+  "preference_examples": {
+    "observations": [
+      "Bitter",
+      "Neutral",
+      "Sweet",
+      "Very Sweet"
+    ],
+    "preference_patterns": [
+      [
+        "Sweet Tooth",
+        [
+          0.0,
+          1.0,
+          3.0,
+          5.0
+        ]
+      ],
+      [
+        "Health Conscious",
+        [
+          0.0,
+          2.0,
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        "Bitter Lover",
+        [
+          3.0,
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        "Indifferent",
+        [
+          1.0,
+          1.0,
+          1.0,
+          1.0
+        ]
+      ]
+    ]
+  },
+  "action_selection": {
+    "A_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "B_matrix": [
+      [
+        [
+          1.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          1.0
+        ],
+        [
+          1.0,
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0,
+          1.0
+        ]
+      ]
+    ],
+    "preferences": [
+      -2.0,
+      0.0,
+      2.0
+    ]
+  },
+  "exploration_vs_exploitation": {
+    "arm_beliefs": [
+      [
+        0.6,
+        0.4
+      ],
+      [
+        0.5,
+        0.5
+      ],
+      [
+        0.7,
+        0.3
+      ]
+    ],
+    "expected_rewards": [
+      0.8,
+      1.0,
+      0.6
+    ],
+    "uncertainties": [
+      0.6730116670092562,
+      0.6931471805599451,
+      0.6108643020548933
+    ]
+  },
+  "policy_evaluation": {
+    "policies": [
+      [
+        "Always A",
+        [
+          0,
+          0
+        ]
+      ],
+      [
+        "Always B",
+        [
+          1,
+          1
+        ]
+      ],
+      [
+        "A then B",
+        [
+          0,
+          1
+        ]
+      ],
+      [
+        "B then A",
+        [
+          1,
+          0
+        ]
+      ],
+      [
+        "Random",
+        [
+          0.5,
+          0.5
+        ]
+      ]
+    ],
+    "policy_values": [
+      1.0,
+      1.5,
+      3.0,
+      2.0,
+      1.875
+    ]
+  },
+  "control_as_inference": {
+    "B_matrix": [
+      [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    ],
+    "preferences": [
+      0.0,
+      0.5,
+      1.0,
+      3.0
+    ],
+    "action_values_example": [
+      1.0,
+      3.0
+    ]
+  },
+  "key_concepts": {
+    "preferences": "C vectors encode what agent wants to observe",
+    "action_selection": "Choose actions to maximize expected preferences",
+    "exploration": "Balance known rewards vs reducing uncertainty",
+    "policy_evaluation": "Compare different strategies by expected outcomes",
+    "control_as_inference": "Infer actions that achieve desired outcomes"
+  }
+}

@@ -1,0 +1,112 @@
+{
+  "pymdp_validation": {
+    "inference_validation_passed": false,
+    "agent_integration_successful": false,
+    "educational_vfe_verified": true,
+    "methods_validated": [
+      "update_posterior_states",
+      "Agent.infer_states",
+      "vfe_decomposition"
+    ]
+  },
+  "vfe_medical_example": {
+    "A_matrix": [
+      [
+        0.9,
+        0.05
+      ],
+      [
+        0.1,
+        0.95
+      ]
+    ],
+    "prior_D": [
+      0.1,
+      0.9
+    ],
+    "posteriors": [
+      0.6666666666666667,
+      0.0115606936416185
+    ],
+    "vfe_results": [
+      {
+        "observation": "Positive Test",
+        "posterior": [
+          0.6666666666666667,
+          0.33333333333333337
+        ],
+        "vfe": 2.0024805005437067,
+        "complexity": 0.9336627322538262,
+        "accuracy": -1.0688177682898805,
+        "info_gain": 0.9336627322538262
+      },
+      {
+        "observation": "Negative Test",
+        "posterior": [
+          0.0115606936416185,
+          0.9884393063583815
+        ],
+        "vfe": 0.14502577205025755,
+        "complexity": 0.06770598288112911,
+        "accuracy": -0.07731978916912843,
+        "info_gain": 0.06770598288112911
+      }
+    ]
+  },
+  "sequential_vfe_updating": {
+    "belief_evolution": [
+      [
+        0.7,
+        0.3
+      ],
+      [
+        0.2258064516129032,
+        0.7741935483870968
+      ],
+      [
+        0.035175879396984924,
+        0.964824120603015
+      ],
+      [
+        0.14093959731543626,
+        0.8590604026845637
+      ],
+      [
+        0.02009569377990431,
+        0.9799043062200957
+      ],
+      [
+        0.08448815377738043,
+        0.9155118462226196
+      ]
+    ],
+    "observations": [
+      1,
+      1,
+      0,
+      1,
+      0
+    ],
+    "vfe_history": [
+      1.1711829815029446,
+      0.4432674727546991,
+      1.4933313231049685,
+      0.35475923454059327,
+      1.5414662959028267
+    ]
+  },
+  "model_validation": {
+    "model_valid": true,
+    "used_pymdp_methods": [
+      "run_vanilla_fpi",
+      "kl_divergence",
+      "obj_array_zeros"
+    ]
+  },
+  "key_vfe_insights": {
+    "vfe_formula": "VFE = Complexity - Accuracy",
+    "complexity": "KL divergence from prior",
+    "accuracy": "Expected log likelihood",
+    "minimizing_vfe": "Optimal Bayesian inference"
+  }
+}
