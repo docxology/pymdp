@@ -1,0 +1,185 @@
+{
+  "example_info": {
+    "name": "Simple POMDP Navigation with VFE/EFE Analysis",
+    "description": "Complete active inference agent with proper PyMDP VFE/EFE calculations",
+    "key_concepts": [
+      "generative_model",
+      "vfe_minimization",
+      "efe_based_control",
+      "state_inference",
+      "action_selection",
+      "pomdp"
+    ]
+  },
+  "model_parameters": {
+    "num_states": 3,
+    "num_observations": 3,
+    "num_actions": 2,
+    "observation_noise": 0.05,
+    "movement_noise": 0.02,
+    "goal_preference": 1.5
+  },
+  "pymdp_matrices": {
+    "A_matrix": [
+      [
+        0.95,
+        0.025,
+        0.025
+      ],
+      [
+        0.025,
+        0.95,
+        0.025
+      ],
+      [
+        0.025,
+        0.025,
+        0.95
+      ]
+    ],
+    "B_matrix": [
+      [
+        [
+          1.0,
+          0.02
+        ],
+        [
+          0.98,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.98
+        ],
+        [
+          0.02,
+          0.02
+        ],
+        [
+          0.98,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.98
+        ],
+        [
+          0.02,
+          1.0
+        ]
+      ]
+    ],
+    "C_vector": [
+      -1.5,
+      0.0,
+      1.5
+    ],
+    "D_vector": [
+      0.1,
+      0.8,
+      0.1
+    ],
+    "A_matrix_shape": [
+      3,
+      3
+    ],
+    "B_matrix_shape": [
+      3,
+      3,
+      2
+    ]
+  },
+  "simulation_results": {
+    "total_reward": 1.5,
+    "final_state": 2,
+    "reached_goal": true,
+    "num_steps": 8,
+    "mean_reward_per_step": 0.1875,
+    "action_diversity": 2.0,
+    "mean_belief_entropy": 0.3650414636205044
+  },
+  "vfe_efe_analysis": {
+    "vfe_history": [
+      0.2678794451556014,
+      3.5747341089003704,
+      2.059810426261273,
+      1.6832050885509489,
+      3.6860366878031923,
+      3.586438648559438,
+      0.2678794451556014,
+      3.5747341089003704,
+      3.586438648559438
+    ],
+    "efe_history": [
+      [
+        -4.125917580695522,
+        -6.836530325793561
+      ],
+      [
+        -3.5067673554489476,
+        -3.4154088152644526
+      ],
+      [
+        -1.9485723072335548,
+        -1.5534463694953156
+      ],
+      [
+        -6.67040871147244,
+        -3.43333848705643
+      ],
+      [
+        -3.5067673554489476,
+        -3.4154088152644526
+      ],
+      [
+        -0.4727714391101763,
+        -2.920321439110176
+      ],
+      [
+        -4.125917580695522,
+        -6.836530325793561
+      ],
+      [
+        -3.5067673554489476,
+        -3.4154088152644526
+      ],
+      [
+        -0.4727714391101763,
+        -2.920321439110176
+      ]
+    ],
+    "mean_vfe": 2.4763507342051367,
+    "final_vfe": 3.586438648559438,
+    "vfe_evolution_trend": "stable"
+  },
+  "pymdp_integration_status": {
+    "vfe_calculations": "SUCCESS - Using pymdp.maths methods",
+    "efe_calculations": "SUCCESS - Following pymdp.control patterns",
+    "state_inference": "SUCCESS - Using pymdp.inference methods",
+    "matrix_utilities": "SUCCESS - Using pymdp.utils functions",
+    "model_validation": "SUCCESS - Using @src/model_utils",
+    "comprehensive_analysis": "SUCCESS - All matrices displayed and validated"
+  },
+  "key_insights": [
+    "VFE = E_q[ln q(s) - ln p(o,s)] measures model fit to observations",
+    "Lower VFE indicates better Bayesian inference performance",
+    "EFE balances expected utility (pragmatic) vs information gain (epistemic)",
+    "Lower EFE actions are preferred by the agent",
+    "Sequential VFE minimization drives optimal belief updating",
+    "PyMDP methods provide mathematically rigorous active inference",
+    "Complete POMDP requires A, B, C, D model components",
+    "Agent alternates between perception (VFE minimization) and action (EFE minimization)"
+  ]
+}

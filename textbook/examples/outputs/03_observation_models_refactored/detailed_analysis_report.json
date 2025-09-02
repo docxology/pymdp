@@ -1,0 +1,196 @@
+{
+  "example_name": "03_observation_models_refactored",
+  "timestamp": "2025-09-02T18:01:36",
+  "summary": {
+    "models_created": 3,
+    "valid_models": 0,
+    "successful_inferences": 9,
+    "total_inference_attempts": 9
+  },
+  "model_details": {
+    "perfect": {
+      "description": "Perfect observation model (identity matrix)",
+      "shape": [
+        3,
+        3
+      ],
+      "properties": {
+        "determinism": 1.0,
+        "entropy": 0.0,
+        "condition_number": 1.0,
+        "rank": 3
+      },
+      "validation_status": false
+    },
+    "noisy": {
+      "description": "Noisy observation model (10% noise)",
+      "shape": [
+        3,
+        3
+      ],
+      "properties": {
+        "determinism": 0.9333333333333332,
+        "entropy": 0.2911398388319647,
+        "condition_number": 1.111111111111111,
+        "rank": 3
+      },
+      "validation_status": false
+    },
+    "random": {
+      "description": "Random observation model",
+      "shape": [
+        3,
+        3
+      ],
+      "properties": {
+        "determinism": 0.5435068031687943,
+        "entropy": 0.9138738659131903,
+        "condition_number": 3.5268234872093687,
+        "rank": 3
+      },
+      "validation_status": false
+    }
+  },
+  "validation_details": {
+    "perfect": {
+      "A": {
+        "valid": false,
+        "error": "'NoneType' object has no attribute 'dtype'",
+        "issues": [
+          "Validation error: 'NoneType' object has no attribute 'dtype'"
+        ]
+      }
+    },
+    "noisy": {
+      "A": {
+        "valid": false,
+        "error": "'NoneType' object has no attribute 'dtype'",
+        "issues": [
+          "Validation error: 'NoneType' object has no attribute 'dtype'"
+        ]
+      }
+    },
+    "random": {
+      "A": {
+        "valid": false,
+        "error": "'NoneType' object has no attribute 'dtype'",
+        "issues": [
+          "Validation error: 'NoneType' object has no attribute 'dtype'"
+        ]
+      }
+    }
+  },
+  "inference_details": {
+    "0": {
+      "perfect": {
+        "success": true,
+        "beliefs": [
+          1.0,
+          9.999999999999965e-17,
+          9.999999999999965e-17
+        ],
+        "entropy": 7.229642861468932e-15
+      },
+      "noisy": {
+        "success": true,
+        "beliefs": [
+          0.9333333333333331,
+          0.03333333333333344,
+          0.03333333333333344
+        ],
+        "entropy": 0.2911398388319654
+      },
+      "random": {
+        "success": true,
+        "beliefs": [
+          0.4336165940891701,
+          0.0770325676841184,
+          0.4893508382267114
+        ],
+        "entropy": 0.9095298302424666
+      }
+    },
+    "1": {
+      "perfect": {
+        "success": true,
+        "beliefs": [
+          9.999999999999965e-17,
+          1.0,
+          9.999999999999965e-17
+        ],
+        "entropy": 7.229642861468932e-15
+      },
+      "noisy": {
+        "success": true,
+        "beliefs": [
+          0.03333333333333344,
+          0.9333333333333331,
+          0.03333333333333344
+        ],
+        "entropy": 0.2911398388319654
+      },
+      "random": {
+        "success": true,
+        "beliefs": [
+          0.4942856338962241,
+          0.39058616125711665,
+          0.11512820484665937
+        ],
+        "entropy": 0.9643606144451077
+      }
+    },
+    "2": {
+      "perfect": {
+        "success": true,
+        "beliefs": [
+          9.999999999999963e-17,
+          9.999999999999963e-17,
+          0.9999999999999998
+        ],
+        "entropy": 7.340665163931446e-15
+      },
+      "noisy": {
+        "success": true,
+        "beliefs": [
+          0.03333333333333344,
+          0.03333333333333344,
+          0.9333333333333331
+        ],
+        "entropy": 0.2911398388319654
+      },
+      "random": {
+        "success": true,
+        "beliefs": [
+          0.08624809872236246,
+          0.5727828834657283,
+          0.3409690178119092
+        ],
+        "entropy": 0.8974060199069178
+      }
+    }
+  },
+  "analysis_details": {
+    "perfect": {
+      "determinism": 1.0,
+      "entropy": 0.0,
+      "condition_number": 1.0,
+      "rank": 3
+    },
+    "noisy": {
+      "determinism": 0.9333333333333332,
+      "entropy": 0.2911398388319647,
+      "condition_number": 1.111111111111111,
+      "rank": 3
+    },
+    "random": {
+      "determinism": 0.5435068031687943,
+      "entropy": 0.9138738659131903,
+      "condition_number": 3.5268234872093687,
+      "rank": 3
+    }
+  },
+  "recommendations": [
+    "Some models failed validation - check normalization",
+    "Best model for deterministic inference: perfect"
+  ]
+}

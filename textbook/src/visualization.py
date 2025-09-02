@@ -505,3 +505,42 @@ def plot_observation_model(A_matrix, obs_names=None, state_names=None,
                           ha="center", va="center", color="white" if A_matrix[i, j] > 0.5 else "black")
     
     return ax
+
+
+def apply_accessibility_enhancements():
+    """
+    Apply consistent, accessible matplotlib styling across examples.
+
+    Returns
+    -------
+    colors : list
+        Colorblind-friendly categorical palette used by examples
+    """
+    import matplotlib.pyplot as plt
+
+    plt.rcParams.update({
+        'font.size': 12,
+        'axes.titlesize': 14,
+        'axes.labelsize': 12,
+        'xtick.labelsize': 11,
+        'ytick.labelsize': 11,
+        'legend.fontsize': 11,
+        'figure.titlesize': 16,
+        'font.weight': 'normal',
+        'axes.titleweight': 'bold'
+    })
+
+    colors = [
+        '#1f77b4',  # Blue
+        '#ff7f0e',  # Orange
+        '#2ca02c',  # Green
+        '#d62728',  # Red
+        '#9467bd',  # Purple
+        '#8c564b',  # Brown
+        '#e377c2',  # Pink
+        '#7f7f7f',  # Gray
+        '#bcbd22',  # Olive
+        '#17becf'   # Cyan
+    ]
+
+    return colors

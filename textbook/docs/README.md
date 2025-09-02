@@ -1,75 +1,308 @@
 # PyMDP Textbook Documentation
 
-This directory contains comprehensive documentation for the PyMDP textbook project, focusing on active inference, partially observable Markov decision processes (POMDPs), and related computational methods.
+## Overview
+
+This documentation provides comprehensive guidance for the PyMDP textbook examples, focusing on the use of real PyMDP methods exclusively and the thin orchestrator pattern for example implementation.
 
 ## Documentation Structure
 
-### Core Concepts
-- [`active_inference_basics.md`](active_inference_basics.md) - Fundamental concepts of active inference
-- [`pomdp_theory.md`](pomdp_theory.md) - Mathematical foundation of POMDPs
-- [`free_energy_principle.md`](free_energy_principle.md) - The free energy principle explained
-- [`bayesian_brain.md`](bayesian_brain.md) - Bayesian brain hypothesis and predictive processing
+### Core Guides
 
-### Mathematical Foundations
-- [`mathematical_notation.md`](mathematical_notation.md) - Notation and conventions used
-- [`probability_theory.md`](probability_theory.md) - Essential probability theory
-- [`variational_inference.md`](variational_inference.md) - Variational methods for approximate inference
-- [`message_passing.md`](message_passing.md) - Message passing algorithms
+1. **[PyMDP Core Guide](pymdp_core_guide.md)** - Comprehensive guide to PyMDP core utilities
+2. **[Validation Guide](validation_guide.md)** - Guide to validation utilities and best practices
+3. **[Active Inference Basics](active_inference_basics.md)** - Fundamental concepts
+4. **[PyMDP Overview](pymdp_overview.md)** - Overview of PyMDP integration
 
-### Implementation Guides
-- [`pymdp_overview.md`](pymdp_overview.md) - Overview of PyMDP package structure
-- [`model_specification.md`](model_specification.md) - How to specify generative models
-- [`inference_algorithms.md`](inference_algorithms.md) - Available inference methods
-- [`control_algorithms.md`](control_algorithms.md) - Action selection and planning
+### Key Concepts
 
-### Advanced Topics
-- [`hierarchical_models.md`](hierarchical_models.md) - Multi-level generative models
-- [`learning_dynamics.md`](learning_dynamics.md) - Parameter learning and adaptation
-- [`multi_agent_systems.md`](multi_agent_systems.md) - Multi-agent active inference
-- [`continuous_time.md`](continuous_time.md) - Continuous-time formulations
+#### Thin Orchestrator Pattern
 
-### Applications
-- [`cognitive_modeling.md`](cognitive_modeling.md) - Modeling cognitive processes
-- [`robotics_applications.md`](robotics_applications.md) - Active inference in robotics
-- [`neuroscience_applications.md`](neuroscience_applications.md) - Computational neuroscience
+Examples should be thin orchestrators that use comprehensive shared utilities:
 
-## Reading Path
+```python
+# ✅ Good: Thin orchestrator using shared utilities
+from pymdp_core import PyMDPCore
+from example_utils import ExampleRunner, MatrixBuilder
 
-### For Beginners
-1. Start with `active_inference_basics.md`
-2. Read `pomdp_theory.md` for mathematical background
-3. Follow `pymdp_overview.md` for implementation details
-4. Work through examples in the `../examples/` directory
+def demonstrate_concept():
+    # Setup using shared utilities
+    A = MatrixBuilder.create_observation_model(3, 3, "identity")
+    agent = PyMDPCore.create_agent(A, B, C, D)
+    
+    # Execute using shared utilities
+    results = []
+    for obs in observations:
+        qs, q_pi, action = PyMDPCore.run_agent_step(agent, obs)
+        results.append({'observation': obs, 'beliefs': qs, 'action': action})
+    
+    return results
+```
 
-### For Advanced Users
-1. Review `free_energy_principle.md` for theoretical depth
-2. Study `variational_inference.md` for algorithmic details
-3. Explore `hierarchical_models.md` and `learning_dynamics.md`
-4. Check application-specific documents
+#### Real PyMDP Methods
+
+All examples must use authentic PyMDP methods exclusively:
+
+- **Agent Operations**: `agent.infer_states()`, `agent.infer_policies()`, `agent.sample_action()`
+- **Core Utilities**: `PyMDPCore.create_agent()`, `PyMDPCore.compute_vfe()`, `PyMDPCore.compute_efe()`
+- **Matrix Operations**: `pymdp.utils.obj_array_zeros()`, `pymdp.maths.softmax()`
+- **Validation**: `validate_matrices()`, `validate_agent()`
+
+#### Comprehensive Validation
+
+All examples are validated to ensure:
+
+1. **Method Usage**: Only real PyMDP methods are used
+2. **Matrix Validation**: All matrices meet PyMDP requirements
+3. **Agent Operations**: All agent operations work correctly
+4. **Error Handling**: Robust error handling and fallbacks
+
+## Quick Start
+
+### 1. Basic Example Structure
+
+```python
+#!/usr/bin/env python3
+"""
+Example: [Title] - Refactored
+============================
+
+Brief description using PyMDP core utilities.
+"""
+
+import sys
+import os
+from pathlib import Path
+
+# Add src directory to path
+sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+
+# Import PyMDP core utilities
+from pymdp_core import PyMDPCore, create_agent, infer_states
+from example_utils import ExampleRunner, MatrixBuilder
+from validation import validate_matrices
+
+# Setup
+OUTPUT_DIR = Path(__file__).parent / "outputs" / "example_name"
+OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
+runner = ExampleRunner("example_name", OUTPUT_DIR)
+
+def demonstrate_concept():
+    """Demonstrate concept using PyMDP core utilities."""
+    
+    # 1. Create matrices using MatrixBuilder
+    A = MatrixBuilder.create_observation_model(3, 3, "identity")
+    B = MatrixBuilder.create_transition_model(3, 2, "deterministic")
+    C = MatrixBuilder.create_preferences(3, "linear")
+    D = MatrixBuilder.create_prior(3, "uniform")
+    
+    # 2. Validate matrices
+    validation = validate_matrices(A, B, C, D)
+    assert all(result['valid'] for result in validation.values())
+    
+    # 3. Create agent using PyMDP core
+    agent = create_agent(A, B, C, D)
+    
+    # 4. Run analysis
+    results = []
+    for obs in [0, 1, 2]:
+        qs, q_pi, action = PyMDPCore.run_agent_step(agent, obs)
+        results.append({'observation': obs, 'beliefs': qs, 'action': action})
+    
+    return {
+        'results': results,
+        'validation': validation,
+        'agent': agent
+    }
+
+def main():
+    """Main function."""
+    print("🚀 Example using PyMDP core utilities")
+    
+    try:
+        results = demonstrate_concept()
+        
+        # Save results
+        runner.save_results(results, "results.json")
+        
+        # Create summary
+        summary = runner.create_summary()
+        
+        print("✅ Example completed successfully")
+        
+    except Exception as e:
+        print(f"❌ Error: {e}")
+        return 1
+    
+    return 0
+
+if __name__ == "__main__":
+    sys.exit(main())
+```
+
+### 2. Running Examples
+
+```bash
+# Run individual example
+python textbook/examples/01_probability_basics.py
+
+# Run all examples
+bash textbook/examples/run_all.sh
+
+# Run with validation
+python textbook/tests/run_all_tests.py --validation-only
+```
+
+### 3. Chapter Map (Docs → Examples)
+
+- Bayesian Updating and VFE: `active_inference_basics.md` → `examples/02`, `04`, `05`
+- Observation/Transition Models (A/B): `pymdp_core_guide.md` → `examples/03`, `03_refactored`, `07`
+- Preferences/Control and EFE: `active_inference_basics.md` → `examples/08`, `09`
+- POMDP Agents: `pymdp_overview.md` → `examples/10`, `11`, `12`
+
+### 4. Runner and Authenticity
+
+- Use `run_all.sh --verbose` to verify runtime, outputs, and authenticity
+- Logs: `textbook/examples/logs/`; Outputs: `textbook/examples/outputs/`
+
+### 3. Validation
+
+```bash
+# Validate single example
+python -c "from validation import validate_example; print(validate_example('example.py'))"
+
+# Validate all examples
+python -c "from validation import validate_all_examples; print(validate_all_examples('textbook/examples'))"
+
+# Run comprehensive test suite
+python textbook/tests/run_all_tests.py
+```
+
+## Best Practices
+
+### 1. Use Shared Utilities
+
+Always use the comprehensive shared utilities:
+
+```python
+# ✅ Good
+from pymdp_core import PyMDPCore
+from example_utils import ExampleRunner, MatrixBuilder
+
+# ❌ Avoid
+from pymdp.agent import Agent
+from pymdp.utils import obj_array_zeros
+```
+
+### 2. Validate Everything
+
+Validate matrices and operations:
+
+```python
+# Validate matrices
+validation = validate_matrices(A, B, C, D)
+assert all(result['valid'] for result in validation.values())
+
+# Validate agent
+agent_validation = validate_agent(agent, [0, 1, 2])
+assert agent_validation['overall_valid']
+```
+
+### 3. Handle Errors Gracefully
+
+```python
+try:
+    qs = PyMDPCore.infer_states(agent, observation)
+except Exception as e:
+    print(f"Inference failed: {e}")
+    # Handle error appropriately
+```
+
+### 4. Use Standardized Output
+
+```python
+# Use ExampleRunner for consistent output
+runner = ExampleRunner("example_name")
+runner.save_results(results, "results.json")
+runner.save_visualization(fig, "plot.png")
+summary = runner.create_summary()
+```
+
+## Testing
+
+### Running Tests
+
+```bash
+# Run all tests
+python textbook/tests/run_all_tests.py
+
+# Run specific test
+python -m pytest textbook/tests/test_pymdp_core.py -v
+
+# Run with coverage
+python textbook/tests/run_all_tests.py --coverage
+```
+
+### Test Structure
+
+Tests are organized by component:
+
+- `test_pymdp_core.py` - Tests for PyMDP core utilities
+- `test_example_utils.py` - Tests for example utilities
+- `test_validation.py` - Tests for validation utilities
+
+## Troubleshooting
+
+### Common Issues
+
+1. **Import Errors**: Ensure src directory is in Python path
+2. **Matrix Validation Failures**: Check matrix normalization
+3. **Inference Failures**: Verify observation format (integers, not one-hot)
+4. **Agent Creation Failures**: Check matrix dimensions and types
+
+### Debug Mode
+
+Enable debug mode for detailed information:
+
+```python
+import logging
+logging.basicConfig(level=logging.DEBUG)
+
+# Run with debug information
+agent = PyMDPCore.create_agent(A, B, C, D, verbose=True)
+```
+
+### Getting Help
+
+1. Check the validation reports for specific issues
+2. Review the core utility documentation
+3. Look at the refactored examples for patterns
+4. Run the test suite to identify problems
 
 ## Contributing
 
-When adding new documentation:
-1. Follow the established structure and naming conventions
-2. Include mathematical formulations where appropriate
-3. Provide code examples that link to the examples directory
-4. Cross-reference related concepts
-5. Keep explanations clear and progressive
+### Adding New Examples
 
-## References
+1. Follow the thin orchestrator pattern
+2. Use PyMDP core utilities exclusively
+3. Include comprehensive validation
+4. Add tests for new functionality
+5. Update documentation
 
-Each document includes its own reference list, but key general references include:
+### Modifying Existing Examples
 
-- Friston, K. (2010). The free-energy principle: a unified brain theory?
-- Parr, T., & Friston, K. J. (2017). Uncertainty, epistemics and active inference
-- Da Costa, L., et al. (2020). Active inference on discrete state-spaces
-- Fountas, Z., et al. (2020). Deep active inference agents using Monte-Carlo methods
+1. Maintain backward compatibility
+2. Use shared utilities where possible
+3. Validate all changes
+4. Update tests as needed
+5. Document changes
 
-## Notation Conventions
+## Conclusion
 
-- Consistent mathematical notation across all documents
-- Clear distinction between random variables and their realizations
-- Standard probability theory symbols and conventions
-- PyMDP-specific variable names and structures
+The PyMDP textbook examples provide a comprehensive learning resource for active inference using real PyMDP methods. By following the thin orchestrator pattern and using the shared utilities, examples maintain:
 
-See [`mathematical_notation.md`](mathematical_notation.md) for complete details.
+- **Quality**: High-quality, reliable implementations
+- **Consistency**: Standardized patterns across examples
+- **Maintainability**: Easy to update and modify
+- **Authenticity**: Real PyMDP methods exclusively
+
+For more information, see the individual guide documents and example implementations.

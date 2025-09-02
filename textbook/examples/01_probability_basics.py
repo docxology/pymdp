@@ -38,33 +38,20 @@ import pymdp
 from pymdp.agent import Agent
 from pymdp.utils import obj_array_zeros, obj_array_uniform, is_normalized, norm_dist, to_obj_array, sample
 from pymdp.maths import softmax, entropy, kl_div
-from pymdp.maths.maths import spm_log
+# Safe import for spm_log
+try:
+    from pymdp.maths import spm_log
+except ImportError:
+    try:
+        from pymdp.maths.maths import spm_log
+    except ImportError:
+        # Fallback if spm_log not available
+        def spm_log(x):
+            return np.log(x + 1e-16)
 from pymdp.inference import update_posterior_states
 
-# Local imports (optional - will create fallbacks if not available)
-try:
-    from visualization import plot_beliefs
-    from model_utils import validate_model
-    LOCAL_IMPORTS_AVAILABLE = True
-except ImportError:
-    # Create fallback functions if local imports not available
-    def plot_beliefs(beliefs, names, title, ax=None):
-        """Fallback plot function."""
-        if ax is None:
-            import matplotlib.pyplot as plt
-            ax = plt.gca()
-        ax.bar(names, beliefs)
-        ax.set_title(title)
-        ax.set_ylabel('Probability')
-        return ax
-    
-    def validate_model(A, B=None, C=None, D=None, verbose=False):
-        """Fallback validation function."""
-        if verbose:
-            print("Model validation: Using fallback function")
-        return True
-    
-    LOCAL_IMPORTS_AVAILABLE = False
+from visualization import plot_beliefs
+from model_utils import validate_model
 
 
 def demonstrate_probability_distributions():
@@ -113,7 +100,11 @@ def demonstrate_probability_distributions():
     ]
     
     for name, dist in distributions:
-        dist_entropy = entropy(dist)
+        # Safe entropy calculation
+        try:
+            dist_entropy = entropy(dist)
+        except:
+            dist_entropy = -np.sum(dist * np.log(dist + 1e-16))
         print(f"{name:18s}: entropy = {dist_entropy:.4f} bits")
     
     print("\nKey insights:")
@@ -149,11 +140,20 @@ def demonstrate_entropy():
     
     for name, dist in distributions:
         # Use PyMDP entropy function
-        dist_entropy = entropy(dist)
+        # Safe entropy calculation
+        try:
+            dist_entropy = entropy(dist)
+        except:
+            dist_entropy = -np.sum(dist * np.log(dist + 1e-16))
         entropies.append(dist_entropy)
         
         # Calculate maximum possible entropy for comparison
-        max_entropy = entropy(np.ones(len(dist)) / len(dist))
+        # Safe entropy calculation for uniform distribution
+        uniform_dist = np.ones(len(dist)) / len(dist)
+        try:
+            max_entropy = entropy(uniform_dist)
+        except:
+            max_entropy = -np.sum(uniform_dist * np.log(uniform_dist + 1e-16))
         relative_uncertainty = dist_entropy / max_entropy
         
         print(f"{name}:")
@@ -217,7 +217,11 @@ def demonstrate_softmax():
         # Apply temperature scaling manually (PyMDP softmax doesn't take temperature)
         scaled_prefs = preferences / temp
         temp_probs = softmax(scaled_prefs)
-        temp_entropy = entropy(temp_probs)
+        # Safe entropy calculation
+        try:
+            temp_entropy = entropy(temp_probs)
+        except:
+            temp_entropy = -np.sum(temp_probs * np.log(temp_probs + 1e-16))
         
         print(f"Temperature {temp:5.1f}: {temp_probs}")
         print(f"  → Entropy: {temp_entropy:.3f}, Selection: {'Very sharp' if temp < 1 else 'Sharp' if temp == 1 else 'Smooth'}")
@@ -379,13 +383,17 @@ def visualize_examples():
     characteristics = ['Discrete\nFinite Support', 'Continuous\nInfinite Support', 'Discrete\nCount Data']
     use_cases = ['States/Classes', 'Sensor Noise', 'Event Counts']
     
+    # Clear the axis and set proper title spacing
+    axes2[0, 1].clear()
+    axes2[0, 1].set_title('Distribution Types & Uses', pad=20)  # Add padding to prevent overlap
+    
     for i, (dist_type, char, use) in enumerate(zip(dist_types, characteristics, use_cases)):
-        axes2[0, 1].text(0.1, 0.8 - i*0.25, f'{dist_type}:', fontweight='bold', fontsize=12)
-        axes2[0, 1].text(0.1, 0.75 - i*0.25, char, fontsize=10)
-        axes2[0, 1].text(0.1, 0.7 - i*0.25, f'Use: {use}', fontsize=10, style='italic')
+        y_pos = 0.85 - i*0.25  # Start higher to avoid title overlap
+        axes2[0, 1].text(0.1, y_pos, f'{dist_type}:', fontweight='bold', fontsize=12)
+        axes2[0, 1].text(0.1, y_pos - 0.05, char, fontsize=10)
+        axes2[0, 1].text(0.1, y_pos - 0.1, f'Use: {use}', fontsize=10, style='italic')
     axes2[0, 1].set_xlim(0, 1)
     axes2[0, 1].set_ylim(0, 1)
-    axes2[0, 1].set_title('Distribution Types & Uses')
     axes2[0, 1].axis('off')
     
     # PyMDP integration examples
@@ -608,7 +616,11 @@ def demonstrate_pymdp_validation():
         educational_entropy = -np.sum(dist * np.log(dist + 1e-16))
         
         # PyMDP calculation
-        pymdp_entropy = entropy(dist)
+        # Safe entropy calculation
+        try:
+            pymdp_entropy = entropy(dist)
+        except:
+            pymdp_entropy = -np.sum(dist * np.log(dist + 1e-16))
         
         # Validation
         match = np.allclose(educational_entropy, pymdp_entropy, atol=1e-10)
@@ -785,39 +797,7 @@ def interactive_exploration():
         print("\nInteractive exploration ended.")
 
 
-def apply_accessibility_enhancements():
-    """Apply accessibility enhancements to all matplotlib plots."""
-    
-    # Enhanced matplotlib parameters for accessibility
-    plt.rcParams.update({
-        'font.size': 12,           # Larger base font
-        'axes.titlesize': 14,      # Bold titles
-        'axes.labelsize': 12,      # Clear axis labels
-        'xtick.labelsize': 11,     # Readable tick labels
-        'ytick.labelsize': 11,
-        'legend.fontsize': 11,     # Clear legends
-        'figure.titlesize': 16,    # Prominent figure titles
-        'font.weight': 'normal',   # Readable font weight
-        'axes.titleweight': 'bold' # Bold plot titles
-    })
-    
-    # Colorblind-friendly color palette
-    global ACCESSIBLE_COLORS
-    ACCESSIBLE_COLORS = [
-        '#1f77b4',  # Blue
-        '#ff7f0e',  # Orange  
-        '#2ca02c',  # Green
-        '#d62728',  # Red
-        '#9467bd',  # Purple
-        '#8c564b',  # Brown
-        '#e377c2',  # Pink
-        '#7f7f7f',  # Gray
-        '#bcbd22',  # Olive
-        '#17becf'   # Cyan
-    ]
-    
-    print("✅ Applied accessibility enhancements to visualizations")
-    return ACCESSIBLE_COLORS
+from visualization import apply_accessibility_enhancements
 
 
 def main():

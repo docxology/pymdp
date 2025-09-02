@@ -1,0 +1,163 @@
+{
+  "pymdp_agent_integration": {
+    "agent_creation_successful": true,
+    "multi_factor_simulation_completed": false,
+    "state_factors": 4,
+    "total_state_space_size": 72,
+    "factorized_parameters": 12,
+    "efficiency_gain": 6.0,
+    "multi_factor_accuracy": 0.0,
+    "methods_demonstrated": [
+      "multi_factor_Agent",
+      "complex_state_spaces",
+      "factor_dependencies"
+    ],
+    "main_example_patterns_followed": [
+      "agent_demo.py",
+      "tmaze_demo.ipynb",
+      "gridworld_tutorial"
+    ]
+  },
+  "factorized_representation": {
+    "factors": [
+      [
+        "Kitchen",
+        "Living Room",
+        "Bedroom"
+      ],
+      [
+        "Day",
+        "Night"
+      ]
+    ],
+    "joint_states": [
+      "Kitchen-Day",
+      "Kitchen-Night",
+      "Living Room-Day",
+      "Living Room-Night",
+      "Bedroom-Day",
+      "Bedroom-Night"
+    ]
+  },
+  "independent_factors": {
+    "location_A_matrix": [
+      [
+        0.8,
+        0.1,
+        0.1
+      ],
+      [
+        0.1,
+        0.8,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.8
+      ]
+    ],
+    "weather_A_matrix": [
+      [
+        0.2,
+        0.8
+      ],
+      [
+        0.8,
+        0.2
+      ]
+    ],
+    "location_posterior": [
+      0.16129032258064518,
+      0.7741935483870968,
+      0.06451612903225808
+    ],
+    "weather_posterior": [
+      0.3684210526315789,
+      0.631578947368421
+    ]
+  },
+  "dependent_factors": {
+    "joint_A_matrix": [
+      [
+        0.1,
+        0.1,
+        0.8,
+        0.7
+      ],
+      [
+        0.7,
+        0.2,
+        0.2,
+        0.3
+      ],
+      [
+        0.2,
+        0.7,
+        0.0,
+        0.0
+      ]
+    ],
+    "joint_posterior": [
+      0.3,
+      0.7,
+      0.0,
+      0.0
+    ],
+    "location_marginal": [
+      0.3,
+      0.7
+    ],
+    "time_marginal": [
+      1.0,
+      0.0
+    ]
+  },
+  "hierarchical_factors": {
+    "task_given_context": [
+      [
+        0.7,
+        0.1
+      ],
+      [
+        0.2,
+        0.4
+      ],
+      [
+        0.1,
+        0.5
+      ]
+    ],
+    "action_given_task": [
+      [
+        0.8,
+        0.1,
+        0.1
+      ],
+      [
+        0.1,
+        0.7,
+        0.1
+      ],
+      [
+        0.1,
+        0.1,
+        0.3
+      ],
+      [
+        0.0,
+        0.1,
+        0.5
+      ]
+    ],
+    "task_posterior": [
+      0.7975830815709969,
+      0.09969788519637461,
+      0.10271903323262839
+    ],
+    "context_posterior": [
+      0.7748607796340493,
+      0.22513922036595066
+    ]
+  }
+}

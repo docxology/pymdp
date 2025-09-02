@@ -1,15 +1,3 @@
-<<<<<<< Updated upstream
-from . import agent
-from . import envs
-from . import utils
-from . import maths
-from . import control
-from . import inference
-from . import learning
-from . import algos
-from . import default_models
-from . import jax
-=======
 """
 PyMDP Package
 ============
@@ -31,6 +19,18 @@ __author__ = 'PyMDP Contributors'
 
 # Package paths
 PACKAGE_ROOT = Path(__file__).parent.absolute()
+
+# Import modules
+from . import agent
+from . import envs
+from . import utils
+from . import maths
+from . import control
+from . import inference
+from . import learning
+from . import algos
+from . import default_models
+from . import jax
 
 # Import core components  
 from .inference import update_posterior_states
@@ -61,4 +61,3 @@ __all__ = [
 # Add rgm to exports if it was successfully imported
 if rgm is not None:
     __all__.append('rgm')
->>>>>>> Stashed changes

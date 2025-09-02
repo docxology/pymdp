@@ -1,0 +1,41 @@
+{
+  "tmaze_setup": {
+    "states": [
+      "Start",
+      "Cue",
+      "Left_Arm",
+      "Right_Arm"
+    ],
+    "actions": [
+      "Stay",
+      "Up",
+      "Left",
+      "Right"
+    ],
+    "observations": [
+      "Nothing",
+      "Left_Cue",
+      "Right_Cue",
+      "Reward",
+      "No_Reward"
+    ]
+  },
+  "cue_reliabilities_tested": [
+    0.6,
+    0.8,
+    0.95
+  ],
+  "information_preferences_tested": [
+    0.0,
+    0.5,
+    1.0,
+    2.0
+  ],
+  "key_concepts": {
+    "decision_making": "Choice between alternatives under uncertainty",
+    "information_seeking": "Gathering information to reduce uncertainty",
+    "context_dependence": "Optimal actions depend on environmental context",
+    "epistemic_value": "Information has value for improving decisions",
+    "pragmatic_value": "Actions have value for achieving goals"
+  }
+}

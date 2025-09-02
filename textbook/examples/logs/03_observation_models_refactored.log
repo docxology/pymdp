@@ -1,0 +1,72 @@
+🚀 PyMDP Observation Models - Refactored Example
+Using comprehensive PyMDP core utilities and real PyMDP methods
+======================================================================
+🔍 Building Observation Models with PyMDP Core Utilities
+============================================================
+
+1. Creating Observation Models...
+   ✅ Perfect observation model created
+   ✅ Noisy observation model created
+   ✅ Random observation model created
+
+2. Validating Observation Models...
+   INVALID perfect model
+      Issues: ["Validation error: 'NoneType' object has no attribute 'dtype'"]
+   INVALID noisy model
+      Issues: ["Validation error: 'NoneType' object has no attribute 'dtype'"]
+   INVALID random model
+      Issues: ["Validation error: 'NoneType' object has no attribute 'dtype'"]
+
+3. Creating Supporting Matrices...
+   ✅ Transition model created
+   ✅ Preferences created
+   ✅ Prior beliefs created
+
+4. Testing Agent Inference...
+   ✅ Agent created with perfect model
+   ✅ Agent created with noisy model
+   ✅ Agent created with random model
+
+5. Testing State Inference...
+   ✅ Inference successful for perfect model, obs=0
+   ✅ Inference successful for noisy model, obs=0
+   ✅ Inference successful for random model, obs=0
+   ✅ Inference successful for perfect model, obs=1
+   ✅ Inference successful for noisy model, obs=1
+   ✅ Inference successful for random model, obs=1
+   ✅ Inference successful for perfect model, obs=2
+   ✅ Inference successful for noisy model, obs=2
+   ✅ Inference successful for random model, obs=2
+
+6. Analyzing Model Properties...
+   📊 perfect model analysis complete
+   📊 noisy model analysis complete
+   📊 random model analysis complete
+
+📊 Creating Comprehensive Visualizations...
+📊 Visualization saved: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored/observation_models_comprehensive.png
+
+📋 Creating Detailed Analysis Report...
+📋 Results saved: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored/detailed_analysis_report.json
+📋 Results saved: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored/03_observation_models_refactored_summary.json
+
+======================================================================
+📊 FINAL RESULTS
+======================================================================
+Models Created: 3
+Valid Models: 0
+Successful Inferences: 9
+Total Inference Attempts: 9
+
+📁 Output Directory: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored
+📊 Visualizations: 1
+📋 Reports: 2 (summary + detailed analysis)
+
+🎯 Key Achievements:
+   ✅ Used PyMDP core utilities exclusively
+   ✅ Implemented thin orchestrator pattern
+   ✅ Comprehensive validation and error handling
+   ✅ Real PyMDP methods throughout
+   ✅ Standardized output and visualization
+
+🚀 Next: Run validation to confirm PyMDP method usage

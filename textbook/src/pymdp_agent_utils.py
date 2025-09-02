@@ -4,19 +4,34 @@ PyMDP Agent Utilities
 
 Utilities for creating and working with real PyMDP Agent instances,
 following the patterns from the official PyMDP examples.
+
+This module now uses the comprehensive PyMDP core utilities.
 """
 
 import numpy as np
-import pymdp
-from pymdp.agent import Agent
+import sys
+import os
+
+# Add src directory to path for imports
+sys.path.insert(0, os.path.join(os.path.dirname(__file__)))
+
+from pymdp_core import PyMDPCore
 from pymdp import utils
-from pymdp.maths import softmax
 from pymdp.utils import obj_array_zeros, obj_array_uniform, sample, onehot
+from pymdp.inference import update_posterior_states
+
+try:
+    # Prefer real PyMDP free energy function when available
+    from pymdp.maths import calc_free_energy, spm_dot, spm_log_single
+    spm_log = spm_log_single  # Alias for compatibility
+except Exception:  # pragma: no cover - keep compatibility across versions
+    calc_free_energy = None
+    spm_log = None
 
 
 def create_agent_from_matrices(A, B, C, D=None, control_fac_idx=None, **kwargs):
     """
-    Create a PyMDP Agent instance from matrices, following agent_demo.py pattern.
+    Create a PyMDP Agent instance from matrices using PyMDP core utilities.
     
     Parameters
     ----------
@@ -38,44 +53,19 @@ def create_agent_from_matrices(A, B, C, D=None, control_fac_idx=None, **kwargs):
     agent : pymdp.agent.Agent
         Initialized PyMDP agent
     """
-    
-    # Convert to obj_arrays if needed
-    if not utils.is_obj_array(A):
-        A = utils.to_obj_array(A)
-    if not utils.is_obj_array(B):
-        B = utils.to_obj_array(B)  
-    if not utils.is_obj_array(C):
-        C = utils.to_obj_array(C)
-    
-    # Set default D if not provided
-    if D is None:
-        num_states = [B[f].shape[0] for f in range(len(B))]
-        D = obj_array_uniform(num_states)
-    elif not utils.is_obj_array(D):
-        D = utils.to_obj_array(D)
-    
-    # Set default control factors if not provided  
-    if control_fac_idx is None:
-        control_fac_idx = list(range(len(B)))
-    
-    # Create agent
-    agent = Agent(A=A, B=B, C=C, D=D, control_fac_idx=control_fac_idx, **kwargs)
-    
-    return agent
+    return PyMDPCore.create_agent(A, B, C, D, control_fac_idx=control_fac_idx, **kwargs)
 
 
 def run_agent_loop(agent, observation, verbose=False):
     """
-    Run the standard PyMDP agent loop: infer_states -> infer_policies -> sample_action.
-    
-    This follows the canonical pattern from agent_demo.py and agent_demo.ipynb.
+    Run the standard PyMDP agent loop using PyMDP core utilities.
     
     Parameters
     ----------
     agent : pymdp.agent.Agent
         PyMDP agent instance
     observation : list or np.ndarray or int
-        Current observation - PyMDP expects integers, not one-hot
+        Current observation
     verbose : bool
         Whether to print detailed information
         
@@ -86,121 +76,112 @@ def run_agent_loop(agent, observation, verbose=False):
     action : np.ndarray
         Selected action
     """
-    
-    # PyMDP expects integer observations, not one-hot vectors
-    if isinstance(observation, int):
-        observation = [observation]
-    elif isinstance(observation, (list, tuple)):
-        # Ensure they are integers
-        observation = [int(obs) for obs in observation]
-    elif isinstance(observation, np.ndarray):
-        if observation.ndim > 1 or len(observation) != 1:
-            # If it's a one-hot vector, convert to integer
-            if observation.ndim == 1 and np.sum(observation) == 1:
-                observation = [int(np.argmax(observation))]
-            else:
-                observation = observation.tolist()
-        else:
-            observation = [int(observation[0])]
+    qs, q_pi, action = PyMDPCore.run_agent_step(agent, observation)
     
     if verbose:
         print(f"Observation: {observation}")
-    
-    # Standard PyMDP agent loop with fallback for compatibility issues
-    try:
-        beliefs = agent.infer_states(observation)
-        agent.infer_policies()
-        action = agent.sample_action()
-    except (IndexError, TypeError) as e:
-        if verbose:
-            print(f"Agent inference failed ({e}), using fallback method...")
-        
-        # Fallback: use manual Bayesian inference to avoid API issues
-        from pymdp.utils import sample
-        from pymdp.maths import softmax
-        import numpy as np
-        
-        # Convert observation to integer index
-        obs_idx = observation[0] if isinstance(observation, list) else observation
-        
-        # Manual Bayesian state inference
-        prior = agent.qs if hasattr(agent, 'qs') and agent.qs is not None else agent.D
-        
-        # Handle PyMDP object arrays properly
-        if hasattr(prior, 'dtype') and prior.dtype == object:
-            prior = prior[0]  # Extract the first (and usually only) factor
-        elif isinstance(prior, (list, tuple)):
-            prior = prior[0]
-        
-        # Now prior should be a regular numpy array
-        prior = np.asarray(prior).flatten()
-        
-        # Ensure prior is normalized  
-        prior_sum = float(np.sum(prior))  # Convert to Python float to avoid array comparison issues
-        if prior_sum > 0:
-            prior = prior / prior_sum
-        else:
-            # Create uniform prior if sum is 0
-            num_states = len(prior) if len(prior) > 0 else 3
-            prior = np.ones(num_states) / num_states
-        
-        # Compute likelihood: P(obs|state) - A matrix is [obs, state]
-        likelihood = agent.A[0][obs_idx, :]  # A[obs, state]
-        
-        # Debug: ensure likelihood is valid
-        likelihood_sum = float(np.sum(likelihood))
-        if likelihood_sum == 0:
-            # If no likelihood, use uniform
-            likelihood = np.ones_like(likelihood) / len(likelihood)
-        
-        # Bayesian update: posterior ∝ likelihood × prior
-        posterior = likelihood * prior
-        posterior_sum = float(np.sum(posterior))  # Convert to Python float
-        
-        if posterior_sum > 1e-16:
-            posterior = posterior / posterior_sum  # Normalize
-        else:
-            # Fallback to uniform if calculation fails
-            posterior = np.ones_like(posterior) / len(posterior)
-        
-        # Ensure posterior is a proper numpy array
-        try:
-            posterior = np.array(posterior, dtype=np.float64)
-        except (ValueError, TypeError):
-            # Handle nested array structures
-            if hasattr(posterior, '__len__') and len(posterior) > 0:
-                if hasattr(posterior[0], '__len__'):
-                    posterior = np.array(posterior[0], dtype=np.float64)
-                else:
-                    posterior = np.array([float(x) for x in posterior], dtype=np.float64)
-            else:
-                posterior = np.array([0.5, 0.5], dtype=np.float64)  # Default uniform
-        
-        # Convert back to obj_array format for consistency
-        from pymdp.utils import obj_array_zeros
-        beliefs = obj_array_zeros([[len(posterior)]])
-        beliefs[0] = posterior / (posterior.sum() + 1e-16)  # Ensure normalization
-        
-        # Simple action selection - just use uniform random for compatibility
-        num_actions = agent.num_controls[0] if hasattr(agent, 'num_controls') else 2
-        action = np.array([np.random.randint(num_actions)])
-        
-        # Update agent state
-        agent.qs = beliefs
-    
-    if verbose:
-        print(f"Beliefs: {[b.round(3) for b in beliefs]}")
+        print(f"Beliefs: {[b.round(3) for b in qs]}")
         print(f"Action: {action}")
     
-    # Convert beliefs to list format for test compatibility
-    beliefs_list = [beliefs[i] for i in range(len(beliefs))]
+    # Convert beliefs to list format for compatibility
+    beliefs_list = [qs[i] for i in range(len(qs))]
     
     return beliefs_list, action
 
 
+def infer_states_via_pymdp(A, observation, prior):
+    """
+    Infer posterior states using PyMDP core utilities.
+    
+    Parameters
+    ----------
+    A : obj_array
+        Observation model(s)
+    observation : list[int] | int
+        Observation(s)
+    prior : obj_array
+        Prior beliefs (object array of factors)
+
+    Returns
+    -------
+    posterior : obj_array
+        Posterior beliefs over hidden states (object array)
+    """
+    # Create temporary agent for inference
+    temp_agent = PyMDPCore.create_agent(A, np.eye(3)[:, :, np.newaxis])
+    temp_agent.qs = prior
+    
+    return PyMDPCore.infer_states(temp_agent, observation)
+
+
+def compute_vfe_using_pymdp(A, observation, prior, posterior=None):
+    """
+    Compute Variational Free Energy using PyMDP core utilities.
+
+    Parameters
+    ----------
+    A : obj_array
+        Observation model(s)
+    observation : list[int] | int
+        Observation(s)
+    prior : obj_array
+        Prior beliefs
+    posterior : obj_array, optional
+        Posterior beliefs (to avoid recomputation)
+
+    Returns
+    -------
+    vfe : float
+        Variational Free Energy
+    components : dict
+        Dict with keys: complexity, accuracy
+    posterior : obj_array
+        Posterior beliefs used for VFE
+    """
+    vfe, components, posterior = PyMDPCore.compute_vfe(A, observation, prior, posterior)
+    return vfe, components, posterior
+
+
+def compute_policy_efe(A, B, C, beliefs, policy, policy_len=None, verbose=False):
+    """
+    Compute Expected Free Energy using PyMDP core utilities.
+
+    Parameters
+    ----------
+    A : obj_array
+        Observation model(s)
+    B : obj_array
+        Transition model(s)
+    C : obj_array
+        Preferences over observations
+    beliefs : np.ndarray
+        Current beliefs over states
+    policy : list[int] | np.ndarray
+        Action sequence
+    policy_len : int, optional
+        Planning horizon
+    verbose : bool
+        Print decomposition per step
+
+    Returns
+    -------
+    result : dict
+        Keys: efe, pragmatic_value, epistemic_value, expected_obs, final_beliefs
+    """
+    efe, components = PyMDPCore.compute_efe(A, B, C, beliefs, policy)
+    
+    return {
+        'efe': efe,
+        'pragmatic_value': components.get('pragmatic_value', 0.0),
+        'epistemic_value': components.get('epistemic_value', 0.0),
+        'expected_obs': None,  # Could be computed if needed
+        'final_beliefs': beliefs,  # Could be computed if needed
+    }
+
+
 def simulate_environment_step(state, action, B_matrices, A_matrices, verbose=False):
     """
-    Simulate environment dynamics using PyMDP utilities, following agent_demo.py pattern.
+    Simulate environment dynamics using PyMDP core utilities.
     
     Parameters
     ----------
@@ -222,35 +203,7 @@ def simulate_environment_step(state, action, B_matrices, A_matrices, verbose=Fal
     observation : list
         Generated observation
     """
-    
-    if isinstance(action, np.ndarray):
-        action = action.tolist()
-    
-    # Update state using transition model
-    new_state = []
-    for f, (s_f, a_f) in enumerate(zip(state, action)):
-        # Sample new state from transition model
-        transition_probs = B_matrices[f][:, s_f, int(a_f)]
-        new_state_f = sample(transition_probs)
-        new_state.append(new_state_f)
-    
-    # Generate observation from new state
-    observation = []
-    for g in range(len(A_matrices)):
-        if len(new_state) == 1:
-            # Single factor case
-            obs_probs = A_matrices[g][:, new_state[0]]
-        else:
-            # Multi-factor case - need to use joint state
-            obs_probs = A_matrices[g][:, new_state[0], new_state[1]]
-        obs_g = sample(obs_probs)
-        observation.append(obs_g)
-    
-    if verbose:
-        print(f"State transition: {state} -> {new_state}")
-        print(f"Generated observation: {observation}")
-    
-    return new_state, observation
+    return PyMDPCore.simulate_environment(state, action, B_matrices, A_matrices, verbose=verbose)
 
 
 def create_simple_agent_demo(num_states=3, num_actions=2, num_obs=None, num_steps=10, verbose=True):

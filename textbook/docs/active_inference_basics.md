@@ -10,7 +10,7 @@ Active inference is a unified framework for understanding perception, action, an
 
 The free energy principle states that any self-organizing system that maintains its organization over time must minimize its free energy. Free energy (F) provides an upper bound on surprise:
 
-```
+```text
 F ≥ -ln P(o)
 ```
 
@@ -44,17 +44,19 @@ Active inference agents maintain generative models that specify:
 
 The agent maintains beliefs about hidden states `Q(s_t)` by minimizing free energy:
 
-```
+```text
 Q*(s_t) = arg min_Q F[Q(s_t)]
 ```
 
 Where free energy decomposes into:
-```
+
+```text
 F = D_KL[Q(s_t) || P(s_t | o_{1:t-1})] - E_Q[ln P(o_t | s_t)]
 ```
 
 This leads to the update rule:
-```
+
+```text
 Q(s_t) ∝ P(s_t | o_{1:t-1}) · P(o_t | s_t)^γ
 ```
 
@@ -64,7 +66,7 @@ Where `γ` is the precision parameter.
 
 Actions are selected to minimize expected free energy `G`:
 
-```
+```text
 G(π) = E_Q[F(o_τ, s_τ | π)]
 ```
 
@@ -153,10 +155,45 @@ print(f"Selected action: {action}")
 
 ## Next Steps
 
-- Read [`pomdp_theory.md`](pomdp_theory.md) for mathematical details
-- Explore [`model_specification.md`](model_specification.md) for practical implementation
-- Work through examples in `../examples/` directory
-- Study [`free_energy_principle.md`](free_energy_principle.md) for theoretical depth
+- Read companion chapters below and open the linked worked examples.
+
+### Chapter Guide and Worked Examples
+
+#### Bayesian Updating (State Inference)
+
+- Concept: Posterior beliefs via Bayes rule and VFE minimization
+- Examples:
+  - `textbook/examples/02_bayes_rule.py` (VFE decomposition, medical diagnosis, weather)
+  - `textbook/examples/04_state_inference.py` (perfect/noisy/ambiguous A, surprise, dynamics)
+  - `textbook/examples/05_sequential_inference.py` (sequential updates, belief momentum)
+
+#### Observation and Transition Models (A/B)
+
+- Concept: Likelihood `A` and dynamics `B` models for POMDPs
+- Examples:
+  - `textbook/examples/03_observation_models.py` and `_refactored.py`
+  - `textbook/examples/07_transition_models.py`
+
+#### Preferences and Control (C) with EFE
+
+- Concept: Expected Free Energy (EFE) and policy evaluation
+- Examples:
+  - `textbook/examples/08_preferences_and_control.py`
+  - `textbook/examples/09_policy_inference.py`
+
+#### POMDP Agents and Tasks
+
+- Concept: Full A/B/C/D models, policy inference, action selection
+- Examples:
+  - `textbook/examples/10_simple_pomdp.py` (includes compact TMaze demo)
+  - `textbook/examples/11_gridworld_pomdp.py`
+  - `textbook/examples/12_tmaze_pomdp.py`
+
+### Cross-References
+
+- Core utilities and agent loop: `pymdp_core_guide.md`
+- Validation and authenticity checks: `validation_guide.md`
+- Package overview and glossary: `pymdp_overview.md`
 
 ## References
 

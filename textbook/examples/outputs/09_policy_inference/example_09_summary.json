@@ -1,0 +1,244 @@
+{
+  "single_step_planning": {
+    "B_matrix": [
+      [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    ],
+    "preferences": [
+      0.0,
+      1.0,
+      3.0
+    ],
+    "action_values": [
+      0.0,
+      3.0
+    ]
+  },
+  "multi_step_planning": {
+    "A_matrix": [
+      [
+        1.0,
+        0.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        1.0,
+        0.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        1.0,
+        0.0
+      ],
+      [
+        0.0,
+        0.0,
+        0.0,
+        1.0
+      ]
+    ],
+    "B_matrix": [
+      [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          1.0,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          1.0
+        ],
+        [
+          0.0,
+          1.0
+        ]
+      ]
+    ],
+    "preferences": [
+      0.0,
+      0.0,
+      0.0,
+      5.0
+    ],
+    "policies_generated": 8
+  },
+  "probabilistic_planning": {
+    "B_matrix": [
+      [
+        [
+          0.8,
+          0.1
+        ],
+        [
+          0.7,
+          0.1
+        ],
+        [
+          0.1,
+          0.0
+        ]
+      ],
+      [
+        [
+          0.2,
+          0.8
+        ],
+        [
+          0.2,
+          0.2
+        ],
+        [
+          0.8,
+          0.2
+        ]
+      ],
+      [
+        [
+          0.0,
+          0.1
+        ],
+        [
+          0.1,
+          0.7
+        ],
+        [
+          0.1,
+          0.8
+        ]
+      ]
+    ],
+    "preferences": [
+      -2.0,
+      0.0,
+      3.0
+    ],
+    "best_sequence": [
+      1,
+      1
+    ]
+  },
+  "tree_search": {
+    "outcomes": {
+      "A-1": 2.0,
+      "A-2": 1.0,
+      "B-1": 0.5,
+      "B-2": 3.0
+    },
+    "best_path": [
+      "B",
+      "2"
+    ],
+    "first_step_probabilities": [
+      0.4378234991142019,
+      0.5621765008857981
+    ]
+  },
+  "planning_concepts": {
+    "single_step": "Myopic, fast, may miss long-term opportunities",
+    "multi_step": "Looks ahead, better strategies, exponential cost",
+    "probabilistic": "Handles uncertainty, more robust planning",
+    "tree_search": "Systematic exploration of all action sequences",
+    "policy_inference": "Convert planning into probabilistic actions"
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "example_name": "03_observation_models_refactored",
+  "output_directory": "/home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored",
+  "results": {},
+  "visualizations": [
+    {
+      "filename": "observation_models_comprehensive.png",
+      "title": "Comprehensive Observation Models Analysis",
+      "description": "Analysis of different observation model types using PyMDP core utilities",
+      "path": "/home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/03_observation_models_refactored/observation_models_comprehensive.png"
+    }
+  ],
+  "timestamp": "2025-09-02T18:01:36"
+}

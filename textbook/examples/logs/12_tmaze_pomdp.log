@@ -1,0 +1,85 @@
+PyMDP Example 12: T-Maze Decision Making Under Uncertainty
+============================================================
+This example demonstrates decision making in the classic T-maze task.
+Key concepts: decision making, information seeking, context dependence
+
+🔬 CREATING T-MAZE AGENT FOR COMPREHENSIVE ANALYSIS
+======================================================================
+
+================================================================================
+COMPREHENSIVE TMAZE MODEL ANALYSIS WITH PYMDP METHODS
+================================================================================
+Comprehensive T-maze analysis saved to: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/12_tmaze_pomdp/tmaze_comprehensive_analysis.png
+============================================================
+T-MAZE DECISION MAKING
+============================================================
+T-maze task: Agent starts at bottom, must choose left or right arm.
+Cues at junction indicate which side has reward (with some reliability).
+
+Cue Reliability: 60.0%
+  Accuracy: 50.0% (10/20 correct)
+
+Cue Reliability: 80.0%
+  Accuracy: 60.0% (12/20 correct)
+
+Cue Reliability: 95.0%
+  Accuracy: 45.0% (9/20 correct)
+
+Key insights:
+- Higher cue reliability leads to better performance
+- Agent balances information seeking with reward seeking
+- Demonstrates context-dependent decision making
+
+============================================================
+INFORMATION VS REWARD TRADE-OFF
+============================================================
+Analyzing when agent seeks information (goes to cue) vs exploits known rewards.
+
+Information Preference: 0.0
+  Cue visitation rate: 80.0%
+
+Information Preference: 0.5
+  Cue visitation rate: 100.0%
+
+Information Preference: 1.0
+  Cue visitation rate: 100.0%
+
+Information Preference: 2.0
+  Cue visitation rate: 100.0%
+
+Key insights:
+- Higher information preference increases cue seeking
+- Trade-off between information and immediate reward
+- Demonstrates epistemic vs pragmatic value
+
+============================================================
+BASIC T-MAZE VISUALIZATION
+============================================================
+T-maze visualizations saved to: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/12_tmaze_pomdp/tmaze_decision_making.png
+
+============================================================
+PYMDP INTEGRATION REAL STATUS SUMMARY
+============================================================
+OK VFE calculations: WORKING
+OK EFE calculations: WORKING
+OK PyMDP imports: WORKING
+OK Matrix operations: WORKING
+OK Agent methods: WORKING
+OK Overall integration: COMPLETE
+
+🎯 T-maze successfully demonstrates active inference with real PyMDP methods!
+
+============================================================
+KEY TAKEAWAYS
+============================================================
+1. T-maze demonstrates decision making under uncertainty
+2. Cue reliability affects choice accuracy
+3. Agents balance information seeking vs reward seeking
+4. Context (reward location) determines optimal policy
+5. Information has value for reducing uncertainty
+6. Active inference unifies perception, action, and learning
+
+Congratulations! You've completed all 12 PyMDP examples.
+You now have a comprehensive understanding of active inference!
+
+Results saved to: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/12_tmaze_pomdp

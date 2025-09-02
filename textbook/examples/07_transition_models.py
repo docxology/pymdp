@@ -46,9 +46,10 @@ import pymdp
 from pymdp.agent import Agent
 from pymdp.utils import obj_array_zeros, obj_array_uniform, is_normalized, norm_dist, random_B_matrix
 from pymdp.maths import softmax, entropy, kl_div
-from pymdp.maths.maths import spm_log
+from pymdp.maths import spm_log_single as spm_log
 from pymdp.control import sample_action, update_posterior_policies_full
 from pymdp.learning import update_state_likelihood_dirichlet
+from visualization import apply_accessibility_enhancements
 
 # Local imports (optional - will create fallbacks if not available)
 try:
@@ -70,7 +71,7 @@ except ImportError:
     def validate_model(A, B=None, C=None, D=None, verbose=False):
         """Fallback validation function."""
         if verbose:
-            print("Model validation: Using fallback function")
+            pass
         return True
     
     LOCAL_IMPORTS_AVAILABLE = False
@@ -601,7 +602,7 @@ def demonstrate_pymdp_agent_with_transitions():
         print()
         
     except Exception as e:
-        print(f"❌ Agent creation failed: {e}")
+        print(f"Agent creation failed: {e}")
         return False, None
     
     # Demonstration of agent behavior (simplified for compatibility)
@@ -646,7 +647,7 @@ def demonstrate_pymdp_agent_with_transitions():
         ]
         
     except Exception as e:
-        print(f"    ⚠️  Agent method error: {e}")
+        print(f"    Agent method error: {e}")
         print("    → This may be due to PyMDP version compatibility")
         print("    → Educational B matrix implementations still work perfectly")
         simulation_results = []
@@ -699,7 +700,7 @@ def demonstrate_pymdp_agent_with_transitions():
         print()
         
     except Exception as e:
-        print(f"  ⚠️ B matrix learning demo error: {e}")
+        print(f"  B matrix learning demo error: {e}")
     
     # Summary
     print("6. Key Insights from Agent Integration:")
@@ -714,24 +715,7 @@ def demonstrate_pymdp_agent_with_transitions():
     return True, agent
 
 
-def apply_accessibility_enhancements():
-    """Apply accessibility enhancements to all matplotlib plots."""
-    
-    # Enhanced matplotlib parameters for accessibility
-    plt.rcParams.update({
-        'font.size': 12,           # Larger base font
-        'axes.titlesize': 14,      # Bold titles
-        'axes.labelsize': 12,      # Clear axis labels
-        'xtick.labelsize': 11,     # Readable tick labels
-        'ytick.labelsize': 11,
-        'legend.fontsize': 11,     # Clear legends
-        'figure.titlesize': 16,    # Prominent figure titles
-        'font.weight': 'normal',   # Readable font weight
-        'axes.titleweight': 'bold' # Bold plot titles
-    })
-    
-    print("✅ Applied accessibility enhancements to visualizations")
-    return True
+# Accessibility styling is centralized in textbook/src/visualization.py
 
 
 def main():

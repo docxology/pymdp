@@ -10,9 +10,12 @@ import numpy as np
 import matplotlib.pyplot as plt
 from typing import List, Dict, Optional, Tuple, Any
 from pymdp.utils import obj_array_zeros, obj_array_uniform
-from pymdp.inference import infer_states
+# Note: infer_states is a method on Agent class, not a standalone function
 from pymdp.maths import softmax
-from .visualization import plot_beliefs, plot_observation_model
+try:
+    from .visualization import plot_beliefs, plot_observation_model
+except ImportError:
+    from visualization import plot_beliefs, plot_observation_model
 
 
 class StepByStepInference:
@@ -339,10 +342,11 @@ def concept_illustration(concept: str) -> Dict[str, Any]:
         current_beliefs = prior[0]
         
         for obs in observations:
-            # Inference step
-            posterior = infer_states([obs], A, obj_array_zeros([2]))
+            # Inference step using PyMDP update_posterior_states
+            from pymdp.inference import update_posterior_states
+            posterior = update_posterior_states(A, None, [obs], None, prior=obj_array_zeros([2]))
             posterior[0][:] = current_beliefs  # Use current beliefs as prior
-            posterior = infer_states([obs], A, posterior)
+            posterior = update_posterior_states(A, None, [obs], None, prior=posterior)
             
             # Compute free energy (simplified)
             likelihood = A[0][obs, :]

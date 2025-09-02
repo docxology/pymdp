@@ -111,6 +111,19 @@ Special thanks to [Beren Millidge](https://github.com/BerenMillidge) and [Daphne
 
 We also have (and are continuing to build) a series of notebooks that walk through active inference agents performing different types of tasks, such as the classic [T-Maze environment](https://pymdp-rtd.readthedocs.io/en/latest/notebooks/tmaze_demo.html) and the newer [Epistemic Chaining](https://pymdp-rtd.readthedocs.io/en/latest/notebooks/cue_chaining_demo.html) demo.
 
+### Textbook examples and docs
+
+In addition to the documentation site, this repository contains a comprehensive set of runnable examples and local docs under `textbook/`:
+
+- Examples: `textbook/examples/` (run all with `bash textbook/examples/run_all.sh --verbose`)
+- Docs: `textbook/docs/`:
+  - `active_inference_basics.md`
+  - `pymdp_overview.md`
+  - `pymdp_core_guide.md`
+  - `validation_guide.md`
+
+The example runner performs output verification and authenticity checks to ensure real PyMDP methods are exercised and outputs are valid.
+
 ## Contributing
 
 This package is under active development. If you would like to contribute, please refer to [this file](CONTRIBUTING.md)

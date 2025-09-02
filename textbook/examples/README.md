@@ -34,8 +34,30 @@ Each example is self-contained and can be run independently:
 cd textbook/examples/
 python 01_probability_basics.py
 ```
+To run all examples with verification of outputs and authenticity checks:
+
+```bash
+bash run_all.sh --verbose
+```
+
+The runner will:
+- Verify generated outputs exist and are non-empty
+- Validate any JSON outputs are parseable
+- Scan logs for fallbacks or errors indicating non-authentic PyMDP method usage
+
 
 However, we recommend working through them in order as concepts build upon each other.
+
+## Shared Utilities
+
+The examples use shared helpers from `textbook/src/`:
+
+- `visualization.apply_accessibility_enhancements()` for consistent plotting
+- `pymdp_agent_utils.infer_states_via_pymdp()` to infer states with real PyMDP
+- `pymdp_agent_utils.compute_vfe_using_pymdp()` to compute VFE using PyMDP maths
+- `pymdp_agent_utils.compute_policy_efe()` to evaluate policies (EFE)
+
+If imports fail, ensure this repository root is on your `PYTHONPATH` or run the examples from the `textbook/examples/` directory (examples add `../src` to `sys.path`).
 
 ## Interactive Mode
 
@@ -77,6 +99,12 @@ python 04_state_inference.py --interactive
 3. **Modify Parameters**: Change model parameters to see how behavior changes
 4. **Visualize Results**: Use the visualization tools to understand what's happening
 5. **Read Documentation**: Refer to the `../docs/` folder for theoretical background
+
+### Documentation quick links
+- [Active Inference Basics](../docs/active_inference_basics.md)
+- [PyMDP Overview](../docs/pymdp_overview.md)
+- [PyMDP Core Guide](../docs/pymdp_core_guide.md)
+- [Validation Guide](../docs/validation_guide.md)
 
 ## Getting Help
 

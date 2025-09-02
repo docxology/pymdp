@@ -65,6 +65,7 @@ examples=(
     "01_probability_basics.py|Foundation|Probability distributions and basic operations"
     "02_bayes_rule.py|Foundation|Bayes rule and belief updating with VFE"
     "03_observation_models.py|Foundation|Building observation models (A matrices)"
+    "03_observation_models_refactored.py|Foundation|Refactored observation models using PyMDP core"
     "04_state_inference.py|Inference|Inferring hidden states from observations"
     "05_sequential_inference.py|Inference|Sequential inference over time with VFE"
     "06_multi_factor_models.py|Inference|Multi-factor state space models"
@@ -72,6 +73,7 @@ examples=(
     "08_preferences_and_control.py|Control|EFE-based preferences and action selection"
     "09_policy_inference.py|Control|Multi-step policy inference and planning"
     "10_simple_pomdp.py|POMDP|Complete POMDP with active inference"
+    "10_simple_pomdp_backup.py|POMDP|Backup simple POMDP variant"
     "11_gridworld_pomdp.py|POMDP|Grid world navigation POMDP"
     "12_tmaze_pomdp.py|POMDP|T-maze decision making POMDP"
 )
@@ -80,6 +82,8 @@ examples=(
 successful=0
 failed=0
 total=${#examples[@]}
+auth_failed=0
+out_failed=0
 
 # Header
 print_header "PyMDP Textbook Examples - Complete Run"
@@ -100,6 +104,62 @@ echo ""
     echo "========================================"
     echo ""
 } > "$LOG_FILE"
+
+# Verification helpers
+verify_outputs() {
+    local out_dir="$1"
+    local example_name="$2"
+    local ok=true
+
+    if [ ! -d "$out_dir" ]; then
+        print_colored "$YELLOW" "    Warning: No output directory found"
+        ok=false
+    else
+        # Non-empty files check
+        local zero_count
+        zero_count=$(find "$out_dir" -type f -size 0 2>/dev/null | wc -l)
+        if [ "$zero_count" -gt 0 ]; then
+            print_colored "$YELLOW" "    Warning: $zero_count zero-byte output files detected"
+            ok=false
+        fi
+
+        # Validate JSON files (if any) can be parsed
+        local json_files
+        IFS=$'\n' read -r -d '' -a json_files < <(find "$out_dir" -type f -name "*.json" -print0 | xargs -0 -I{} echo {} && printf '\0') || true
+        if [ "${#json_files[@]}" -gt 0 ]; then
+            for jf in "${json_files[@]}"; do
+                if ! python3 - <<PY 2>/dev/null
+import json,sys
+with open("$jf","r") as f:
+    json.load(f)
+PY
+                then
+                    print_colored "$YELLOW" "    Warning: Invalid JSON: $jf"
+                    ok=false
+                fi
+            done
+        fi
+    fi
+
+    $ok && return 0 || return 1
+}
+
+verify_authenticity() {
+    local log_file="$1"
+    local suspicious=(
+        "Fallback"
+        "Using fallback function"
+        "Proceeding with educational demonstration"
+        "PyMDP inference error"
+        "PyMDP error"
+    )
+    for pat in "${suspicious[@]}"; do
+        if grep -qi -- "$pat" "$log_file"; then
+            return 1
+        fi
+    done
+    return 0
+}
 
 # Run each example
 for i in "${!examples[@]}"; do
@@ -159,6 +219,25 @@ for i in "${!examples[@]}"; do
         ((failed++))
     fi
     
+    # Output verification
+    if ! verify_outputs "$output_dir" "$filename"; then
+        ((out_failed++))
+        echo "    Output verification: ${RED}FAILED${NC}"
+    else
+        echo "    Output verification: ${GREEN}OK${NC}"
+    fi
+
+    # Authenticity verification (real PyMDP methods used)
+    if ! verify_authenticity "$log_file"; then
+        ((auth_failed++))
+        echo "    Authenticity check: ${YELLOW}POTENTIAL FALLBACK/ERROR DETECTED${NC}"
+        if $VERBOSE; then
+            echo "    See log: $log_file"
+        fi
+    else
+        echo "    Authenticity check: ${GREEN}OK${NC}"
+    fi
+
     # Log result
     printf "%-30s %-12s %-8s %4ds  %s\n" \
         "$filename" "$category" "$status" "$duration" "$description" >> "$LOG_FILE"
@@ -179,6 +258,14 @@ echo ""
 print_colored "$GREEN" "Successful: $successful/$total"
 if [ $failed -gt 0 ]; then
     print_colored "$RED" "Failed: $failed/$total"
+fi
+
+if [ $out_failed -gt 0 ]; then
+    print_colored "$YELLOW" "Output verification warnings: $out_failed"
+fi
+
+if [ $auth_failed -gt 0 ]; then
+    print_colored "$YELLOW" "Authenticity warnings: $auth_failed (possible fallbacks/errors detected)"
 fi
 
 echo ""
@@ -207,7 +294,7 @@ fi
 
 # Final result
 echo ""
-if [ $failed -eq 0 ]; then
+if [ $failed -eq 0 ] && [ $auth_failed -eq 0 ] && [ $out_failed -eq 0 ]; then
     print_colored "$GREEN" "🎉 All examples completed successfully!"
     print_colored "$GREEN" "The complete PyMDP textbook learning path is working."
     echo ""
@@ -217,7 +304,7 @@ if [ $failed -eq 0 ]; then
     echo "  • Check execution logs in logs/"
     exit 0
 else
-    print_colored "$YELLOW" "⚠️  Some examples had issues ($failed failed, $successful succeeded)"
-    print_colored "$YELLOW" "Check individual logs for debugging information."
+    print_colored "$YELLOW" "Some checks reported issues (runtime failures: $failed, output warnings: $out_failed, authenticity warnings: $auth_failed)"
+    print_colored "$YELLOW" "Check individual logs and outputs for details."
     exit 1
 fi

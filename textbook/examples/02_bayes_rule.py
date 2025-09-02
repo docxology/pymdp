@@ -35,6 +35,7 @@ from pathlib import Path
 
 # Add src directory to path for imports
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..', 'src'))
+from educational import StepByStepInference
 
 # Create output directory for this example
 OUTPUT_DIR = Path(__file__).parent / "outputs" / "02_bayes_rule"
@@ -45,44 +46,13 @@ import pymdp
 from pymdp.agent import Agent
 from pymdp.utils import obj_array_zeros, obj_array_uniform, is_normalized, sample
 from pymdp.maths import softmax, kl_div, entropy
-from pymdp.maths.maths import spm_log
+from pymdp.maths import spm_log_single as spm_log
 from pymdp.inference import update_posterior_states
 from pymdp.algos import run_vanilla_fpi
+from pymdp_agent_utils import compute_vfe_using_pymdp, infer_states_via_pymdp
 
-# Local imports (optional - will create fallbacks if not available)
-try:
-    from visualization import plot_beliefs, plot_free_energy
-    from model_utils import validate_model
-    LOCAL_IMPORTS_AVAILABLE = True
-except ImportError:
-    # Create fallback functions if local imports not available
-    def plot_beliefs(beliefs, names, title, ax=None):
-        """Fallback plot function."""
-        if ax is None:
-            import matplotlib.pyplot as plt
-            ax = plt.gca()
-        ax.bar(names, beliefs)
-        ax.set_title(title)
-        ax.set_ylabel('Probability')
-        return ax
-    
-    def plot_free_energy(values, names, title, ax=None):
-        """Fallback free energy plot function."""
-        if ax is None:
-            import matplotlib.pyplot as plt
-            ax = plt.gca()
-        ax.plot(names, values, 'o-')
-        ax.set_title(title)
-        ax.set_ylabel('Free Energy')
-        return ax
-    
-    def validate_model(A, B=None, C=None, D=None, verbose=False):
-        """Fallback validation function."""
-        if verbose:
-            print("Model validation: Using fallback function")
-        return True
-    
-    LOCAL_IMPORTS_AVAILABLE = False
+from visualization import plot_beliefs, plot_free_energy
+from model_utils import validate_model
 
 
 def vfe_based_inference(A, obs, prior):
@@ -95,31 +65,24 @@ def vfe_based_inference(A, obs, prior):
     The posterior that minimizes VFE is: q*(s) ∝ P(o|s) * p(s)
     """
     
-    # Get likelihood from A matrix
-    likelihood = A[0][obs, :]  # P(obs | state)
+    # Use real PyMDP methods via utility
+    vfe, comps, posterior = compute_vfe_using_pymdp(A, obs, prior)
+    complexity = comps['complexity'] if comps['complexity'] is not None else np.nan
+    accuracy = comps['accuracy'] if comps['accuracy'] is not None else np.nan
     
-    # Compute unnormalized posterior: q(s) ∝ P(o|s) * p(s)
-    unnorm_posterior = likelihood * prior[0]
+    # Information gain (entropy reduction)
+    try:
+        prior_entropy = entropy(prior[0])
+    except Exception:
+        prior_entropy = -np.sum(prior[0] * np.log(prior[0] + 1e-16))
+    try:
+        posterior_entropy = entropy(posterior[0])
+    except Exception:
+        posterior_entropy = -np.sum(posterior[0] * np.log(posterior[0] + 1e-16))
+    # Information gain should be KL divergence (complexity), always non-negative
+    info_gain = complexity  # This is KL(posterior || prior)
     
-    # Normalize to get proper probability distribution
-    posterior = unnorm_posterior / np.sum(unnorm_posterior)
-    
-    # Calculate VFE components using PyMDP utilities
-    # Complexity: KL(posterior || prior)
-    complexity = kl_div(posterior, prior[0])
-    
-    # Accuracy: E_q[ln P(o|s)]
-    log_likelihood = np.log(likelihood + 1e-16)
-    accuracy = np.sum(posterior * log_likelihood)
-    
-    # VFE = Complexity - Accuracy
-    vfe = complexity - accuracy
-    
-    # Return as obj_array for consistency with PyMDP
-    posterior_obj = obj_array_zeros([len(posterior)])
-    posterior_obj[0] = posterior
-    
-    return posterior_obj, vfe, complexity, accuracy
+    return posterior, vfe, complexity, accuracy, info_gain
 
 
 def demonstrate_basic_bayes_rule():
@@ -173,7 +136,7 @@ def demonstrate_basic_bayes_rule():
         print("-" * 40)
         
         # Use our VFE-based inference function 
-        posterior, vfe, complexity, accuracy = vfe_based_inference(A, obs_idx, D)
+        posterior, vfe, complexity, accuracy, info_gain = vfe_based_inference(A, obs_idx, D)
         
         # Get likelihood for display
         likelihood = A[0][obs_idx, :]
@@ -188,8 +151,7 @@ def demonstrate_basic_bayes_rule():
         print(f"  VFE: {vfe:.4f}")
         print()
         
-        # Information gain from prior (same as complexity in this case)
-        info_gain = complexity
+        # Information gain is now calculated correctly in vfe_based_inference
         print(f"Information gained: {info_gain:.4f} nats")
         print(f"Certainty increase: {np.max(posterior[0]) - np.max(D[0]):.3f}")
         
@@ -267,10 +229,9 @@ def demonstrate_sequential_updating():
         current_D = obj_array_zeros([num_states])
         current_D[0] = current_prior
         
-        posterior, vfe, complexity, accuracy = vfe_based_inference(A, obs, current_D)
+        posterior, vfe, complexity, accuracy, info_gain = vfe_based_inference(A, obs, current_D)
         
-        # Information gain and certainty
-        info_gain = complexity  # Same as complexity in this context
+        # Certainty is the maximum posterior probability
         certainty = np.max(posterior[0])
         
         print(f"{day+1:2d}   {obs_names[obs]:10s} {current_prior} → {posterior[0]}  "
@@ -351,9 +312,9 @@ def create_step_by_step_demo():
     print(f"  P(obs | state) = {A[0]}")
     print()
     
-    # Note: Using simplified demo instead of StepByStepInference due to import issues
-    # This would normally use the educational.StepByStepInference class
-    print("Step-by-step inference would use StepByStepInference from educational module")
+    # Use the educational StepByStepInference helper from textbook/src
+    from educational import StepByStepInference
+    sbs = StepByStepInference(A[0], prior, verbose=True)
     
     # Sequence of observations
     observations = [0, 0, 1, 0]
@@ -361,13 +322,13 @@ def create_step_by_step_demo():
     posteriors = []
     for i, obs in enumerate(observations):
         print(f"\n{'='*20} STEP {i+1} {'='*20}")
-        posterior = demo.observe(obs)
+        posterior = sbs.observe(obs)
         posteriors.append(posterior.copy())
         
         if i < len(observations) - 1:
             input("\nPress Enter to continue...")
     
-    return demo, posteriors
+    return sbs, posteriors
 
 
 def create_medical_diagnosis_visualization(A, D, posteriors, vfe_results):
@@ -707,12 +668,14 @@ def visualize_bayes_rule(A, D, posteriors, vfe_results, belief_history, observat
     ax = axes[0, 0]
     medical_gains = [r['info_gain'] for r in vfe_results]
     
-    # Calculate weather information gains (simplified)
+    # Calculate weather information gains using KL divergence (always non-negative)
     weather_gains = []
     for i in range(1, len(belief_history)):
-        prior_ent = -np.sum(belief_history[i-1] * np.log(belief_history[i-1] + 1e-16))
-        post_ent = -np.sum(belief_history[i] * np.log(belief_history[i] + 1e-16))
-        weather_gains.append(prior_ent - post_ent)
+        # KL divergence: KL(posterior || prior) - always non-negative
+        prior = belief_history[i-1]
+        posterior = belief_history[i]
+        kl_div = np.sum(posterior * np.log(posterior / prior + 1e-16))
+        weather_gains.append(kl_div)
     
     scenarios = ['Medical\nPositive', 'Medical\nNegative'] + [f'Weather\nDay {i+1}' for i in range(len(weather_gains))]
     all_gains = medical_gains + weather_gains
@@ -926,7 +889,7 @@ def demonstrate_pymdp_inference_validation():
         print(f"\n  Testing with {obs_names[obs]}:")
         
         # Educational VFE-based inference
-        edu_posterior, edu_vfe, edu_complexity, edu_accuracy = vfe_based_inference(A, obs, prior)
+        edu_posterior, edu_vfe, edu_complexity, edu_accuracy, edu_info_gain = vfe_based_inference(A, obs, prior)
         
         # PyMDP inference function
         try:
@@ -950,7 +913,7 @@ def demonstrate_pymdp_inference_validation():
             print(f"    VFE: {edu_vfe:.4f}, Complexity: {edu_complexity:.4f}, Accuracy: {edu_accuracy:.4f}")
             
         except Exception as e:
-            print(f"    ⚠️  PyMDP inference error: {e}")
+            print(f"    Inference error: {e}")
             print(f"    Educational result: {edu_posterior[0]}")
     
     # Test scenario 2: Multi-state inference
@@ -973,7 +936,7 @@ def demonstrate_pymdp_inference_validation():
     all_matches = []
     for obs in test_observations:
         # Educational inference
-        edu_post, edu_vfe, _, _ = vfe_based_inference(A_multi, obs, prior_multi)
+        edu_post, edu_vfe, _, _, _ = vfe_based_inference(A_multi, obs, prior_multi)
         
         # PyMDP inference
         try:
@@ -1014,7 +977,7 @@ def demonstrate_pymdp_inference_validation():
         test_obs = 1
         
         # Our implementation
-        edu_result, edu_vfe, _, _ = vfe_based_inference(A_multi, test_obs, prior_multi)
+        edu_result, edu_vfe, _, _, _ = vfe_based_inference(A_multi, test_obs, prior_multi)
         
         # Agent inference
         agent_result = agent.infer_states([test_obs])
@@ -1027,7 +990,7 @@ def demonstrate_pymdp_inference_validation():
         print(f"  ✅ Agent Match: {agent_match}")
         
     except Exception as e:
-        print(f"  ⚠️  Agent creation/testing error: {e}")
+        print(f"  Agent creation/testing error: {e}")
         agent_match = False
     
     # Summary
@@ -1043,7 +1006,7 @@ def demonstrate_pymdp_inference_validation():
         print("• PyMDP inference functions validated")
         print("• Agent class integration confirmed")
     else:
-        print("⚠️  Some validations failed or had errors")
+        print("Some validations failed or had errors")
         print("• Check PyMDP version compatibility")
         print("• Educational implementations may need adjustment")
     
@@ -1056,39 +1019,7 @@ def demonstrate_pymdp_inference_validation():
     return overall_success, agent_match if 'agent_match' in locals() else False
 
 
-def apply_accessibility_enhancements():
-    """Apply accessibility enhancements to all matplotlib plots."""
-    
-    # Enhanced matplotlib parameters for accessibility
-    plt.rcParams.update({
-        'font.size': 12,           # Larger base font
-        'axes.titlesize': 14,      # Bold titles
-        'axes.labelsize': 12,      # Clear axis labels
-        'xtick.labelsize': 11,     # Readable tick labels
-        'ytick.labelsize': 11,
-        'legend.fontsize': 11,     # Clear legends
-        'figure.titlesize': 16,    # Prominent figure titles
-        'font.weight': 'normal',   # Readable font weight
-        'axes.titleweight': 'bold' # Bold plot titles
-    })
-    
-    # Colorblind-friendly color palette
-    global ACCESSIBLE_COLORS
-    ACCESSIBLE_COLORS = [
-        '#1f77b4',  # Blue
-        '#ff7f0e',  # Orange  
-        '#2ca02c',  # Green
-        '#d62728',  # Red
-        '#9467bd',  # Purple
-        '#8c564b',  # Brown
-        '#e377c2',  # Pink
-        '#7f7f7f',  # Gray
-        '#bcbd22',  # Olive
-        '#17becf'   # Cyan
-    ]
-    
-    print("✅ Applied accessibility enhancements to visualizations")
-    return ACCESSIBLE_COLORS
+from visualization import apply_accessibility_enhancements
 
 
 def main():

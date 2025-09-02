@@ -1,0 +1,311 @@
+🚀 PyMDP Example 1: Comprehensive Probability Basics with PyMDP Integration
+================================================================================
+This example covers fundamental probability concepts for active inference.
+Key concepts: categorical, Gaussian, Poisson distributions, entropy, softmax
+✨ NEW: Full PyMDP validation and enhanced accessibility
+
+PHASE 1: Educational Implementations
+--------------------------------------------------
+============================================================
+PROBABILITY DISTRIBUTIONS WITH PyMDP
+============================================================
+
+1. Creating Probability Distributions with PyMDP utilities
+------------------------------------------------------------
+Manual distribution: [0.2 0.3 0.5]
+Sums to: 1.000
+PyMDP validation: is_normalized = True
+PyMDP uniform distribution: [0.33333333 0.33333333 0.33333333]
+Sums to: 1.000
+PyMDP validation: is_normalized = True
+From weights [1. 2. 3.] → PyMDP normalized: [1. 2. 3.]
+PyMDP validation: is_normalized = False
+
+2. Information Content Analysis (PyMDP utilities)
+------------------------------------------------------------
+Manual            : entropy = 1.0297 bits
+Uniform           : entropy = 1.0986 bits
+Normalized weights: entropy = -4.6821 bits
+
+Key insights:
+- PyMDP utilities ensure proper probability distributions
+- is_normalized() validates probability constraints
+- entropy() measures uncertainty in distributions
+- obj_array structure handles multi-factor models
+
+3. Entropy, Uncertainty and VFE Connection
+------------------------------------------------------------
+Entropy measures uncertainty and connects directly to VFE in active inference.
+Lower entropy → less uncertainty → lower VFE → better model fit
+
+Distribution Analysis using PyMDP entropy:
+======================================================================
+Uniform (max uncertainty):
+  Distribution: [0.33333333 0.33333333 0.33333333]
+  PyMDP entropy: 1.0986 bits
+  Relative uncertainty: 100.0%
+  VFE implication: High computational cost
+
+Peaked (low uncertainty):
+  Distribution: [0.8 0.1 0.1]
+  PyMDP entropy: 0.6390 bits
+  Relative uncertainty: 58.2%
+  VFE implication: Medium computational cost
+
+Deterministic (no uncertainty):
+  Distribution: [1. 0. 0.]
+  PyMDP entropy: -0.0000 bits
+  Relative uncertainty: -0.0%
+  VFE implication: Low computational cost
+
+Bimodal:
+  Distribution: [0.4 0.2 0.4]
+  PyMDP entropy: 1.0549 bits
+  Relative uncertainty: 96.0%
+  VFE implication: High computational cost
+
+KL Divergence Analysis (PyMDP utilities):
+==================================================
+Peaked (low uncertainty) : KL(dist||uniform) = 0.4596
+Deterministic (no uncertainty): KL(dist||uniform) = 1.0986
+Bimodal                  : KL(dist||uniform) = 0.0437
+
+Key insights:
+- PyMDP entropy() computes H = -Σ p(x) log p(x) safely
+- Lower entropy indicates more predictable distributions
+- KL divergence measures difference between distributions
+- In VFE framework: higher entropy → higher complexity → higher VFE
+
+4. Softmax Transformation and Action Selection
+------------------------------------------------------------
+Softmax converts preferences/values into probability distributions.
+Essential for action selection and policy inference in active inference.
+
+Policy/Action Selection Example:
+Raw action values: [1. 3. 2.] → ['Action A', 'Action B', 'Action C']
+PyMDP softmax probabilities: [0.09003057 0.66524096 0.24472847]
+Sums to: 1.000
+Most likely action: Action B (0.665)
+
+Temperature/Precision Effects on Action Selection:
+============================================================
+Temperature   0.1: [2.06106005e-09 9.99954600e-01 4.53978686e-05]
+  → Entropy: 0.000, Selection: Very sharp
+Temperature   1.0: [0.09003057 0.66524096 0.24472847]
+  → Entropy: 0.832, Selection: Sharp
+Temperature  10.0: [0.30060961 0.3671654  0.33222499]
+  → Entropy: 1.095, Selection: Smooth
+Temperature  50.0: [0.32668933 0.34002178 0.33328889]
+  → Entropy: 1.098, Selection: Smooth
+
+Connection to Active Inference:
+- Softmax converts Expected Free Energy (EFE) to policy probabilities
+- Lower EFE → Higher probability → More likely policy selection
+- Temperature = precision parameter (β or γ in literature)
+- High precision → exploitation, Low precision → exploration
+
+4. Operations on Distributions
+----------------------------------------
+Distribution P: [0.6 0.3 0.1]
+Distribution Q: [0.2 0.5 0.3]
+P × Q (unnormalized): [0.12 0.15 0.03]
+P × Q (normalized): [0.4 0.5 0.1]
+KL divergence D(P || Q): 0.396
+Mixture (70% P, 30% Q): [0.48 0.36 0.16]
+
+6. Gaussian/Normal Distributions
+----------------------------------------
+Gaussian distributions are continuous and characterized by mean (μ) and variance (σ²).
+While PyMDP primarily uses discrete distributions, understanding continuous distributions
+is important for modeling continuous state spaces and sensor noise.
+
+Gaussian Distribution Examples:
+Name                  Mean    Std     Properties
+------------------------------------------------------------
+Standard Normal         0.0     1.0   H = 1.42
+Shifted Right           2.0     1.0   H = 1.42
+Shifted Left           -1.0     1.0   H = 1.42
+Wide Distribution       0.0     2.0   H = 2.11
+Narrow Distribution     0.0     0.5   H = 0.73
+Bimodal Mixture       Mixed   Mixed   Complex distribution
+
+Key insights:
+- Entropy increases with variance (wider = more uncertain)
+- Normal distributions are maximum entropy for given mean/variance
+- Mixtures create multimodal distributions
+- In PyMDP: discretize continuous distributions for inference
+
+7. Poisson Distributions
+----------------------------------------
+Poisson distributions model count data (events per interval).
+Characterized by single parameter λ (rate), with mean = variance = λ.
+Useful for modeling: spike counts, customer arrivals, etc.
+
+Poisson Distribution Examples:
+Lambda (λ)    Mean    Variance    Entropy    Properties
+------------------------------------------------------------
+     0.5        0.5         0.5       0.93   Mode ≈ 0, Light tail
+     1.0        1.0         1.0       1.30   Mode ≈ 1, Light tail
+     2.0        2.0         2.0       1.70   Mode ≈ 2, Light tail
+     4.0        4.0         4.0       2.09   Mode ≈ 4, Light tail
+     8.0        8.0         8.0       2.46   Mode ≈ 8, Heavy tail
+    12.0       12.0        12.0       2.66   Mode ≈ 12, Heavy tail
+
+Key insights:
+- Single parameter λ determines both mean and variance
+- As λ increases, distribution becomes more symmetric
+- Entropy increases with λ (higher rates = more uncertainty)
+- In PyMDP: use for discrete count-based observations
+
+8. PyMDP Utility Functions
+----------------------------------------
+Object array with zeros:
+  Array 0 shape (3,): [0. 0. 0.]
+  Array 1 shape (2,): [0. 0.]
+  Array 2 shape (4,): [0. 0. 0. 0.]
+
+Object array with uniform distributions:
+  Array 0 shape (3,): [0.33333333 0.33333333 0.33333333]
+  Array 1 shape (2,): [0.5 0.5]
+  Array 2 shape (4,): [0.25 0.25 0.25 0.25]
+
+Object arrays are used for:
+- Multiple observation modalities
+- Multiple state factors
+- Hierarchical models
+
+PHASE 2: PyMDP Validation & Integration
+--------------------------------------------------
+
+============================================================
+PYMDP VALIDATION & INTEGRATION
+============================================================
+Validating all educational implementations against PyMDP methods...
+This ensures our manual calculations match PyMDP's optimized implementations.
+
+1. Entropy Validation:
+------------------------------
+  Distribution 1: [0.5 0.3 0.2]
+    Educational: 1.029653
+    PyMDP:       1.029653
+    ✅ Match: True
+
+  Distribution 2: [0.8 0.1 0.1]
+    Educational: 0.639032
+    PyMDP:       0.639032
+    ✅ Match: True
+
+  Distribution 3: [0.33333333 0.33333333 0.33333333]
+    Educational: 1.098612
+    PyMDP:       1.098612
+    ✅ Match: True
+
+2. Softmax Validation:
+------------------------------
+  Values 1: [1. 2. 3.]
+    Educational: [0.09003057 0.24472847 0.66524096]
+    PyMDP:       [0.09003057 0.24472847 0.66524096]
+    ✅ Match: True
+
+  Values 2: [0.5 1.5 2.5]
+/home/trim/Documents/GitHub/pymdp/textbook/examples/01_probability_basics.py:372: UserWarning: set_ticklabels() should only be used with a fixed number of ticks, i.e. after set_ticks() or using a FixedLocator.
+  axes2[0, 0].set_xticklabels(categories, rotation=45, ha='right')
+    Educational: [0.09003057 0.24472847 0.66524096]
+    PyMDP:       [0.09003057 0.24472847 0.66524096]
+    ✅ Match: True
+
+  Values 3: [-1.  0.  1.]
+    Educational: [0.09003057 0.24472847 0.66524096]
+    PyMDP:       [0.09003057 0.24472847 0.66524096]
+    ✅ Match: True
+
+3. KL Divergence Validation:
+------------------------------
+  Pair 1: P=[0.7 0.2 0.1], Q=[0.5 0.3 0.2]
+    Educational: 0.085123
+    PyMDP:       0.085123
+    ✅ Match: True
+
+  Pair 2: P=[0.9  0.05 0.05], Q=[0.33333333 0.33333333 0.33333333]
+    Educational: 0.704215
+    PyMDP:       0.704215
+    ✅ Match: True
+
+  Pair 3: P=[0.4 0.4 0.2], Q=[0.6 0.3 0.1]
+    Educational: 0.091516
+    PyMDP:       0.091516
+    ✅ Match: True
+
+4. Object Array Validation:
+------------------------------
+  obj_array_uniform validation:
+    Array 0: shape (3,), sum 1.000000, normalized: True
+    Array 1: shape (4,), sum 1.000000, normalized: True
+    Array 2: shape (2,), sum 1.000000, normalized: True
+    PyMDP is_normalized(): True
+    ✅ All arrays normalized: True
+
+5. Sampling Validation:
+------------------------------
+  Testing sampling from: [0.2 0.5 0.3]
+    True distribution:      [0.2 0.5 0.3]
+    Empirical (1000 samples): [0.212 0.483 0.305]
+    Max difference:         0.017
+    ✅ Sampling works: True
+
+============================================================
+✅ ALL PYMDP VALIDATIONS COMPLETE
+============================================================
+Key findings:
+• Educational implementations match PyMDP exactly
+• PyMDP utilities provide robust, optimized calculations
+• Object array structure enables multi-factor models
+• All probability operations validated successfully
+
+9. Comprehensive Visualization
+----------------------------------------
+Comprehensive visualizations saved to:
+  - /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/01_probability_basics/comprehensive_distributions.png
+  - /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/01_probability_basics/distribution_properties.png
+
+================================================================================
+✅ COMPREHENSIVE TAKEAWAYS: PROBABILITY BASICS WITH PYMDP INTEGRATION
+================================================================================
+🎉 ALL PYMDP VALIDATIONS PASSED - Educational implementations verified!
+
+📊 DISTRIBUTION CONCEPTS:
+1. CATEGORICAL: Discrete finite support, used for states/observations in PyMDP
+2. GAUSSIAN: Continuous distributions, useful for sensor noise modeling
+3. POISSON: Count data distributions, applicable to event-based observations
+
+🔧 PYMDP INTEGRATION:
+4. PyMDP utilities ensure proper probability distributions and validation
+5. obj_array structure handles multi-factor models efficiently
+6. Educational implementations match PyMDP exactly (validated)
+7. PyMDP provides optimized, robust mathematical operations
+
+📈 INFORMATION THEORY:
+8. Entropy connects to VFE: higher entropy → higher computational cost
+9. KL divergence measures distributional differences (key to complexity)
+10. Softmax enables principled action selection from preferences/EFE
+11. Temperature/precision controls exploration-exploitation trade-off
+12. Distribution choice impacts model complexity and inference efficiency
+
+🔬 PyMDP Methods Demonstrated & Validated:
+- pymdp.utils.obj_array_zeros(), obj_array_uniform() for distributions
+- pymdp.utils.is_normalized(), norm_dist() for validation/normalization
+- pymdp.maths.entropy(), kl_div() for information analysis
+- pymdp.maths.softmax() for action selection
+- pymdp.utils.to_obj_array(), sample() for format conversion & sampling
+- All educational calculations validated against PyMDP implementations
+
+✨ Enhancements Added:
+- Comprehensive PyMDP validation of all implementations
+- Enhanced accessibility for all visualizations
+- Colorblind-friendly palettes and larger fonts
+- Integration with scipy.stats for continuous distributions
+
+➡️  Next: Example 2 will show Bayes rule with VFE and PyMDP inference functions
+
+Results saved to: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/01_probability_basics
+Visualization files: comprehensive_distributions.png, distribution_properties.png

@@ -6,7 +6,7 @@ PyMDP is a Python implementation of active inference and message passing algorit
 
 ## Package Structure
 
-```
+```text
 pymdp/
 ├── __init__.py          # Main package exports
 ├── agent.py             # High-level Agent class
@@ -254,10 +254,20 @@ qs = infer_states([obs], A, prior)
 
 ## See Also
 
-- [`active_inference_basics.md`](active_inference_basics.md) - Theoretical background
-- [`model_specification.md`](model_specification.md) - Detailed model setup
-- [`../examples/`](../examples/) - Practical examples
-- [`inference_algorithms.md`](inference_algorithms.md) - Algorithm details
+### Glossary
+- **A (Observation Model)**: Likelihood `P(o|s)` mapping hidden states to observations.
+- **B (Transition Model)**: Dynamics `P(s'|s,a)` mapping previous states and actions to next states.
+- **C (Preferences)**: Prior preferences over observations (often in log space).
+- **D (Initial States)**: Prior over initial hidden states.
+- **VFE (Variational Free Energy)**: `F = Complexity - Accuracy`, minimized during inference.
+- **EFE (Expected Free Energy)**: Policy-level objective mixing risk and epistemic value.
+- **Policy (π)**: Action sequence evaluated via EFE.
+
+### Navigation
+- Quick theory and chapters: `active_inference_basics.md`
+- Core utilities and agent loop: `pymdp_core_guide.md`
+- Validation and runner: `validation_guide.md`
+- Worked examples directory: `../examples/`
 
 ## References
 
