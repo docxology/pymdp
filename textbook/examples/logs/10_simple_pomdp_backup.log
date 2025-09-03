@@ -9,7 +9,7 @@ Key concepts: generative model, inference, control, perception-action loop
 COMPREHENSIVE PYMDP GENERATIVE MODEL ANALYSIS
 ================================================================================
 ✓ Model validation passed!
-Agent reset. Starting state: 1 (beliefs: [0.1 0.8 0.1])
+Agent reset. Starting state: 0 (beliefs: [0.1 0.8 0.1])
 Simple Navigation Agent initialized
 - States: 3 (Left, Center, Right)
 - Actions: 2 (Move Left, Move Right)
@@ -259,46 +259,13 @@ True state: 2
 Observed: 2 -> Beliefs: [0.00291545 0.88629738 0.11078717] (reward: 1.50, VFE: 3.575)
 Action EFE: [-3.50676736 -3.41540882]
 Action values (negative EFE): [3.50676736 3.41540882]
-Selected action: 1 (Move Right)
+Selected action: 0 (Move Left)
 Obs: 2 (Right)
-Action: 1 (Move Right)
-Next state: 2 (Right)
+Action: 0 (Move Left)
+Next state: 1 (Center)
 Reward: 1.50
 
 Step 3:
-True state: 2
-Observed: 2 -> Beliefs: [5.71755289e-04 1.73813608e-01 8.25614637e-01] (reward: 1.50, VFE: 2.060)
-Action EFE: [-1.94857231 -1.55344637]
-Action values (negative EFE): [1.94857231 1.55344637]
-Selected action: 0 (Move Left)
-Obs: 2 (Right)
-Action: 0 (Move Left)
-Next state: 1 (Center)
-Reward: 1.50
-
-Step 4:
-True state: 1
-Observed: 1 -> Beliefs: [7.69408325e-05 8.88820497e-01 1.11102562e-01] (reward: 0.00, VFE: 1.683)
-Action EFE: [-6.67040871 -3.43333849]
-Action values (negative EFE): [6.67040871 3.43333849]
-Selected action: 0 (Move Left)
-Obs: 1 (Center)
-Action: 0 (Move Left)
-Next state: 0 (Left)
-Reward: 0.00
-
-Step 5:
-True state: 0
-Observed: 0 -> Beliefs: [0.00291545 0.88629738 0.11078717] (reward: -1.50, VFE: 3.686)
-Action EFE: [-3.50676736 -3.41540882]
-Action values (negative EFE): [3.50676736 3.41540882]
-Selected action: 1 (Move Right)
-Obs: 0 (Left)
-Action: 1 (Move Right)
-Next state: 1 (Center)
-Reward: -1.50
-
-Step 6:
 True state: 1
 Observed: 1 -> Beliefs: [8.62738331e-05 9.96635321e-01 3.27840566e-03] (reward: 0.00, VFE: 0.169)
 Action EFE: [-7.67528824 -6.86755556]
@@ -309,40 +276,73 @@ Action: 0 (Move Left)
 Next state: 0 (Left)
 Reward: 0.00
 
-Step 7:
+Step 4:
 True state: 0
 Observed: 0 -> Beliefs: [0.00326797 0.99346405 0.00326797] (reward: -1.50, VFE: 3.686)
 Action EFE: [-4.12591758 -6.83653033]
 Action values (negative EFE): [4.12591758 6.83653033]
-Selected action: 0 (Move Left)
-Obs: 0 (Left)
-Action: 0 (Move Left)
-Next state: 0 (Left)
-Reward: -1.50
-
-Step 8:
-True state: 0
-Observed: 0 -> Beliefs: [0.11078717 0.88629738 0.00291545] (reward: -1.50, VFE: 3.575)
-Action EFE: [-0.69785051 -5.91899476]
-Action values (negative EFE): [0.69785051 5.91899476]
 Selected action: 1 (Move Right)
 Obs: 0 (Left)
 Action: 1 (Move Right)
 Next state: 1 (Center)
 Reward: -1.50
 
+Step 5:
+True state: 1
+Observed: 1 -> Beliefs: [8.65501125e-05 9.99826900e-01 8.65501125e-05] (reward: 0.00, VFE: 0.058)
+Action EFE: [ -7.70892109 -10.42818572]
+Action values (negative EFE): [ 7.70892109 10.42818572]
+Selected action: 1 (Move Right)
+Obs: 1 (Center)
+Action: 1 (Move Right)
+Next state: 2 (Right)
+Reward: 0.00
+
+Step 6:
+True state: 2
+Observed: 2 -> Beliefs: [8.62738331e-05 9.96635321e-01 3.27840566e-03] (reward: 1.50, VFE: 3.686)
+Action EFE: [-7.67528824 -6.86755556]
+Action values (negative EFE): [7.67528824 6.86755556]
+Selected action: 1 (Move Right)
+Obs: 2 (Right)
+Action: 1 (Move Right)
+Next state: 2 (Right)
+Reward: 1.50
+
+Step 7:
+True state: 2
+Observed: 2 -> Beliefs: [7.69408325e-05 8.88820497e-01 1.11102562e-01] (reward: 1.50, VFE: 3.574)
+Action EFE: [-6.67040871 -3.43333849]
+Action values (negative EFE): [6.67040871 3.43333849]
+Selected action: 0 (Move Left)
+Obs: 2 (Right)
+Action: 0 (Move Left)
+Next state: 1 (Center)
+Reward: 1.50
+
+Step 8:
+True state: 1
+Observed: 1 -> Beliefs: [2.27055476e-06 9.96719048e-01 3.27868108e-03] (reward: 0.00, VFE: 0.166)
+Action EFE: [-11.22832805  -6.86838098]
+Action values (negative EFE): [11.22832805  6.86838098]
+Selected action: 0 (Move Left)
+Obs: 1 (Center)
+Action: 0 (Move Left)
+Next state: 0 (Left)
+Reward: 0.00
+
 ==================================================
 Episode Summary:
-Total reward: -1.50
-Final state: 1 (Not goal)
+Total reward: 3.00
+Final state: 0 (Not goal)
 Steps: 8
 
 Performance Analysis:
-- Total reward: -1.50
-- Mean reward per step: -0.19
+- Total reward: 3.00
+- Mean reward per step: 0.38
 - Reached goal: False
 - Action diversity: 2.000
-- Mean belief entropy: 0.297
+- Mean belief entropy: 0.168
 
 ============================================================
 PYMDP INTEGRATION REAL STATUS SUMMARY
@@ -374,10 +374,10 @@ COMPREHENSIVE MODEL ANALYSIS WITH PYMDP METHODS
   ✓ Validation panel created successfully
 PyMDP method testing failed: only length-1 arrays can be converted to Python scalars
   ✓ Method testing panel created successfully
-Observed: 0 -> Beliefs: [8.25614637e-01 1.73813608e-01 5.71755289e-04] (reward: -1.50, VFE: 2.060)
-Action EFE: [ 1.21028862 -2.37702342]
-Action values (negative EFE): [-1.21028862  2.37702342]
-Selected action: 1 (Move Right)
+Observed: 0 -> Beliefs: [8.62738331e-05 9.96635321e-01 3.27840566e-03] (reward: -1.50, VFE: 3.689)
+Action EFE: [-7.67528824 -6.86755556]
+Action values (negative EFE): [7.67528824 6.86755556]
+Selected action: 0 (Move Left)
   ✓ Diagnostics panel created successfully
 
 ✅ Comprehensive model analysis saved to: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/10_simple_pomdp_backup/model_matrices_comprehensive.png
@@ -400,10 +400,10 @@ KEY TAKEAWAYS: COMPREHENSIVE VFE/EFE ACTIVE INFERENCE
 8. ✓ Complete active inference agent demonstrates perception-action loop
 
 📈 SIMULATION RESULTS:
-   Total reward: -1.50
+   Total reward: 3.00
    Goal reached: ✗ NO
    VFE trend: stable
-   Mean VFE: 2.307
+   Mean VFE: 2.097
 
 📁 Complete outputs with VFE/EFE plots saved to:
    📊 Visualization: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/10_simple_pomdp_backup/simple_pomdp_results.png

@@ -100,16 +100,16 @@ Sequential VFE-based observations:
 Step | True Pos | Obs | VFE   | Most Likely Position
 ------------------------------------------------------------
   1  | (0, 0)   | (0, 0) |  4.87 | (0, 0) (0.894)
-  2  | (0, 0)   | (0, 1) |  2.94 | (0, 0) (0.950)
-  3  | (0, 0)   | (0, 0) |  0.12 | (0, 0) (1.000)
-  4  | (0, 1)   | (0, 2) | 14.69 | (0, 1) (1.000)
+  2  | (0, 0)   | (0, 0) |  0.13 | (0, 0) (1.000)
+  3  | (0, 1)   | (0, 1) |  2.89 | (0, 0) (1.000)
+  4  | (0, 2)   | (0, 2) |  2.94 | (0, 1) (1.000)
 
 🔬 VFE ANALYSIS SUMMARY
 ==================================================
   Step 1 (Obs (0, 0)): VFE=4.87, Surprise=2.64
-  Step 2 (Obs (0, 1)): VFE=2.94, Surprise=2.69
-  Step 3 (Obs (0, 0)): VFE=0.12, Surprise=2.64
-  Step 4 (Obs (0, 2)): VFE=14.69, Surprise=2.64
+  Step 2 (Obs (0, 0)): VFE=0.13, Surprise=2.64
+  Step 3 (Obs (0, 1)): VFE=2.89, Surprise=2.69
+  Step 4 (Obs (0, 2)): VFE=2.94, Surprise=2.64
 
 📊 KEY VFE INSIGHTS:
 • VFE = E_q[ln q(s) - ln p(o,s)] measures model fit
@@ -200,17 +200,17 @@ Starting episode simulation (20 steps max)
 True starting position: (0, 0)
 ==================================================
 Step 1:
-True position: (0, 1)
-Observed: (0, 1) -> Most likely: (0, 1) (VFE: 4.896)
+True position: (1, 0)
+Observed: (1, 0) -> Most likely: (1, 0) (VFE: 4.896)
 Action values (negative EFE): [-2.50110465 -1.92967608 -2.50110465 -1.92967608]
-Selected action: 1 (Down)
+Selected action: 3 (Right)
 Reward: 0.00
 
 Step 2:
-True position: (0, 1)
-Observed: (0, 1) -> Most likely: (0, 1) (VFE: 0.375)
-Action values (negative EFE): [-0.75239129 -1.02369686 -0.95264359 -1.11278984]
-Selected action: 2 (Left)
+True position: (1, 0)
+Observed: (1, 0) -> Most likely: (1, 0) (VFE: 0.375)
+Action values (negative EFE): [-0.95264359 -1.11278984 -0.75239129 -1.02369686]
+Selected action: 1 (Down)
 /home/trim/Documents/GitHub/pymdp/textbook/examples/11_gridworld_pomdp.py:1014: UserWarning: Glyph 127919 (\N{DIRECT HIT}) missing from font(s) DejaVu Sans.
   plt.tight_layout()
 /home/trim/Documents/GitHub/pymdp/textbook/examples/11_gridworld_pomdp.py:1014: UserWarning: Glyph 10060 (\N{CROSS MARK}) missing from font(s) DejaVu Sans.
@@ -250,127 +250,127 @@ Selected action: 2 (Left)
 Reward: 0.00
 
 Step 3:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 1) (VFE: 3.013)
-Action values (negative EFE): [-0.66654502 -0.84408915 -0.73591841 -0.76143738]
+True position: (1, 0)
+Observed: (1, 0) -> Most likely: (1, 0) (VFE: 0.186)
+Action values (negative EFE): [-0.73591841 -0.76143738 -0.66654502 -0.84408915]
 Selected action: 0 (Up)
 Reward: 0.00
 
 Step 4:
 True position: (0, 0)
-Observed: (1, 0) -> Most likely: (0, 0) (VFE: 8.253)
-Action values (negative EFE): [-0.6463989  -0.93973215 -0.84515218 -0.93547653]
+Observed: (0, 1) -> Most likely: (0, 0) (VFE: 19.203)
+Action values (negative EFE): [-0.7163782  -0.71909129 -0.65994554 -0.82892162]
 Selected action: 2 (Left)
 Reward: 0.00
 
 Step 5:
-True position: (1, 0)
-Observed: (1, 0) -> Most likely: (0, 0) (VFE: 2.890)
+True position: (0, 1)
+Observed: (1, 1) -> Most likely: (0, 0) (VFE: 36.841)
+Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
+Selected action: 1 (Down)
+Reward: -2.00
+
+Step 6:
+True position: (0, 1)
+Observed: (0, 1) -> Most likely: (0, 0) (VFE: 2.890)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 3 (Right)
 Reward: 0.00
 
-Step 6:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
-Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
-Reward: 0.00
-
 Step 7:
-True position: (0, 0)
+True position: (0, 1)
 Observed: (0, 1) -> Most likely: (0, 0) (VFE: 2.890)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 0 (Up)
 Reward: 0.00
 
 Step 8:
+True position: (0, 1)
+Observed: (0, 1) -> Most likely: (0, 0) (VFE: 2.890)
+Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
+Selected action: 2 (Left)
+Reward: 0.00
+
+Step 9:
 True position: (0, 0)
 Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 0 (Up)
 Reward: 0.00
 
-Step 9:
+Step 10:
+True position: (0, 0)
+Observed: (1, 0) -> Most likely: (0, 0) (VFE: 2.890)
+Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
+Selected action: 2 (Left)
+Reward: 0.00
+
+Step 11:
 True position: (1, 0)
 Observed: (1, 0) -> Most likely: (0, 0) (VFE: 2.890)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 3 (Right)
 Reward: 0.00
 
-Step 10:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
-Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
-Reward: 0.00
-
-Step 11:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
-Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
-Reward: 0.00
-
 Step 12:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
+True position: (1, 0)
+Observed: (1, 0) -> Most likely: (0, 0) (VFE: 2.890)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
+Selected action: 0 (Up)
 Reward: 0.00
 
 Step 13:
-True position: (0, 0)
-Observed: (0, 0) -> Most likely: (0, 0) (VFE: 0.118)
+True position: (2, 0)
+Observed: (2, 0) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
+Selected action: 3 (Right)
 Reward: 0.00
 
 Step 14:
-True position: (0, 1)
-Observed: (0, 1) -> Most likely: (0, 0) (VFE: 2.890)
+True position: (3, 0)
+Observed: (3, 0) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 1 (Down)
+Selected action: 3 (Right)
 Reward: 0.00
 
 Step 15:
-True position: (0, 2)
-Observed: (0, 2) -> Most likely: (0, 0) (VFE: 36.841)
+True position: (3, 0)
+Observed: (3, 0) -> Most likely: (0, 0) (VFE: 36.841)
+Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
+Selected action: 3 (Right)
+Reward: 0.00
+
+Step 16:
+True position: (3, 0)
+Observed: (3, 0) -> Most likely: (0, 0) (VFE: 36.841)
+Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
+Selected action: 3 (Right)
+Reward: 0.00
+
+Step 17:
+True position: (3, 1)
+Observed: (3, 1) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 1 (Down)
 Reward: 0.00
 
-Step 16:
-True position: (0, 2)
-Observed: (0, 2) -> Most likely: (0, 0) (VFE: 36.841)
-Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
-Reward: 0.00
-
-Step 17:
-True position: (0, 2)
-Observed: (1, 2) -> Most likely: (0, 0) (VFE: 36.841)
-Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
-Reward: 0.00
-
 Step 18:
-True position: (0, 2)
-Observed: (0, 2) -> Most likely: (0, 0) (VFE: 36.841)
+True position: (3, 0)
+Observed: (3, 0) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
+Selected action: 0 (Up)
 Reward: 0.00
 
 Step 19:
-True position: (0, 2)
-Observed: (0, 2) -> Most likely: (0, 0) (VFE: 36.841)
+True position: (3, 0)
+Observed: (3, 0) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
-Selected action: 2 (Left)
+Selected action: 3 (Right)
 Reward: 0.00
 
 Step 20:
-True position: (0, 2)
-Observed: (0, 2) -> Most likely: (0, 0) (VFE: 36.841)
+True position: (3, 1)
+Observed: (3, 1) -> Most likely: (0, 0) (VFE: 36.841)
 Action values (negative EFE): [-0.42584845 -0.89016521 -0.42584845 -0.89016521]
 Selected action: 1 (Down)
 Reward: 0.00
@@ -379,16 +379,16 @@ Episode ended without reaching goal
 
 ==================================================
 Episode Summary:
-Total reward: 0.00
-Final position: (0, 2) (Not goal)
+Total reward: -2.00
+Final position: (3, 1) (Not goal)
 Steps: 20
 
 Performance Analysis:
-- Total reward: 0.00
-- Mean reward per step: 0.00
+- Total reward: -2.00
+- Mean reward per step: -0.10
 - Reached goal: False
 - Action diversity: 4.000
-- Mean VFE: 11.011
+- Mean VFE: 17.141
 
 ============================================================
 PYMDP INTEGRATION SUCCESS SUMMARY
@@ -437,9 +437,9 @@ KEY TAKEAWAYS: COMPREHENSIVE VFE/EFE GRIDWORLD ACTIVE INFERENCE
 8. ✓ Complete gridworld agent demonstrates spatial perception-action loop
 
 📈 SIMULATION RESULTS:
-   Total reward: 0.00
+   Total reward: -2.00
    Goal reached: NO
-   Mean VFE: 11.011
+   Mean VFE: 17.141
 
 📁 Complete outputs with VFE/EFE plots saved to:
    📊 Model Analysis: /home/trim/Documents/GitHub/pymdp/textbook/examples/outputs/11_gridworld_pomdp/gridworld_model_matrices_comprehensive.png

@@ -1,0 +1,10 @@
+{
+  "example": "tmaze_learning_demo",
+  "files": [
+    "figure_1.png",
+    "manifest.json",
+    "run.log",
+    "timeline.csv",
+    "timeline_plot.png"
+  ]
+}

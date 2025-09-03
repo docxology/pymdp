@@ -1,0 +1,4 @@
+entities:
+  - name: "karl_friston"
+    category: "scientist"
+    priority: "high"

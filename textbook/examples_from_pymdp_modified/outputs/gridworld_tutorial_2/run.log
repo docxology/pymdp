@@ -1,0 +1,19 @@
+/home/trim/Documents/GitHub/pymdp/textbook/examples_from_pymdp_modified/gridworld_tutorial_2_modified.py:160: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  u = int(policy[t])
+/home/trim/Documents/GitHub/pymdp/textbook/examples_from_pymdp_modified/gridworld_tutorial_2_modified.py:200: DeprecationWarning: Conversion of an array with ndim > 0 to a scalar is deprecated, and will error in future. Ensure you extract a single element from your array before performing this operation. (Deprecated NumPy 1.25.)
+  u = int(policy[0])
+/home/trim/Documents/GitHub/pymdp/textbook/examples_from_pymdp_modified/outputs/gridworld_tutorial_2
+imports loaded
+B: (9, 9, 5)
+(1, 2)
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 1. 0. 0. 0.]
+[0. 0. 0. 0. 1. 0. 0. 0. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]
+[0. 0. 0. 0. 0. 0. 0. 1. 0.]

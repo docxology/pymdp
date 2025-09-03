@@ -1,0 +1,57 @@
+{
+  "agent_demo": [
+    "actions_plot.png",
+    "manifest.json",
+    "run.log",
+    "timeline.csv"
+  ],
+  "free_energy_calculation": [
+    "figure_1.png",
+    "manifest.json",
+    "metrics.json",
+    "run.log",
+    "metrics.json"
+  ],
+  "gridworld_tutorial_1": [
+    "figure_1.png",
+    "figure_2.png",
+    "figure_3.png",
+    "manifest.json",
+    "run.log"
+  ],
+  "gridworld_tutorial_2": [
+    "beliefs_series.csv",
+    "beliefs_series_plot.png",
+    "figure_1.png",
+    "figure_2.png",
+    "manifest.json",
+    "run.log"
+  ],
+  "inductive_inference_example": [
+    "manifest.json",
+    "run.log"
+  ],
+  "inductive_inference_gridworld": [
+    "manifest.json",
+    "path.csv",
+    "path_plot.png",
+    "run.log"
+  ],
+  "site": [
+    "index.html"
+  ],
+  "tmaze_demo": [
+    "figure_1.png",
+    "manifest.json",
+    "run.log",
+    "timeline.csv",
+    "timeline_plot.png"
+  ],
+  "tmaze_learning_demo": [
+    "figure_1.png",
+    "manifest.json",
+    "run.log",
+    "timeline.csv",
+    "timeline_plot.png"
+  ]
+}

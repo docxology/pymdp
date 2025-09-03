@@ -1,0 +1,9 @@
+{
+  "example": "inductive_inference_gridworld",
+  "files": [
+    "manifest.json",
+    "path.csv",
+    "path_plot.png",
+    "run.log"
+  ]
+}

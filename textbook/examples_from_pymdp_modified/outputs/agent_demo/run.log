@@ -1,0 +1,35 @@
+0: Observation state_observation: 2
+0: Observation reward: 2
+0: Observation decision_proprioceptive: 0
+0: Beliefs about reward_level: [0.5 0.5]
+0: Beliefs about decision_state: [1.0e+00 1.0e-32 1.2e-16]
+1
+0: Action: [0. 2.] / State: [0, 2]
+1: Observation state_observation: 0
+1: Observation reward: 2
+1: Observation decision_proprioceptive: 2
+1: Beliefs about reward_level: [0.8 0.2]
+1: Beliefs about decision_state: [5.49794963e-33 5.49794963e-49 1.00000000e+00]
+1
+1: Action: [0. 2.] / State: [0, 2]
+2: Observation state_observation: 0
+2: Observation reward: 2
+2: Observation decision_proprioceptive: 2
+2: Beliefs about reward_level: [0.94117647 0.05882353]
+2: Beliefs about decision_state: [4.52068297e-33 4.52068297e-49 1.00000000e+00]
+1
+2: Action: [0. 1.] / State: [0, 1]
+3: Observation state_observation: 0
+3: Observation reward: 0
+3: Observation decision_proprioceptive: 1
+3: Beliefs about reward_level: [0.97752431 0.02247569]
+3: Beliefs about decision_state: [1.40593039e-48 1.00000000e+00 3.24829888e-48]
+1
+3: Action: [0. 1.] / State: [0, 1]
+4: Observation state_observation: 0
+4: Observation reward: 1
+4: Observation decision_proprioceptive: 1
+4: Beliefs about reward_level: [0.94117647 0.05882353]
+4: Beliefs about decision_state: [3.50586808e-48 1.00000000e+00 7.75517349e-48]
+1
+4: Action: [0. 1.] / State: [0, 1]

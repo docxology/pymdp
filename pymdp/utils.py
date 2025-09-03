@@ -548,27 +548,43 @@ def build_xn_vn_array(xn):
 
 def plot_beliefs(belief_dist, title=""):
     """
-    Utility function that plots a bar chart of a categorical probability distribution,
-    with each bar height corresponding to the probability of one of the elements of the categorical
-    probability vector.
+    Plot a categorical probability vector as a standalone bar chart figure.
+    Creates a new figure per call to avoid overlapping colorbars/axes.
     """
 
+    plt.figure(figsize=(6, 4))
     plt.grid(zorder=0)
-    plt.bar(range(belief_dist.shape[0]), belief_dist, color='r', zorder=3)
+    plt.bar(range(belief_dist.shape[0]), belief_dist, color='tab:red', zorder=3)
     plt.xticks(range(belief_dist.shape[0]))
+    plt.ylim(0.0, 1.0)
     plt.title(title)
+    plt.tight_layout()
     plt.show()
     
 def plot_likelihood(A, title=""):
     """
-    Utility function that shows a heatmap of a 2-D likelihood (hidden causes in the columns, observations in the rows),
-    with hotter colors indicating higher probability.
+    Plot a likelihood matrix as a standalone heatmap figure.
+    Creates a new figure per call to ensure the first saved figure is the heatmap (not an isolated colorbar).
     """
 
-    ax = sns.heatmap(A, cmap="OrRd", linewidth=2.5)
-    plt.xticks(range(A.shape[1]+1))
-    plt.yticks(range(A.shape[0]+1))
-    plt.title(title)
+    import numpy as _np
+
+    plt.figure(figsize=(6, 5))
+    ax = sns.heatmap(
+        A,
+        cmap="OrRd",
+        vmin=0.0,
+        vmax=1.0 if _np.issubdtype(_np.asarray(A).dtype, _np.number) else None,
+        cbar=True,
+        linewidths=0.5,
+        linecolor="white",
+        cbar_kws={"shrink": 0.8},
+        square=False,
+    )
+    ax.set_xticks(range(A.shape[1]))
+    ax.set_yticks(range(A.shape[0]))
+    ax.set_title(title)
+    plt.tight_layout()
     plt.show()
 
 

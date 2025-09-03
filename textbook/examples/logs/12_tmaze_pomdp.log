@@ -17,13 +17,13 @@ T-maze task: Agent starts at bottom, must choose left or right arm.
 Cues at junction indicate which side has reward (with some reliability).
 
 Cue Reliability: 60.0%
-  Accuracy: 50.0% (10/20 correct)
+  Accuracy: 30.0% (6/20 correct)
 
 Cue Reliability: 80.0%
-  Accuracy: 60.0% (12/20 correct)
+  Accuracy: 30.0% (6/20 correct)
 
 Cue Reliability: 95.0%
-  Accuracy: 45.0% (9/20 correct)
+  Accuracy: 75.0% (15/20 correct)
 
 Key insights:
 - Higher cue reliability leads to better performance
@@ -36,7 +36,7 @@ INFORMATION VS REWARD TRADE-OFF
 Analyzing when agent seeks information (goes to cue) vs exploits known rewards.
 
 Information Preference: 0.0
-  Cue visitation rate: 80.0%
+  Cue visitation rate: 100.0%
 
 Information Preference: 0.5
   Cue visitation rate: 100.0%

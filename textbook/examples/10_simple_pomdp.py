@@ -211,6 +211,12 @@ class SimpleNavigationAgent:
         self.action_history = []
         self.reward_history = []
         self.free_energy_history = []
+        # Additional histories for downstream plots
+        self.qs_history = [[self.beliefs.copy()]]  # list of lists with belief vectors
+        self.complexity_history = []
+        self.accuracy_history = []
+        # Back-compat alias used by plotting
+        self.obs_history = self.observation_history
         
         # Current state (for simulation)
         self.true_state = sample(self.D[0])
@@ -273,6 +279,17 @@ class SimpleNavigationAgent:
         if not hasattr(self, 'vfe_history'):
             self.vfe_history = []
         self.vfe_history.append(vfe)
+        # Track components for later visualization
+        if not hasattr(self, 'complexity_history'):
+            self.complexity_history = []
+        if not hasattr(self, 'accuracy_history'):
+            self.accuracy_history = []
+        self.complexity_history.append(float(complexity))
+        self.accuracy_history.append(float(accuracy))
+        # Track qs history for information gain and certainty panels
+        if not hasattr(self, 'qs_history'):
+            self.qs_history = []
+        self.qs_history.append([posterior.copy()])
         
         # Compute reward based on preferences
         reward = self.C[0][observation]
@@ -477,12 +494,14 @@ def calculate_vfe_pymdp_style(qs, observation, A, verbose=False):
             print(f"  Components: {components}")
         
         # Return in expected format
+        # Normalize interface: always return a dict
+        qs_vec = qs_obj[0]
         return {
             'vfe': float(vfe),
-            'surprise': float(vfe),  # Use VFE as proxy for surprise
-            'marginal_likelihood': 1.0,  # Placeholder
-            'likelihood': np.ones(len(qs[0])),  # Placeholder
-            'joint_prob': qs[0]  # Placeholder
+            'surprise': float(vfe),  # proxy if components unavailable
+            'marginal_likelihood': 1.0,
+            'likelihood': np.ones(len(qs_vec)),
+            'joint_prob': qs_vec
         }
         
     except Exception as e:
@@ -499,10 +518,18 @@ def calculate_vfe_pymdp_style(qs, observation, A, verbose=False):
             likelihood_s = A[0][observation, :]  # Fallback to indexing
     
     # Compute joint probability P(o,s) = P(o|s) * P(s)
-    joint_prob = likelihood_s * qs[0]
+    # Normalize qs input: accept numeric vector or obj_array-like container
+    if isinstance(qs, np.ndarray):
+        if qs.dtype == object:
+            qs_vec = qs[0]
+        else:
+            qs_vec = qs
+    else:
+        qs_vec = qs[0]
+    joint_prob = likelihood_s * qs_vec
     
     # VFE = E_q[ln q(s) - ln p(o,s)]
-    safe_qs = np.maximum(np.array(qs[0]), 1e-16)
+    safe_qs = np.maximum(np.asarray(qs_vec, dtype=float), 1e-16)
     safe_joint = np.maximum(np.array(joint_prob), 1e-16)
     vfe = np.dot(safe_qs, spm_log(safe_qs) - spm_log(safe_joint))
     
@@ -1840,12 +1867,31 @@ def demonstrate_tmaze_like_demo():
         obs_history.append(int(obs[LOCATION_MODALITY_ID]))
 
     # Save a quick A/B overview figure
-    fig, axes = plt.subplots(1, 3, figsize=(12, 4))
+    fig, axes = plt.subplots(2, 3, figsize=(12, 8))
     # For visualization, slice A over trial factor (reward condition) index 0 -> 2D [obs, loc]
     A_loc = A_gm[LOCATION_MODALITY_ID][:, :, 0]
-    plot_A_matrix(A_loc, ax=axes[0], state_labels=['CENTER','RIGHT','LEFT','CUE'], obs_labels=['CENTER','RIGHT','LEFT','CUE'], title='A (Location modality, trial=0)')
-    plot_B_matrix_slice(B_gm[LOCATION_FACTOR_ID][:, :, 0], ax=axes[1], state_labels=['CENTER','RIGHT','LEFT','CUE'], next_state_labels=['CENTER','RIGHT','LEFT','CUE'], title='B (Action 0)')
-    plot_B_matrix_slice(B_gm[LOCATION_FACTOR_ID][:, :, 1], ax=axes[2], state_labels=['CENTER','RIGHT','LEFT','CUE'], next_state_labels=['CENTER','RIGHT','LEFT','CUE'], title='B (Action 1)')
+    plot_A_matrix(A_loc, ax=axes[0,0], state_labels=['CENTER','RIGHT','LEFT','CUE'], obs_labels=['CENTER','RIGHT','LEFT','CUE'], title='A (Location modality, trial=0)')
+    # Reward modality A slice (show reward observation structure at center location)
+    try:
+        A_rew = A_gm[REWARD_MODALITY_ID][:, 1, :]
+        plot_A_matrix(A_rew, ax=axes[0,1], state_labels=['TRIAL0','TRIAL1'], obs_labels=['NO-REWARD','REWARD'], title='A (Reward modality, loc=CENTER)')
+    except Exception:
+        axes[0,1].axis('off')
+        axes[0,1].text(0.5,0.5,'Reward modality not available',ha='center',va='center')
+    # Show both B slices for LOCATION factor
+    plot_B_matrix_slice(B_gm[LOCATION_FACTOR_ID][:, :, 0], ax=axes[0,2], state_labels=['CENTER','RIGHT','LEFT','CUE'], next_state_labels=['CENTER','RIGHT','LEFT','CUE'], title='B (Action 0)')
+    plot_B_matrix_slice(B_gm[LOCATION_FACTOR_ID][:, :, 1], ax=axes[1,0], state_labels=['CENTER','RIGHT','LEFT','CUE'], next_state_labels=['CENTER','RIGHT','LEFT','CUE'], title='B (Action 1)')
+    # If trial factor transitions exist, show them
+    try:
+        plot_B_matrix_slice(B_gm[TRIAL_FACTOR_ID][:, :, 0], ax=axes[1,1], state_labels=['TRIAL0','TRIAL1'], next_state_labels=['TRIAL0','TRIAL1'], title='B (Trial factor)')
+    except Exception:
+        axes[1,1].axis('off')
+        axes[1,1].text(0.5,0.5,'Trial factor B not available',ha='center',va='center')
+    # Leave last panel for legend/info
+    axes[1,2].axis('off')
+    axes[1,2].text(0.05,0.95,'TMaze Agent Matrices Summary:\n• A (location & reward)\n• B (location actions & trial)\n• Shapes:\n  A_loc: {}\n  B_loc: {}'
+                    .format(A_loc.shape, B_gm[LOCATION_FACTOR_ID][:, :, 0].shape),
+                    transform=axes[1,2].transAxes, va='top')
     fig.tight_layout()
     fig.savefig(OUTPUT_DIR / "tmaze_matrices_quick.png", dpi=200)
     plt.close(fig)

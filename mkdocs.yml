@@ -1,0 +1,33 @@
+site_name: START Project Docs
+site_dir: site
+
+nav:
+  - Home: docs/index.md
+  - Getting Started: docs/getting_started.md
+  - Environment: docs/environment.md
+  - Pipeline: docs/pipeline.md
+  - Configuration: docs/configuration.md
+  - Testing: docs/TESTING.md
+  - Examples: docs/examples.md
+  - Clone Management: docs/clones.md
+  - Learning Guides:
+      - Curriculum Creation Usage Guide: docs/learning/curriculum_creation/USAGE_GUIDE.md
+      - API Integration Guide: docs/learning/curriculum_creation/README.md
+
+theme:
+  name: material
+
+plugins:
+  - search
+  - mkdocs-mermaid2-plugin
+
+markdown_extensions:
+  - admonition
+  - toc:
+      permalink: true
+  - pymdownx.mermaid
+
+extra:
+  mermaid2:
+    arguments:
+      - "--securityLevel=loose"

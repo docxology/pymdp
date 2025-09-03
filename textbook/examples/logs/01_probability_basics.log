@@ -249,7 +249,7 @@ This ensures our manual calculations match PyMDP's optimized implementations.
 ------------------------------
   Testing sampling from: [0.2 0.5 0.3]
     True distribution:      [0.2 0.5 0.3]
-    Empirical (1000 samples): [0.212 0.483 0.305]
+    Empirical (1000 samples): [0.21  0.507 0.283]
     Max difference:         0.017
     ✅ Sampling works: True
 

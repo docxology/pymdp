@@ -1,0 +1,6 @@
+t,location,reward,cue,action
+0,CUE LOCATION,No reward,Cue Right,Move to CUE LOCATION
+1,RIGHT ARM,Reward!,Cue Right,Move to RIGHT ARM
+2,RIGHT ARM,Reward!,Cue Right,Move to RIGHT ARM
+3,RIGHT ARM,Reward!,Cue Left,Move to RIGHT ARM
+4,RIGHT ARM,Reward!,Cue Left,Move to RIGHT ARM

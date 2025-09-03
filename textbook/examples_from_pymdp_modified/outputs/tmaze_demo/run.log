@@ -1,0 +1,12 @@
+ === Starting experiment === 
+ Reward condition: Left, Observation: [CENTER, No reward, Cue Left]
+[Step 0] Action: [Move to CUE LOCATION]
+[Step 0] Observation: [CUE LOCATION,  No reward, Cue Left]
+[Step 1] Action: [Move to LEFT ARM]
+[Step 1] Observation: [LEFT ARM,  Reward!, Cue Left]
+[Step 2] Action: [Move to LEFT ARM]
+[Step 2] Observation: [LEFT ARM,  Reward!, Cue Left]
+[Step 3] Action: [Move to LEFT ARM]
+[Step 3] Observation: [LEFT ARM,  Reward!, Cue Left]
+[Step 4] Action: [Move to LEFT ARM]
+[Step 4] Observation: [LEFT ARM,  Reward!, Cue Left]

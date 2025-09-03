@@ -1,0 +1,9 @@
+{
+  "example": "agent_demo",
+  "files": [
+    "actions_plot.png",
+    "manifest.json",
+    "run.log",
+    "timeline.csv"
+  ]
+}

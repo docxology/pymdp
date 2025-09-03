@@ -1,0 +1,10 @@
+{
+  "example": "free_energy_calculation",
+  "files": [
+    "figure_1.png",
+    "manifest.json",
+    "metrics.json",
+    "run.log",
+    "metrics.json"
+  ]
+}

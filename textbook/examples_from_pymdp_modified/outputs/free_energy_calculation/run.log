@@ -1,0 +1,39 @@
+Observation: 0
+
+Prior:[0.5 0.5]
+
+Likelihood:
+0.8  0.2  
+0.2  0.8  
+<IPython.core.display.Latex object>
+[0.8 0.2]
+==================
+
+<IPython.core.display.Latex object>
+[0.4 0.1]
+==================
+
+<IPython.core.display.Latex object>
+Posterior over hidden states: [0.8 0.2]
+==================
+<IPython.core.display.Latex object>
+Surprise: 0.693
+==================
+<IPython.core.display.Latex object>
+Variational free energy (F) = 0.916
+==================
+<IPython.core.display.Latex object>
+F = 0.693
+==================
+<IPython.core.display.Latex object>
+0.693
+==================
+
+<IPython.core.display.Latex object>
+Initial F = 0.916
+==================
+Final posterior:
+[0.8 0.2]
+==================
+Final F = 0.693
+==================

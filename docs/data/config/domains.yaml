@@ -1,0 +1,4 @@
+domains:
+  - name: "biochemistry"
+    category: "life_sciences"
+    priority: "high"

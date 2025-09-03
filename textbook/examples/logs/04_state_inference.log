@@ -383,29 +383,29 @@ following patterns from agent_demo.py and gridworld_tutorial.
     Selected action: focus
 
   Timestep 4:
-    True state: Location A, Normal
-    location_obs: Location A
-    reward_obs: No reward
-    context_obs: Normal
-    Location inference: [0.845 0.038 0.117] → Location A (84.5%)
-    Context inference: [1. 0.] → Normal (100.0%)
+    True state: Location C, Alert
+    location_obs: Location C
+    reward_obs: Reward
+    context_obs: Alert
+    Location inference: [0.04  0.035 0.925] → Location C (92.5%)
+    Context inference: [0. 1.] → Alert (100.0%)
     PyMDP Inference Metrics:
-      Total Surprise: 20.888 (lower = more expected observations)
-      Posterior Entropy: 0.517 (lower = more certain)
-      Information Gain: 1.275 (reduction in uncertainty)
+      Total Surprise: 20.792 (lower = more expected observations)
+      Posterior Entropy: 0.318 (lower = more certain)
+      Information Gain: 1.474 (reduction in uncertainty)
     Selected action: focus
 
   Timestep 5:
-    True state: Location C, Alert
+    True state: Location A, Alert
     location_obs: Location A
-    reward_obs: Reward
+    reward_obs: No reward
     context_obs: Alert
-    Location inference: [0.158 0.079 0.763] → Location C (76.3%)
+    Location inference: [0.62  0.08  0.299] → Location A (62.0%)
     Context inference: [0. 1.] → Alert (100.0%)
     PyMDP Inference Metrics:
-      Total Surprise: 22.381 (lower = more expected observations)
-      Posterior Entropy: 0.698 (lower = more certain)
-      Information Gain: 1.093 (reduction in uncertainty)
+      Total Surprise: 20.667 (lower = more expected observations)
+      Posterior Entropy: 0.860 (lower = more certain)
+      Information Gain: 0.932 (reduction in uncertainty)
     Selected action: focus
 
 4. State Inference Performance Analysis:
@@ -416,9 +416,9 @@ following patterns from agent_demo.py and gridworld_tutorial.
     T2 Context: Predicted 0, True 0, Confidence 100.0%, ✓
     T3 Location: Predicted 2, True 2, Confidence 95.9%, ✓
     T3 Context: Predicted 0, True 0, Confidence 100.0%, ✓
-    T4 Location: Predicted 0, True 0, Confidence 84.5%, ✓
-    T4 Context: Predicted 0, True 0, Confidence 100.0%, ✓
-    T5 Location: Predicted 2, True 2, Confidence 76.3%, ✓
+    T4 Location: Predicted 2, True 2, Confidence 92.5%, ✓
+    T4 Context: Predicted 1, True 1, Confidence 100.0%, ✓
+    T5 Location: Predicted 0, True 0, Confidence 62.0%, ✓
     T5 Context: Predicted 1, True 1, Confidence 100.0%, ✓
 
     Overall inference accuracy: 100.0%

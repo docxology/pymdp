@@ -1,0 +1,11 @@
+{
+  "example": "gridworld_tutorial_2",
+  "files": [
+    "beliefs_series.csv",
+    "beliefs_series_plot.png",
+    "figure_1.png",
+    "figure_2.png",
+    "manifest.json",
+    "run.log"
+  ]
+}

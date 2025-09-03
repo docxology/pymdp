@@ -1,0 +1,7 @@
+{
+  "example": "inductive_inference_example",
+  "files": [
+    "manifest.json",
+    "run.log"
+  ]
+}
