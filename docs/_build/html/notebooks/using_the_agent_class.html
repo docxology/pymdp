@@ -1,0 +1,746 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial 2: the Agent API &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Active Inference Demo: T-Maze Environment" href="tmaze_demo.html" />
+    <link rel="prev" title="Tutorial 1: Active inference from scratch" href="active_inference_from_scratch.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-some-auxiliary-functions">Define some auxiliary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#more-complex-generative-models"><strong>More complex generative models</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#explore-exploit-task-with-a-epistemic-two-armed-bandit"><strong>Explore/exploit task with a epistemic two-armed bandit</strong></a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#mab-with-an-epistemic-twist"><strong>MAB with an epistemic twist</strong></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-a-array">The <code class="docutils literal notranslate"><span class="pre">A</span></code> array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-b-array">The <code class="docutils literal notranslate"><span class="pre">B</span></code> array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-c-vectors">The <code class="docutils literal notranslate"><span class="pre">C</span></code> vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-d-vectors">The <code class="docutils literal notranslate"><span class="pre">D</span></code> vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#constructing-an-agent"><strong>Constructing an <code class="docutils literal notranslate"><span class="pre">Agent</span></code></strong></a></li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/using_the_agent_class.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-2-the-agent-api">
+<h1>Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API<a class="headerlink" href="#tutorial-2-the-agent-api" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/using_the_agent_class.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p>This tutorial introduces the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class, the main API offered by <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> that allows you to abstract away all the mathematical nuances involved in running active inference processes. All you have to do is build a generative model in terms of <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, and <code class="docutils literal notranslate"><span class="pre">D</span></code> arrays, plug them into the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> constructor, and then start running active inference processes using the desired functions of the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class, like <code class="docutils literal notranslate"><span class="pre">self.infer_states()</span></code> and <code class="docutils literal notranslate"><span class="pre">self.infer_policies()</span></code>.</p>
+<p>We demonstrate the use of the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class by building an active inference agent to play a simple explore/exploit task, what we call the “epistemic 2-armed bandit”. The task structure is identical to the “explore/exploit” task described in Smith et al. (2022): <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022249621000973">“A Step-by-Step Tutorial on Active Inference Modelling and its Application to Empirical Data”</a>. The task is a modified version of a classic multi-armed bandit problem, with particular changes that make it well suited to demonstrating the information-availing nature of active inference in discrete state spaces.</p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-some-auxiliary-functions">
+<h2>Define some auxiliary functions<a class="headerlink" href="#define-some-auxiliary-functions" title="Link to this heading"></a></h2>
+<p>Here are some plotting functions that will come in handy throughout the tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_likelihood</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Likelihood distribution (A)&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a 2-D likelihood matrix as a heatmap</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution not column-normalized! Please normalize (ensure matrix.sum(axis=0) == 1.0 for all columns)&quot;</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_beliefs</span><span class="p">(</span><span class="n">belief_dist</span><span class="p">,</span> <span class="n">title_str</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a categorical distribution or belief distribution, stored in the 1-D numpy vector `belief_dist`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution not normalized! Please normalize&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">belief_dist</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="more-complex-generative-models">
+<h2><strong>More complex generative models</strong><a class="headerlink" href="#more-complex-generative-models" title="Link to this heading"></a></h2>
+<p>In this notebook we will build a more complicated generative model, with the following goals in mind:</p>
+<ol class="arabic simple">
+<li><p>Demonstrate the unique behavior of active inference agents, as opposed to other agent-based approaches to solving POMDPs (e.g. utility-maximization / reinforcement learning)</p></li>
+<li><p>Provide a task example that is more relevant to decision-making research and computational psychiatry.</p></li>
+<li><p>Take advantage of the functionalities of <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, especially the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> class, to abstract away all the mathematical operations involved with inference and planning under active inference.</p></li>
+</ol>
+<p>Before we dive into specifying this generative model, we need to talk about <em>observation modalities</em> and <em>hidden state factors</em>…</p>
+<p>The data structure we use in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> to represent different hidden state factors and observation modalities is the <code class="docutils literal notranslate"><span class="pre">object</span> <span class="pre">array</span></code> (referred to in other contexts as ‘arrays of arrays’ or ‘jagged/ragged arrays’).</p>
+<p>They are no different than standard numpy <code class="docutils literal notranslate"><span class="pre">ndarrays</span></code> (they can arbitrarily multidimensional shape), except for the fact that their contents are unrestricted in terms of type. Their <code class="docutils literal notranslate"><span class="pre">dtype</span></code> is <code class="docutils literal notranslate"><span class="pre">object</span></code>, which means that their elements can be any kind of Python data structure – including other arrays!</p>
+<p>In case you’re coming from a  MATLAB background: these object arrays are the equivalent of cell arrays.</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, we represent a multi-factor $\mathbf{B}$ array as an object array which has as many elements as there are hidden state factors. Therefore, each element <code class="docutils literal notranslate"><span class="pre">B[i]</span></code> of the object array contains the <code class="docutils literal notranslate"><span class="pre">B</span></code> matrix for hidden state factor <code class="docutils literal notranslate"><span class="pre">i</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="explore-exploit-task-with-a-epistemic-two-armed-bandit">
+<h2><strong>Explore/exploit task with a epistemic two-armed bandit</strong><a class="headerlink" href="#explore-exploit-task-with-a-epistemic-two-armed-bandit" title="Link to this heading"></a></h2>
+<p>Now we’re going to build a generative model for an active inference agent playing a two-armed bandit task. The <a class="reference external" href="https://en.wikipedia.org/wiki/Multi-armed_bandit">multi-armed bandit</a> (or MAB) is a classic decision-making task that captures the core features of the the “explore/exploit tradeoff”. The multi-armed bandit formulation is ubiquitous across problem spaces that require sequential decision-making under uncertainty – this includes disciplines ranging from economics, neuroscience, machine learning, engineering all the way to advertising.</p>
+<p>In the standard MAB problem formulation, an agent has must choose between mutually-exclusive alternatives (also known as ‘arms’) in order to maximize reward over time. The probability of reward depends on which arm the agent chooses. A common real-world analogy for a MAB problem is imagining a special slot machine with three possible levers to pull (rather than the usual one), where playing each lever has different probabilities of payoff (e.g. getting a winning combination of symbols or bonus). In fact, the ‘standard’ slot machine, which usually only only one lever, was historically referred to as a ‘one-armed bandit’ – this was the direct ancestor of the name for the generic machine learning / decision-making problem class, the MAB.</p>
+<p>Crucially, MAB problems are interesting and difficult because in general, the reward statistics of each arm are unknown or only partially known. In a probabilistic or Bayesian context, an agent must therefore act based on <em>beliefs</em> about the reward statistics, since they don’t have perfect access to this information.</p>
+<p>The inherent partial-observability  of the ask creates a conflict between <strong>exploitation</strong> or choosing the arm that is <em>currently believed</em> to be most rewarding, and <strong>exploration</strong> or gathering information about the remaining arms, in the hopes of discovering a potentially more rewarding option.</p>
+<p>The fact that expected reward or utility is contextualized by <em>beliefs</em> – i.e. which arm is currently thought to be the most rewarding – motivates the use of active inference in this context. This is because the key objective function for action-selection, the expected free energy $\mathbf{G}$, depends on the agent’s beliefs about the world. And not only that, but expected free energy balances the desire to maximize rewards with the drive to resolve uncertainty about unknown parts of the agent’s model. The more accurate the agent’s beliefs are, the more faithfully decision-making can be guided by maximizing expected utility or rewards.</p>
+<section id="mab-with-an-epistemic-twist">
+<h3><strong>MAB with an epistemic twist</strong><a class="headerlink" href="#mab-with-an-epistemic-twist" title="Link to this heading"></a></h3>
+<p>In the MAB formulation we’ll be exploring in this tutorial, the agent must choose to play among two possible arms, each of which has unknown reward statistics. These reward statistics take the form of Bernoulli distributions over two possible reward outcomes: “Loss” and “Reward”. However, one of the arms has probability $p$ of yielding “Reward”” and probabiliity $(1-p)$ of yielding “Loss”. The other arm has swapped statistics. In this example, agent knows that the bandit has this general reward structure, except they don’t know <em>which</em> of the two arms is the rewarding one (the arm where reward probability is $p$, assuming $p \in [0.5, 1]$).</p>
+<p>However, we introduce an additional feature in the environment, that induces an explicit trade-off in decision-making between exploration (information-seeking) and exploitation (reward-seeking). In this special “epistemic bandit” problem, there is an additional action available to the agent, besides playing the two arms. We call this third action “Get Hint”, and allows the agent to acquire information reveals (potentially probabilistically) which arm is the more rewarding one. There is a trade-off here, because by choosing to acquire the hint, the agent forgoes the possibility of playing an arm and thus the possibility of getting a reward at that moment. The mutual exclusivity of hint-acquisition and arm-playing imbues the system with an explore/exploit trade-off, which active inference is particularly equipped to handle, when compared to simple reinforcement learning schemes (e.g. epsilon-greedy reward maximization).</p>
+<hr class="docutils" />
+<p>Specify the dimensionalities of the hidden state factors, the control factors, and the observation modalities</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">context_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Left-Better&#39;</span><span class="p">,</span> <span class="s1">&#39;Right-Better&#39;</span><span class="p">]</span>
+<span class="n">choice_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint&#39;</span><span class="p">,</span> <span class="s1">&#39;Left Arm&#39;</span><span class="p">,</span> <span class="s1">&#39;Right Arm&#39;</span><span class="p">]</span>
+
+<span class="sd">&quot;&quot;&quot; Define `num_states` and `num_factors` below &quot;&quot;&quot;</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">)]</span>
+<span class="n">num_factors</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_states</span><span class="p">)</span>
+
+<span class="n">context_action_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Do-nothing&#39;</span><span class="p">]</span>
+<span class="n">choice_action_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Move-start&#39;</span><span class="p">,</span> <span class="s1">&#39;Get-hint&#39;</span><span class="p">,</span> <span class="s1">&#39;Play-left&#39;</span><span class="p">,</span> <span class="s1">&#39;Play-right&#39;</span><span class="p">]</span>
+
+<span class="sd">&quot;&quot;&quot; Define `num_controls` below &quot;&quot;&quot;</span>
+<span class="n">num_controls</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">context_action_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_action_names</span><span class="p">)]</span>
+
+<span class="n">hint_obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint-left&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint-right&#39;</span><span class="p">]</span>
+<span class="n">reward_obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;Loss&#39;</span><span class="p">,</span> <span class="s1">&#39;Reward&#39;</span><span class="p">]</span>
+<span class="n">choice_obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Start&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint&#39;</span><span class="p">,</span> <span class="s1">&#39;Left Arm&#39;</span><span class="p">,</span> <span class="s1">&#39;Right Arm&#39;</span><span class="p">]</span>
+
+<span class="sd">&quot;&quot;&quot; Define `num_obs` and `num_modalities` below &quot;&quot;&quot;</span>
+<span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="nb">len</span><span class="p">(</span><span class="n">hint_obs_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward_obs_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_obs_names</span><span class="p">)]</span>
+<span class="n">num_modalities</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">num_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-a-array">
+<h3>The <code class="docutils literal notranslate"><span class="pre">A</span></code> array<a class="headerlink" href="#the-a-array" title="Link to this heading"></a></h3>
+<hr class="docutils" />
+<p><strong>Note</strong>: Unlike in <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a>, here we we will be building a more complex generative model more than one hidden state factor and observation modality. This leads to accordingly higher-dimensional <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays. See <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/pymdp_fundamentals.html">pymdp fundamentals</a> for more details on how we specify these high-dimensional arrays in <code class="docutils literal notranslate"><span class="pre">NumPy</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Generate the A array &quot;&quot;&quot;</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array</span><span class="p">(</span> <span class="n">num_modalities</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span><span class="w"> </span><span class="sd">&quot;&quot;&quot; Generate the A array &quot;&quot;&quot;</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">A</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array</span><span class="p">(</span> <span class="n">num_modalities</span> <span class="p">)</span>
+
+<span class="ne">AttributeError</span>: module &#39;pymdp.utils&#39; has no attribute &#39;obj_array&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fill out the hint modality, a sub-array of <code class="docutils literal notranslate"><span class="pre">A</span></code> which we’ll call <code class="docutils literal notranslate"><span class="pre">A_hint</span></code></p>
+<img src="https://drive.google.com/uc?export=view&id=1SqMp77NAmUa_oh925VURJ1Hyp8v_fXOj"/>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_hint</span> <span class="o">=</span> <span class="mf">0.7</span> <span class="c1"># accuracy of the hint, according to the agent&#39;s generative model (how much does the agent trust the hint?)</span>
+
+<span class="n">A_hint</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">hint_obs_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">))</span> <span class="p">)</span>
+
+<span class="k">for</span> <span class="n">choice_id</span><span class="p">,</span> <span class="n">choice_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">choice_names</span><span class="p">):</span>
+
+  <span class="k">if</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
+
+    <span class="n">A_hint</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Hint&#39;</span><span class="p">:</span>
+
+    <span class="n">A_hint</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="n">p_hint</span><span class="p">,</span>       <span class="mf">1.0</span> <span class="o">-</span> <span class="n">p_hint</span><span class="p">],</span>
+                                      <span class="p">[</span><span class="mf">1.0</span> <span class="o">-</span> <span class="n">p_hint</span><span class="p">,</span>  <span class="n">p_hint</span><span class="p">]])</span>
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Left Arm&#39;</span><span class="p">:</span>
+
+    <span class="n">A_hint</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Right Arm&#39;</span><span class="p">:</span>
+
+    <span class="n">A_hint</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  
+<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_hint</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">1</span><span class="p">],</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Probability of the two hint types, for the two game states&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c2031c65375fd58ebcbac003bd24ead397befe845eec5475d0778d6620e4be30.png" src="../_images/c2031c65375fd58ebcbac003bd24ead397befe845eec5475d0778d6620e4be30.png" />
+</div>
+</div>
+<p>Fill out the reward modality, a sub-array of <code class="docutils literal notranslate"><span class="pre">A</span></code> which we’ll call <code class="docutils literal notranslate"><span class="pre">A_rew</span></code></p>
+<img src="https://drive.google.com/uc?export=view&id=155LAPZ9_aulJ3YYZwwlOWrEa6unabHht"/><div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_reward</span> <span class="o">=</span> <span class="mf">0.8</span> <span class="c1"># probability of getting a rewarding outcome, if you are sampling the more rewarding bandit</span>
+
+<span class="n">A_reward</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">reward_obs_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">)))</span>
+
+<span class="k">for</span> <span class="n">choice_id</span><span class="p">,</span> <span class="n">choice_name</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">choice_names</span><span class="p">):</span>
+
+  <span class="k">if</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Start&#39;</span><span class="p">:</span>
+
+    <span class="n">A_reward</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Hint&#39;</span><span class="p">:</span>
+
+    <span class="n">A_reward</span><span class="p">[</span><span class="mi">0</span><span class="p">,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Left Arm&#39;</span><span class="p">:</span>
+
+    <span class="n">A_reward</span><span class="p">[</span><span class="mi">1</span><span class="p">:,:,</span><span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mf">1.0</span><span class="o">-</span><span class="n">p_reward</span><span class="p">,</span> <span class="n">p_reward</span><span class="p">],</span> 
+                                        <span class="p">[</span><span class="n">p_reward</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">-</span><span class="n">p_reward</span><span class="p">]])</span>
+  <span class="k">elif</span> <span class="n">choice_name</span> <span class="o">==</span> <span class="s1">&#39;Right Arm&#39;</span><span class="p">:</span>
+
+    <span class="n">A_reward</span><span class="p">[</span><span class="mi">1</span><span class="p">:,</span> <span class="p">:,</span> <span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span> <span class="n">p_reward</span><span class="p">,</span> <span class="mf">1.0</span><span class="o">-</span> <span class="n">p_reward</span><span class="p">],</span> 
+                                         <span class="p">[</span><span class="mi">1</span><span class="o">-</span> <span class="n">p_reward</span><span class="p">,</span> <span class="n">p_reward</span><span class="p">]])</span>
+  
+<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_reward</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,:,</span><span class="mi">2</span><span class="p">],</span> <span class="s1">&#39;Payoff structure if playing the Left Arm, for the two contexts&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/76ed3460893282427f2ced31ece00d02f499baa4e2fb35594655210ad2ba5e81.png" src="../_images/76ed3460893282427f2ced31ece00d02f499baa4e2fb35594655210ad2ba5e81.png" />
+</div>
+</div>
+<p>Fill out the choice observation modality, a sub-array of <code class="docutils literal notranslate"><span class="pre">A</span></code> which we’ll call <code class="docutils literal notranslate"><span class="pre">A_choice</span></code></p>
+<img src="https://drive.google.com/uc?export=view&id=1LGdGX0TgesvQ2HDnHMg42XHh0n6ZKnHw"/>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_choice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="nb">len</span><span class="p">(</span><span class="n">choice_obs_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">)))</span>
+
+<span class="k">for</span> <span class="n">choice_id</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">)):</span>
+
+  <span class="n">A_choice</span><span class="p">[</span><span class="n">choice_id</span><span class="p">,</span> <span class="p">:,</span> <span class="n">choice_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="n">A_choice</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Condition on context (first hidden state factor) and display the remaining indices (outcome and choice state) &quot;&quot;&quot;</span>
+
+<span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">][:,</span><span class="mi">0</span><span class="p">,:],</span> <span class="s2">&quot;Mapping between sensed states and true states&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a18a60f17c9a442a8aba855da248717d4525534424a10589e13fc41f9a860dbb.png" src="../_images/a18a60f17c9a442a8aba855da248717d4525534424a10589e13fc41f9a860dbb.png" />
+</div>
+</div>
+</section>
+<section id="the-b-array">
+<h3>The <code class="docutils literal notranslate"><span class="pre">B</span></code> array<a class="headerlink" href="#the-b-array" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array</span><span class="p">(</span><span class="n">num_factors</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fill out the context state factor dynamics, a sub-array of <code class="docutils literal notranslate"><span class="pre">B</span></code> which we’ll call <code class="docutils literal notranslate"><span class="pre">B_context</span></code></p>
+<img src="https://drive.google.com/uc?export=view&id=1_VvkCpRu1wWwEFiAJKnOGAGikd5KeiiE" width="600" height="300" />
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B_context</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">context_action_names</span><span class="p">))</span> <span class="p">)</span>
+
+<span class="n">B_context</span><span class="p">[:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">context_names</span><span class="p">))</span>
+
+<span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">B_context</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fill out the choice factor dynamics, a sub-array of <code class="docutils literal notranslate"><span class="pre">B</span></code> which we’ll call <code class="docutils literal notranslate"><span class="pre">B_choice</span></code></p>
+<img src="https://drive.google.com/uc?export=view&id=1qeuFvNIrJR7ldjpkrB6_jAp6JM3UhMw0"/>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B_choice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">choice_action_names</span><span class="p">))</span> <span class="p">)</span>
+
+<span class="k">for</span> <span class="n">choice_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">)):</span>
+  
+  <span class="n">B_choice</span><span class="p">[</span><span class="n">choice_i</span><span class="p">,</span> <span class="p">:,</span> <span class="n">choice_i</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">B_choice</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-c-vectors">
+<h3>The <code class="docutils literal notranslate"><span class="pre">C</span></code> vectors<a class="headerlink" href="#the-c-vectors" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Explain `obj_array_zeros` and how you don&#39;t have to populate them necessarily &quot;&quot;&quot;</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">num_obs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.maths</span><span class="w"> </span><span class="kn">import</span> <span class="n">softmax</span>
+
+<span class="n">C_reward</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">reward_obs_names</span><span class="p">))</span>
+<span class="n">C_reward</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span> 
+<span class="n">C_reward</span><span class="p">[</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> 
+
+<span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">C_reward</span>
+
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">softmax</span><span class="p">(</span><span class="n">C_reward</span><span class="p">),</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Prior preferences&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6984b5dd0e1ab8143d8eb67b4324a196a577b5360cd11928040bbfc8070a8c88.png" src="../_images/6984b5dd0e1ab8143d8eb67b4324a196a577b5360cd11928040bbfc8070a8c88.png" />
+</div>
+</div>
+</section>
+<section id="the-d-vectors">
+<h3>The <code class="docutils literal notranslate"><span class="pre">D</span></code> vectors<a class="headerlink" href="#the-d-vectors" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array</span><span class="p">(</span><span class="n">num_factors</span><span class="p">)</span>
+
+<span class="n">D_context</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span><span class="mf">0.5</span><span class="p">])</span>
+
+<span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">D_context</span>
+
+<span class="n">D_choice</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">choice_names</span><span class="p">))</span>
+
+<span class="n">D_choice</span><span class="p">[</span><span class="n">choice_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;Start&quot;</span><span class="p">)]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">D_choice</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Beliefs about which arm is better: </span><span class="si">{</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Beliefs about starting location: </span><span class="si">{</span><span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Beliefs about which arm is better: [0.5 0.5]
+Beliefs about starting location: [1. 0. 0. 0.]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="constructing-an-agent">
+<h2><strong>Constructing an <code class="docutils literal notranslate"><span class="pre">Agent</span></code></strong><a class="headerlink" href="#constructing-an-agent" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+
+<span class="n">my_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Define a class for the 2-armed bandit environment (AKA the <em>generative process</em>)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">TwoArmedBandit</span><span class="p">(</span><span class="nb">object</span><span class="p">):</span>
+
+  <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">context</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">p_hint</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">p_reward</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">):</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">context_names</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Left-Better&quot;</span><span class="p">,</span> <span class="s2">&quot;Right-Better&quot;</span><span class="p">]</span>
+
+    <span class="k">if</span> <span class="n">context</span> <span class="ow">is</span> <span class="kc">None</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">context_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]))]</span> <span class="c1"># randomly sample which bandit arm is better (Left or Right)</span>
+    <span class="k">else</span><span class="p">:</span>
+      <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">=</span> <span class="n">context</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">p_hint</span> <span class="o">=</span> <span class="n">p_hint</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span> <span class="o">=</span> <span class="n">p_reward</span>
+
+    <span class="bp">self</span><span class="o">.</span><span class="n">reward_obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;Loss&#39;</span><span class="p">,</span> <span class="s1">&#39;Reward&#39;</span><span class="p">]</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">hint_obs_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint-left&#39;</span><span class="p">,</span> <span class="s1">&#39;Hint-right&#39;</span><span class="p">]</span>
+
+  <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+
+    <span class="k">if</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;Move-start&quot;</span><span class="p">:</span>
+      <span class="n">observed_hint</span> <span class="o">=</span> <span class="s2">&quot;Null&quot;</span>
+      <span class="n">observed_reward</span> <span class="o">=</span> <span class="s2">&quot;Null&quot;</span>
+      <span class="n">observed_choice</span> <span class="o">=</span> <span class="s2">&quot;Start&quot;</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;Get-hint&quot;</span><span class="p">:</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Left-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_hint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hint_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_hint</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_hint</span><span class="p">]))]</span>
+      <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Right-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_hint</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">hint_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_hint</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_hint</span><span class="p">]))]</span>
+      <span class="n">observed_reward</span> <span class="o">=</span> <span class="s2">&quot;Null&quot;</span>
+      <span class="n">observed_choice</span> <span class="o">=</span> <span class="s2">&quot;Hint&quot;</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;Play-left&quot;</span><span class="p">:</span>
+      <span class="n">observed_hint</span> <span class="o">=</span> <span class="s2">&quot;Null&quot;</span>
+      <span class="n">observed_choice</span> <span class="o">=</span> <span class="s2">&quot;Left Arm&quot;</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Left-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">]))]</span>
+      <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Right-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">]))]</span>
+    <span class="k">elif</span> <span class="n">action</span> <span class="o">==</span> <span class="s2">&quot;Play-right&quot;</span><span class="p">:</span>
+      <span class="n">observed_hint</span> <span class="o">=</span> <span class="s2">&quot;Null&quot;</span>
+      <span class="n">observed_choice</span> <span class="o">=</span> <span class="s2">&quot;Right Arm&quot;</span>
+      <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Right-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">]))]</span>
+      <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">context</span> <span class="o">==</span> <span class="s2">&quot;Left-Better&quot;</span><span class="p">:</span>
+        <span class="n">observed_reward</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_obs_names</span><span class="p">[</span><span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.0</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">,</span> <span class="mf">1.0</span> <span class="o">-</span> <span class="bp">self</span><span class="o">.</span><span class="n">p_reward</span><span class="p">]))]</span>
+    
+    <span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">observed_hint</span><span class="p">,</span> <span class="n">observed_reward</span><span class="p">,</span> <span class="n">observed_choice</span><span class="p">]</span>
+
+    <span class="k">return</span> <span class="n">obs</span>
+  
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we’ll write a function that will take the agent, the environment, and a time length and run the active inference loop</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">run_active_inference_loop</span><span class="p">(</span><span class="n">my_agent</span><span class="p">,</span> <span class="n">my_env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Initialize the first observation &quot;&quot;&quot;</span>
+  <span class="n">obs_label</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Null&quot;</span><span class="p">,</span> <span class="s2">&quot;Null&quot;</span><span class="p">,</span> <span class="s2">&quot;Start&quot;</span><span class="p">]</span>  <span class="c1"># agent observes itself seeing a `Null` hint, getting a `Null` reward, and seeing itself in the `Start` location</span>
+  <span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">hint_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">reward_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">choice_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
+  
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_states</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+    <span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Beliefs about the context at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="n">q_pi</span><span class="p">,</span> <span class="n">efe</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_policies</span><span class="p">()</span>
+    <span class="n">chosen_action_id</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">sample_action</span><span class="p">()</span>
+
+    <span class="n">movement_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chosen_action_id</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+
+    <span class="n">choice_action</span> <span class="o">=</span> <span class="n">choice_action_names</span><span class="p">[</span><span class="n">movement_id</span><span class="p">]</span>
+
+    <span class="n">obs_label</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">choice_action</span><span class="p">)</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">hint_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">reward_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">1</span><span class="p">]),</span> <span class="n">choice_obs_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">2</span><span class="p">])]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Action at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">choice_action</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reward at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">obs_label</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now all we have to do is define the two-armed bandit environment, choose the length of the simulation, and run the function we wrote above.</p>
+<ul class="simple">
+<li><p>Try playing with the hint accuracy and/or reward statistics of the environment - remember this is <em>different</em> than the agent’s representation of the reward statistics (i.e. the agent’s generative model, e.g. the A or B matrices).</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_hint_env</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># this is the &quot;true&quot; accuracy of the hint - i.e. how often does the hint actually signal which arm is better. REMEMBER: THIS IS INDEPENDENT OF HOW YOU PARAMETERIZE THE A MATRIX FOR THE HINT MODALITY</span>
+<span class="n">p_reward_env</span> <span class="o">=</span> <span class="mf">0.7</span> <span class="c1"># this is the &quot;true&quot; reward probability - i.e. how often does the better arm actually return a reward, as opposed to a loss. REMEMBER: THIS IS INDEPENDENT OF HOW YOU PARAMETERIZE THE A MATRIX FOR THE REWARD MODALITY</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">TwoArmedBandit</span><span class="p">(</span><span class="n">p_hint</span> <span class="o">=</span> <span class="n">p_hint_env</span><span class="p">,</span> <span class="n">p_reward</span> <span class="o">=</span> <span class="n">p_reward_env</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Context: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">10</span>
+
+<span class="c1"># my_agent = Agent(A = A, B = B, C = C, D = D) # in case you want to re-define the agent, you can run this again</span>
+
+<span class="n">run_active_inference_loop</span><span class="p">(</span><span class="n">my_agent</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Context: Right-Better
+</pre></div>
+</div>
+<img alt="../_images/737a8060da8a8f50fe06038cf6426fc3c302084293cf617d76d77ba1c8580d90.png" src="../_images/737a8060da8a8f50fe06038cf6426fc3c302084293cf617d76d77ba1c8580d90.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 0: Get-hint
+Reward at time 0: Null
+</pre></div>
+</div>
+<img alt="../_images/09498e9b9b5db9a0e8f52f4b035e8013e74e4f9b792a044455253fc271a9b398.png" src="../_images/09498e9b9b5db9a0e8f52f4b035e8013e74e4f9b792a044455253fc271a9b398.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 1: Get-hint
+Reward at time 1: Null
+</pre></div>
+</div>
+<img alt="../_images/071d00436c007a6f10af6d180c7342f70c1003cb8c9575794a451b1ad645375e.png" src="../_images/071d00436c007a6f10af6d180c7342f70c1003cb8c9575794a451b1ad645375e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 2: Play-right
+Reward at time 2: Reward
+</pre></div>
+</div>
+<img alt="../_images/4471b0c0d39d336f2afc7c433553ddc51bcc9a302613c5d4c7bf5cb556586261.png" src="../_images/4471b0c0d39d336f2afc7c433553ddc51bcc9a302613c5d4c7bf5cb556586261.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 3: Play-right
+Reward at time 3: Reward
+</pre></div>
+</div>
+<img alt="../_images/4bc65c1d860528a2ae025060eb23fcc1bb387c31b6f1dad8183edffc69339e8e.png" src="../_images/4bc65c1d860528a2ae025060eb23fcc1bb387c31b6f1dad8183edffc69339e8e.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 4: Play-right
+Reward at time 4: Loss
+</pre></div>
+</div>
+<img alt="../_images/28b9195ee852f553e5af6c8cdfedea81748aaf5825bfe63ea48fed04a30b814b.png" src="../_images/28b9195ee852f553e5af6c8cdfedea81748aaf5825bfe63ea48fed04a30b814b.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 5: Play-right
+Reward at time 5: Loss
+</pre></div>
+</div>
+<img alt="../_images/e99722735a84ecf3aee662ed34e71d2e713d3d2efad5d415e9d5d586b90d0ae9.png" src="../_images/e99722735a84ecf3aee662ed34e71d2e713d3d2efad5d415e9d5d586b90d0ae9.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 6: Play-right
+Reward at time 6: Reward
+</pre></div>
+</div>
+<img alt="../_images/9833892e039d29546248ee94a2a355c710689492968dfad2a81153a613f5de58.png" src="../_images/9833892e039d29546248ee94a2a355c710689492968dfad2a81153a613f5de58.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 7: Play-right
+Reward at time 7: Loss
+</pre></div>
+</div>
+<img alt="../_images/39e9845083eef2914be28c50ec2cc08adb1b28fc4dad907067f8b7f46532ef8d.png" src="../_images/39e9845083eef2914be28c50ec2cc08adb1b28fc4dad907067f8b7f46532ef8d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 8: Play-right
+Reward at time 8: Reward
+</pre></div>
+</div>
+<img alt="../_images/1d9ccabd5ffee6aa6337c2c100451cf7038123aa95497a558f550d6a5f8195da.png" src="../_images/1d9ccabd5ffee6aa6337c2c100451cf7038123aa95497a558f550d6a5f8195da.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 9: Play-right
+Reward at time 9: Reward
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s try manipulating the agent’s prior preferences over reward observations ($\mathbf{C}[1]$) in order to examine the tension between exploration and exploitation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># change the &#39;shape&#39; of the agent&#39;s reward function</span>
+<span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># makes the Loss &quot;less aversive&quot; than before (higher prior prior probability assigned to seeing the Loss outcome). This should make the agent less risk-averse / willing to explore both arms, under uncertainty</span>
+
+<span class="n">my_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">)</span> <span class="c1"># redefine the agent with the new preferences</span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">TwoArmedBandit</span><span class="p">(</span><span class="n">p_hint</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="n">p_reward</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">)</span> <span class="c1"># re-initialize the environment -- this time, the hint is not always accurate (`p_hint = 0.8`)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Context: </span><span class="si">{</span><span class="n">env</span><span class="o">.</span><span class="n">context</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="n">run_active_inference_loop</span><span class="p">(</span><span class="n">my_agent</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="n">T</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Context: Right-Better
+</pre></div>
+</div>
+<img alt="../_images/737a8060da8a8f50fe06038cf6426fc3c302084293cf617d76d77ba1c8580d90.png" src="../_images/737a8060da8a8f50fe06038cf6426fc3c302084293cf617d76d77ba1c8580d90.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 0: Play-left
+Reward at time 0: Reward
+</pre></div>
+</div>
+<img alt="../_images/0c40847f88a36af0ce303b0f484ff01858c7486bbeefb48300d3dc4e147351f4.png" src="../_images/0c40847f88a36af0ce303b0f484ff01858c7486bbeefb48300d3dc4e147351f4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 1: Play-left
+Reward at time 1: Loss
+</pre></div>
+</div>
+<img alt="../_images/97265cd95694588b4a93554cbc4de76d213b2e5c0614d7a731c466d827b8a6db.png" src="../_images/97265cd95694588b4a93554cbc4de76d213b2e5c0614d7a731c466d827b8a6db.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 2: Play-left
+Reward at time 2: Loss
+</pre></div>
+</div>
+<img alt="../_images/c763be4c6f92691834e998cb2190495a75e50edfe19587578bf259474729a4b9.png" src="../_images/c763be4c6f92691834e998cb2190495a75e50edfe19587578bf259474729a4b9.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 3: Play-right
+Reward at time 3: Reward
+</pre></div>
+</div>
+<img alt="../_images/e5e74c7e85e0d8136b2b1db5727cdc5a78cee3bb5e2f5e555b863173e4058877.png" src="../_images/e5e74c7e85e0d8136b2b1db5727cdc5a78cee3bb5e2f5e555b863173e4058877.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 4: Play-right
+Reward at time 4: Reward
+</pre></div>
+</div>
+<img alt="../_images/8aa9591fb5cf05d0a932bed5f31a18df280ea82caafe37819ec780ae3e6117f5.png" src="../_images/8aa9591fb5cf05d0a932bed5f31a18df280ea82caafe37819ec780ae3e6117f5.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 5: Play-right
+Reward at time 5: Reward
+</pre></div>
+</div>
+<img alt="../_images/53f33dbc9382e169799c8f4c350cbff9c74a42aa1d184b1871b7c2a1f19bcb71.png" src="../_images/53f33dbc9382e169799c8f4c350cbff9c74a42aa1d184b1871b7c2a1f19bcb71.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 6: Play-right
+Reward at time 6: Reward
+</pre></div>
+</div>
+<img alt="../_images/316a6fe08e348e1880945f80a969de36d306f33b4ffa07ba01f0af9742545550.png" src="../_images/316a6fe08e348e1880945f80a969de36d306f33b4ffa07ba01f0af9742545550.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 7: Play-right
+Reward at time 7: Reward
+</pre></div>
+</div>
+<img alt="../_images/fe882be98b13916dd0ec0d559b26be9504b7a5c6f7484d5fd5ee064deac4328c.png" src="../_images/fe882be98b13916dd0ec0d559b26be9504b7a5c6f7484d5fd5ee064deac4328c.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 8: Play-right
+Reward at time 8: Reward
+</pre></div>
+</div>
+<img alt="../_images/a4faa866792572eeee58dad1d7843d61b62973861d5378951857aab78dd7dfce.png" src="../_images/a4faa866792572eeee58dad1d7843d61b62973861d5378951857aab78dd7dfce.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 9: Play-right
+Reward at time 9: Reward
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="active_inference_from_scratch.html" class="btn btn-neutral float-left" title="Tutorial 1: Active inference from scratch" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="tmaze_demo.html" class="btn btn-neutral float-right" title="Active Inference Demo: T-Maze Environment" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

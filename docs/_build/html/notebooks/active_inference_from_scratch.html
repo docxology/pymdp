@@ -1,0 +1,1488 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Tutorial 1: Active inference from scratch &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 2: the Agent API" href="using_the_agent_class.html" />
+    <link rel="prev" title="pymdp Fundamentals" href="pymdp_fundamentals.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Tutorial 1: Active inference from scratch</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#define-some-auxiliary-functions">Define some auxiliary functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#the-basics-categorical-distributions"><strong>The Basics: categorical distributions</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-simple-environment-grid-world"><strong>A simple environment: Grid-world</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#building-the-generative-model-mathbf-a-mathbf-b-mathbf-c-and-mathbf-d"><strong>Building the generative model</strong>: $\mathbf{A}$, $\mathbf{B}$, $\mathbf{C}$, and $\mathbf{D}$</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-a-matrix-or-p-o-mid-s">1. The <strong>A</strong> matrix or $P(o\mid s)$.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-b-matrix-or-p-s-t-mid-s-t-1-u-t-1">2. The <strong>B</strong> matrix or $P(s_{t}\mid s_{t-1}, u_{t-1})$.</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-prior-over-observations-the-mathbf-c-vector-or-tilde-p-o">3. The prior over observations: the $\mathbf{C}$ vector or $\tilde{P}(o)$</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-prior-over-hidden-states-the-mathbf-d-vector-or-p-s">3. The prior over hidden states: the $\mathbf{D}$ vector or $P(s)$</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hidden-state-inference"><strong>Hidden state inference</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#action-selection-and-the-expected-free-energy"><strong>Action Selection and the Expected Free Energy</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#complete-recipe-for-active-inference"><strong>Complete Recipe for Active Inference</strong></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#planning"><strong>Planning</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Tutorial 1: Active inference from scratch</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/active_inference_from_scratch.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="tutorial-1-active-inference-from-scratch">
+<h1>Tutorial 1: Active inference from scratch<a class="headerlink" href="#tutorial-1-active-inference-from-scratch" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/active_inference_from_scratch.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p>This tutorial guides you through the construction of an active inference agent “from scratch” in a simple grid-world environment. This tutorial is designed to walk you through the various mathematical operations required for running active inference in discrete state spaces, as well as introduce you to the way discrete probability distributions are represented in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> (through the use of numpy vectors and matrices). We also show you how to compute the expected free energy in terms of risk and ambiguity, and how to use it to plan sequences of actions.</p>
+<p>By the end of this tutorial, you should be able to write simple active inference models from scratch using the main components of any POMDP generative model: the <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, and <code class="docutils literal notranslate"><span class="pre">D</span></code> arrays, as well as be able to write the active inference loop for an agent engaged in a perception-action exchange with its environment.</p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">seaborn</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">sns</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="define-some-auxiliary-functions">
+<h2>Define some auxiliary functions<a class="headerlink" href="#define-some-auxiliary-functions" title="Link to this heading"></a></h2>
+<p>Here are some plotting functions that will come in handy throughout the tutorial.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">plot_likelihood</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">xlabels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)),</span> <span class="n">ylabels</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">9</span><span class="p">)),</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Likelihood distribution (A)&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots a 2-D likelihood matrix as a heatmap</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">matrix</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">),</span> <span class="mf">1.0</span><span class="p">)</span><span class="o">.</span><span class="n">all</span><span class="p">():</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution not column-normalized! Please normalize (ensure matrix.sum(axis=0) == 1.0 for all columns)&quot;</span><span class="p">)</span>
+    
+    <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span> <span class="o">=</span> <span class="p">(</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">matrix</span><span class="p">,</span> <span class="n">xticklabels</span> <span class="o">=</span> <span class="n">xlabels</span><span class="p">,</span> <span class="n">yticklabels</span> <span class="o">=</span> <span class="n">ylabels</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;gray&#39;</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_grid</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">,</span> <span class="n">num_x</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">num_y</span> <span class="o">=</span> <span class="mi">3</span> <span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots the spatial coordinates of GridWorld as a heatmap, with each (X, Y) coordinate </span>
+<span class="sd">    labeled with its linear index (its `state id`)</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">grid_heatmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">num_x</span><span class="p">,</span> <span class="n">num_y</span><span class="p">))</span>
+    <span class="k">for</span> <span class="n">linear_idx</span><span class="p">,</span> <span class="n">location</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">):</span>
+      <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">location</span>
+      <span class="n">grid_heatmap</span><span class="p">[</span><span class="n">y</span><span class="p">,</span> <span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="n">linear_idx</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">set</span><span class="p">(</span><span class="n">font_scale</span><span class="o">=</span><span class="mf">1.5</span><span class="p">)</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">grid_heatmap</span><span class="p">,</span> <span class="n">annot</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.0f&#39;</span><span class="p">,</span> <span class="n">cmap</span><span class="o">=</span><span class="s1">&#39;crest&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_point_on_grid</span><span class="p">(</span><span class="n">state_vector</span><span class="p">,</span> <span class="n">grid_locations</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plots the current location of the agent on the grid world</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+    <span class="n">state_index</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">where</span><span class="p">(</span><span class="n">state_vector</span><span class="p">)[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]</span>
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="p">[</span><span class="n">state_index</span><span class="p">]</span>
+    <span class="n">grid_heatmap</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="mi">3</span><span class="p">,</span><span class="mi">3</span><span class="p">))</span>
+    <span class="n">grid_heatmap</span><span class="p">[</span><span class="n">y</span><span class="p">,</span><span class="n">x</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">sns</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span><span class="n">grid_heatmap</span><span class="p">,</span> <span class="n">cbar</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s1">&#39;.0f&#39;</span><span class="p">)</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">plot_beliefs</span><span class="p">(</span><span class="n">belief_dist</span><span class="p">,</span> <span class="n">title_str</span><span class="o">=</span><span class="s2">&quot;&quot;</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Plot a categorical distribution or belief distribution, stored in the 1-D numpy vector `belief_dist`</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="k">if</span> <span class="ow">not</span> <span class="n">np</span><span class="o">.</span><span class="n">isclose</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span> <span class="mf">1.0</span><span class="p">):</span>
+      <span class="k">raise</span> <span class="ne">ValueError</span><span class="p">(</span><span class="s2">&quot;Distribution not normalized! Please normalize&quot;</span><span class="p">)</span>
+
+    <span class="n">plt</span><span class="o">.</span><span class="n">grid</span><span class="p">(</span><span class="n">zorder</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">bar</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span> <span class="n">belief_dist</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">xticks</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="n">belief_dist</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]))</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="n">title_str</span><span class="p">)</span>
+    <span class="n">plt</span><span class="o">.</span><span class="n">show</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-basics-categorical-distributions">
+<h2><strong>The Basics: categorical distributions</strong><a class="headerlink" href="#the-basics-categorical-distributions" title="Link to this heading"></a></h2>
+<p>Let’s start by creating a simple categorical distribution $P(x)$. We will represent this distribution numerically with a 1-D <code class="docutils literal notranslate"><span class="pre">numpy</span></code> array (i.e. a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> where <code class="docutils literal notranslate"><span class="pre">ndim</span> <span class="pre">==</span> <span class="pre">1</span></code>). The discrete entries of this vector can be thought of as the probabilities of seeing each of the $K$ alternative outcomes (the support of the distribution), if we were to sample once from the distribution. We can write the distribution as a vector of probabilities, follows:</p>
+<p>$$
+P(x) = \begin{bmatrix} P(x = 0) \ P(x = 1)\ \vdots \ P(x = K) \end{bmatrix}
+$$</p>
+<p>We can use <code class="docutils literal notranslate"><span class="pre">numpy</span></code> and the <code class="docutils literal notranslate"><span class="pre">norm_dist</span></code> function from <code class="docutils literal notranslate"><span class="pre">utils</span></code> library of <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> to quickly create a random categorical distribution.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_categorical</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="c1"># my_categorical = np.array([0.5, 0.3, 0.8]) # could also just write in your own numbers</span>
+<span class="n">my_categorical</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">)</span> <span class="c1"># normalizes the distribution so it integrates to 1.0</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">my_categorical</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span> <span class="c1"># we reshape it to display it like a column vector</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Integral of the distribution: </span><span class="si">{</span><span class="nb">round</span><span class="p">(</span><span class="n">my_categorical</span><span class="o">.</span><span class="n">sum</span><span class="p">(),</span><span class="w"> </span><span class="mi">2</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.43188359]
+ [0.38896939]
+ [0.17914701]]
+Integral of the distribution: 1.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>We can sample a discrete outcome from this distribution using the <code class="docutils literal notranslate"><span class="pre">sample()</span></code> function from the <code class="docutils literal notranslate"><span class="pre">utils</span></code> module</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">sampled_outcome</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sampled outcome: </span><span class="si">{</span><span class="n">sampled_outcome</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="n">sampled_outcome</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">)</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Sampled outcome: </span><span class="si">{</span><span class="n">sampled_outcome</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="ne">AttributeError</span>: module &#39;pymdp.utils&#39; has no attribute &#39;sample&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now plot the beliefs using our <code class="docutils literal notranslate"><span class="pre">plot_beliefs()</span></code> function that we defined in the beginning.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;A random (unconditional) Categorical distribution&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/49aea5ddf5e5b16453be638ba6298915873857e5d3676f0b15de8ac49f3b88fb.png" src="../_images/49aea5ddf5e5b16453be638ba6298915873857e5d3676f0b15de8ac49f3b88fb.png" />
+</div>
+</div>
+<p>Now let’s move onto <em>conditional</em> categorical distributions or likelihoods, i.e. how we represent the distribution of one discrete random variable X, conditioned on the settings of another discrete random variable Y.</p>
+<p>We would write these mathematically as:</p>
+<p>$$ \begin{align}
+P(X | Y)
+\end{align}
+$$</p>
+<p>And can represent them using 2-D <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code> i.e. matrices</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize it with random numbers</span>
+<span class="n">p_x_given_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p_x_given_y</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.089 0.739 0.145 0.399]
+ [0.772 0.201 0.026 0.578]
+ [0.181 0.253 0.788 0.844]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># normalize it</span>
+<span class="n">p_x_given_y</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist</span><span class="p">(</span><span class="n">p_x_given_y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p_x_given_y</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.086 0.619 0.151 0.219]
+ [0.741 0.168 0.027 0.318]
+ [0.174 0.212 0.821 0.463]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now print the first column (i.e. $P(X | Y = 0)$) and show that it’s a proper categorical distribution</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">p_x_given_y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Integral of P(X|Y=0): </span><span class="si">{</span><span class="n">p_x_given_y</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.08555937]
+ [0.74093812]
+ [0.1735025 ]]
+Integral of P(X|Y=0): 0.9999999999999999
+</pre></div>
+</div>
+</div>
+</div>
+<p>So column <code class="docutils literal notranslate"><span class="pre">i</span></code> of the matrix <code class="docutils literal notranslate"><span class="pre">p_x_given_y</span></code> represents the conditional probability of $X$, given the <code class="docutils literal notranslate"><span class="pre">i</span></code>-th level of the random variable $Y$, i.e. $P(X | Y = i)$</p>
+<p>Next: taking expectations of random variables using matrix-vector products</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create a P(Y) and P(X|Y) using the same numbers from the slides &quot;&quot;&quot;</span>
+
+<span class="n">p_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span> <span class="c1"># this is already normalized - you don&#39;t need to `utils.norm_dist()` it!</span>
+
+<span class="c1"># the columns here are already normalized - you don&#39;t need to `utils.norm_dist()` it!</span>
+<span class="n">p_x_given_y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.6</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mf">0.15</span><span class="p">,</span> <span class="mf">0.41</span><span class="p">],</span> 
+                        <span class="p">[</span><span class="mf">0.25</span><span class="p">,</span> <span class="mf">0.09</span><span class="p">]])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">p_y</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">p_x_given_y</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.75]
+ [0.25]]
+[[0.6  0.5 ]
+ [0.15 0.41]
+ [0.25 0.09]]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Calculate expected value of $X$, given our current <em>belief</em> about $Y$, i.e. $P(Y)$ using a simple matrix-vector product, of the form $\mathbf{A}\mathbf{x}$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Calculate the expectation using numpy&#39;s dot product functionality &quot;&quot;&quot;</span>
+
+<span class="c1"># first version of the dot product (using the method of a numpy array)</span>
+<span class="n">E_x_wrt_y</span> <span class="o">=</span> <span class="n">p_x_given_y</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">p_y</span><span class="p">)</span>
+
+<span class="c1"># second version of the dot product (using the function np.dot with two arguments)</span>
+<span class="c1"># E_x_wrt_y = np.dot(p_x_given_y, p_y)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now print it and verify the result is a proper categorical distribution (integrates to 1.0)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="nb">print</span><span class="p">(</span><span class="n">E_x_wrt_y</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Integral: </span><span class="si">{</span><span class="n">E_x_wrt_y</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.575 0.215 0.21 ]
+Integral: 1.0
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-simple-environment-grid-world">
+<h2><strong>A simple environment: Grid-world</strong><a class="headerlink" href="#a-simple-environment-grid-world" title="Link to this heading"></a></h2>
+<p>Now that we understand categorical distributions and how to take conditional expectations of random variables, with categorical conditional and prior distributions, let’s move onto a worked example of Active Inference, so-called ‘Grid-World’.</p>
+<p>Before we write down the generative model $P(o,s)$ of an active inference agent who will navigate Grid-World, let’s start by establishing what exactly this environment is and how we’re going to represent it mathematically.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">itertools</span>
+
+<span class="sd">&quot;&quot;&quot; Create  the grid locations in the form of a list of (Y, X) tuples -- HINT: use itertools &quot;&quot;&quot;</span>
+<span class="n">grid_locations</span> <span class="o">=</span> <span class="nb">list</span><span class="p">(</span><span class="n">itertools</span><span class="o">.</span><span class="n">product</span><span class="p">(</span><span class="nb">range</span><span class="p">(</span><span class="mi">3</span><span class="p">),</span> <span class="n">repeat</span> <span class="o">=</span> <span class="mi">2</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[(0, 0), (0, 1), (0, 2), (1, 0), (1, 1), (1, 2), (2, 0), (2, 1), (2, 2)]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_grid</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" src="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" />
+</div>
+</div>
+</section>
+<section id="building-the-generative-model-mathbf-a-mathbf-b-mathbf-c-and-mathbf-d">
+<h2><strong>Building the generative model</strong>: $\mathbf{A}$, $\mathbf{B}$, $\mathbf{C}$, and $\mathbf{D}$<a class="headerlink" href="#building-the-generative-model-mathbf-a-mathbf-b-mathbf-c-and-mathbf-d" title="Link to this heading"></a></h2>
+<section id="the-a-matrix-or-p-o-mid-s">
+<h3>1. The <strong>A</strong> matrix or $P(o\mid s)$.<a class="headerlink" href="#the-a-matrix-or-p-o-mid-s" title="Link to this heading"></a></h3>
+<hr class="docutils" />
+<p>The generative model’s “prior beliefs” about how hidden states relate to observations</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create variables for the storing the dimensionalities of the hidden states and the observations &quot;&quot;&quot;</span>
+
+<span class="n">n_states</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+<span class="n">n_observations</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dimensionality of hidden states: </span><span class="si">{</span><span class="n">n_states</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dimensionality of observations: </span><span class="si">{</span><span class="n">n_observations</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimensionality of hidden states: 9
+Dimensionality of observations: 9
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create the A matrix  &quot;&quot;&quot;</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="n">n_states</span><span class="p">,</span> <span class="n">n_observations</span><span class="p">)</span> <span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create an umambiguous or &#39;noise-less&#39; mapping between hidden states and observations &quot;&quot;&quot;</span>
+
+<span class="n">np</span><span class="o">.</span><span class="n">fill_diagonal</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="mf">1.0</span><span class="p">)</span>
+
+<span class="c1"># alternative:</span>
+<span class="c1"># A = np.eye(n_observations, n_states)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Likelihood matrices show relationships between indices of the state space, which are indexed linearly. Remember the (Y, X) coordinates of the grid world don’t necessarily neatly map onto to the locations in the matrix here, which has ‘unwrapped’ the Grid World’s (Y, X) locations into columns/rows.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;A matrix or $P(o|s)$&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2f42bb167a35414d30a3495325a360a172e58b90600fd7ba8504914484335d6f.png" src="../_images/2f42bb167a35414d30a3495325a360a172e58b90600fd7ba8504914484335d6f.png" />
+</div>
+</div>
+<p>How could we introduce uncertainty into this A matrix? I.e. how do we introduce ambiguity or uncertainty into the agent’s model of the world?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Remind yourself of the mapping between linear indices (0 through 8) and grid locations (Y, X) &quot;&quot;&quot;</span>
+<span class="n">plot_grid</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" src="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_noisy</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># this line says: the probability of seeing yourself in location 0, given you&#39;re in location 0, is 1/3, AKA P(o == 0 | s == 0) = 0.3333....</span>
+<span class="n">A_noisy</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="c1"># corresponds to location (0,0)</span>
+
+<span class="c1"># this line says: the probability of seeing yourself in location 1, given you&#39;re in location 0, is 1/3, AKA P(o == 1 | s == 0) = 0.3333....</span>
+<span class="n">A_noisy</span><span class="p">[</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="c1"># corresponds to one step to the right from (0, 1)</span>
+
+<span class="c1"># this line says: the probability of seeing yourself in location 3, given you&#39;re in location 0, is 1/3, AKA P(o == 3 | s == 0) = 0.3333....</span>
+<span class="n">A_noisy</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mi">1</span> <span class="o">/</span> <span class="mf">3.0</span> <span class="c1"># corresponds to one step down from (1, 0)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_noisy</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s1">&#39;modified A matrix where location (0,0) is &quot;blurry&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d226ca26aa02f9618937e4d1b5dbfbc9f5fb654d25a5d14f42824afd7f18bcbe.png" src="../_images/d226ca26aa02f9618937e4d1b5dbfbc9f5fb654d25a5d14f42824afd7f18bcbe.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Let&#39;s make ake one grid location &quot;ambiguous&quot; in the sense that it could be easily confused with neighbouring locations &quot;&quot;&quot;</span>
+<span class="n">my_A_noisy</span> <span class="o">=</span> <span class="n">A_noisy</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+
+<span class="c1"># locations 3 and 7 are the nearest neighbours to location 6</span>
+<span class="n">my_A_noisy</span><span class="p">[</span><span class="mi">3</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+<span class="n">my_A_noisy</span><span class="p">[</span><span class="mi">6</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+<span class="n">my_A_noisy</span><span class="p">[</span><span class="mi">7</span><span class="p">,</span><span class="mi">6</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="o">/</span> <span class="mf">3.0</span>
+
+<span class="c1"># Alternatively: you could have the probability spread among locations 3, 4, 6, and 7. This is basically saying, that whole lower-left corner of grid-world is blurry, if you&#39;re in location 6</span>
+<span class="c1"># Remember to make sure the A matrix is column normalized. So if you do it this way, with the probabilities spread among 4 perceived locations, then you&#39;ll have to make sure the probabilities sum to 1.0</span>
+<span class="c1"># my_A_noisy[3,6] = 1.0 / 4.0</span>
+<span class="c1"># my_A_noisy[4,6] = 1.0 / 4.0</span>
+<span class="c1"># my_A_noisy[6,6] = 1.0 / 4.0</span>
+<span class="c1"># my_A_noisy[7,6] = 1.0 / 4.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now plot the new A matrix, that now has two “blurry” locations</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">my_A_noisy</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Noisy A matrix now with TWO ambiguous locations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/bd4206737e7415bdc74388229c53861f10cc227561d96d1cfef6a61121bc795b.png" src="../_images/bd4206737e7415bdc74388229c53861f10cc227561d96d1cfef6a61121bc795b.png" />
+</div>
+</div>
+</section>
+<section id="the-b-matrix-or-p-s-t-mid-s-t-1-u-t-1">
+<h3>2. The <strong>B</strong> matrix or $P(s_{t}\mid s_{t-1}, u_{t-1})$.<a class="headerlink" href="#the-b-matrix-or-p-s-t-mid-s-t-1-u-t-1" title="Link to this heading"></a></h3>
+<hr class="docutils" />
+<p>The generative model’s “prior beliefs” about (controllable) transitions between hidden states over time. Namely, how do hidden states at time $t$ result from hidden states at some previous time $t-1$. These transition dynamics are further conditioned on some past action $u_t$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">,</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">,</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">,</span> <span class="s2">&quot;STAY&quot;</span><span class="p">]</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">create_B_matrix</span><span class="p">():</span>
+  <span class="n">B</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">))</span> <span class="p">)</span>
+
+  <span class="k">for</span> <span class="n">action_id</span><span class="p">,</span> <span class="n">action_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+
+    <span class="k">for</span> <span class="n">curr_state</span><span class="p">,</span> <span class="n">grid_location</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">):</span>
+
+      <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">grid_location</span>
+
+      <span class="k">if</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span>
+        <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">y</span> 
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+      <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span>
+        <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">y</span> 
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+      <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span>
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">x</span> 
+        <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+      <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span>
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">x</span> 
+        <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+      <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;STAY&quot;</span><span class="p">:</span>
+        <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+        <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+      <span class="n">new_location</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_y</span><span class="p">,</span> <span class="n">next_x</span><span class="p">)</span>
+      <span class="n">next_state</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">new_location</span><span class="p">)</span>
+      <span class="n">B</span><span class="p">[</span><span class="n">next_state</span><span class="p">,</span> <span class="n">curr_state</span><span class="p">,</span> <span class="n">action_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+  <span class="k">return</span> <span class="n">B</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">create_B_matrix</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s now explore what it looks to “take” an action, using matrix-vector product of an action-conditioned “slice” of the $\mathbf{B}$ array and a previous state vector</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Define a starting location&quot;&quot;&quot;</span> 
+<span class="n">starting_location</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">0</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;get the linear index of the state&quot;&quot;&quot;</span>
+<span class="n">state_index</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">starting_location</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;  and create a state vector out of it &quot;&quot;&quot;</span>
+<span class="n">starting_state</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">state_index</span><span class="p">,</span> <span class="n">n_states</span><span class="p">)</span>
+
+<span class="n">plot_point_on_grid</span><span class="p">(</span><span class="n">starting_state</span><span class="p">,</span> <span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/ba73caa6c33b573761c51c2a2e9e8a2124c125b7f5ef1daa87fe254ff4580f59.png" src="../_images/ba73caa6c33b573761c51c2a2e9e8a2124c125b7f5ef1daa87fe254ff4580f59.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">starting_state</span><span class="p">,</span> <span class="s2">&quot;Categorical distribution over the starting state&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f1ded9809e840b6ddaf5f47f6a821f21ae96e0ddd9599e09b43ee07ebdb1b4f0.png" src="../_images/f1ded9809e840b6ddaf5f47f6a821f21ae96e0ddd9599e09b43ee07ebdb1b4f0.png" />
+</div>
+</div>
+<p>Now let’s imagine we’re moving <strong>“RIGHT”</strong> - write the conditional expectation, that will create the state vector corresponding to the new state after taking a step to the right.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Redefine the action here, just for reference &quot;&quot;&quot;</span>
+<span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">,</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">,</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">,</span> <span class="s2">&quot;STAY&quot;</span><span class="p">]</span>
+
+<span class="sd">&quot;&quot;&quot; Generate the next state vector, given the starting state and the B matrix&quot;&quot;&quot;</span>
+<span class="n">right_action_idx</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;RIGHT&quot;</span><span class="p">)</span> 
+<span class="n">next_state</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span> <span class="n">right_action_idx</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">starting_state</span><span class="p">)</span> <span class="c1"># input the indices to the B matrix</span>
+
+<span class="sd">&quot;&quot;&quot; Plot the next state, after taking the action &quot;&quot;&quot;</span>
+<span class="n">plot_point_on_grid</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/86a0b534b3ecc6cc50168353e2647273200635c3ac163cc2bca1b9ff54bbdb04.png" src="../_images/86a0b534b3ecc6cc50168353e2647273200635c3ac163cc2bca1b9ff54bbdb04.png" />
+</div>
+</div>
+<p>Now let’s imagine we’re moving <strong>“DOWN”</strong> from where we just landed - write the conditional expectation, that will create the state vector corresponding to the new state after taking a step down.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Generate the next state vector, given the previous state and the B matrix&quot;&quot;&quot;</span>
+<span class="n">prev_state</span> <span class="o">=</span> <span class="n">next_state</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">down_action_index</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;DOWN&quot;</span><span class="p">)</span>
+<span class="n">next_state</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span><span class="n">down_action_index</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">prev_state</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot;  Plot the new state vector, after making the movement &quot;&quot;&quot;</span>
+<span class="n">plot_point_on_grid</span><span class="p">(</span><span class="n">next_state</span><span class="p">,</span> <span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/b8773324b167a222859d2067ef8fdc7874537113aa9e2340aba136c0d1d6d35e.png" src="../_images/b8773324b167a222859d2067ef8fdc7874537113aa9e2340aba136c0d1d6d35e.png" />
+</div>
+</div>
+</section>
+<section id="the-prior-over-observations-the-mathbf-c-vector-or-tilde-p-o">
+<h3>3. The prior over observations: the $\mathbf{C}$ vector or $\tilde{P}(o)$<a class="headerlink" href="#the-prior-over-observations-the-mathbf-c-vector-or-tilde-p-o" title="Link to this heading"></a></h3>
+<hr class="docutils" />
+<p>The (biased) generative model’s prior preference for particular observations, encoded in terms of probabilities.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create an empty vector to store the preferences over observations &quot;&quot;&quot;</span>
+<span class="n">C</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_observations</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot; Choose an observation index to be the &#39;desired&#39; rewarding index, and fill out the C vector accordingly &quot;&quot;&quot;</span>
+<span class="n">desired_location</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># choose a desired location</span>
+<span class="n">desired_location_index</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">desired_location</span><span class="p">)</span> <span class="c1"># get the linear index of the grid location, in terms of 0 through 8</span>
+
+<span class="n">C</span><span class="p">[</span><span class="n">desired_location_index</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># set the preference for that location to be 100%, i.e. 1.0</span>
+
+<span class="sd">&quot;&quot;&quot;  Let&#39;s look at the prior preference distribution &quot;&quot;&quot;</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Preferences over observations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/701cd00774cadae7e24248ad7201f7cd9592f21b49a8d5f5c0a6ed09a93ecd66.png" src="../_images/701cd00774cadae7e24248ad7201f7cd9592f21b49a8d5f5c0a6ed09a93ecd66.png" />
+</div>
+</div>
+</section>
+<section id="the-prior-over-hidden-states-the-mathbf-d-vector-or-p-s">
+<h3>3. The prior over hidden states: the $\mathbf{D}$ vector or $P(s)$<a class="headerlink" href="#the-prior-over-hidden-states-the-mathbf-d-vector-or-p-s" title="Link to this heading"></a></h3>
+<hr class="docutils" />
+<p>The generative model’s prior belief over hidden states at the first timestep.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create a D vector, basically a belief that the agent has about its own starting location &quot;&quot;&quot;</span>
+
+<span class="c1"># create a one-hot / certain belief about initial state</span>
+<span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_states</span><span class="p">)</span>
+
+<span class="c1"># demonstrate hwo belief about initial state can also be uncertain / spread among different possible initial states</span>
+<span class="c1"># alternative, where you have a degenerate/noisy prior belief</span>
+<span class="c1"># D = utils.norm_dist(np.ones(n_states))</span>
+
+<span class="sd">&quot;&quot;&quot; Let&#39;s look at the prior over hidden states &quot;&quot;&quot;</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">D</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Prior beliefs over states&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2a1f0f720dbb85e669a98d2a3dfa66c6b72158f47ecb6765bdfc32175f77f940.png" src="../_images/2a1f0f720dbb85e669a98d2a3dfa66c6b72158f47ecb6765bdfc32175f77f940.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="hidden-state-inference">
+<h2><strong>Hidden state inference</strong><a class="headerlink" href="#hidden-state-inference" title="Link to this heading"></a></h2>
+<p>Hidden state inference proceeds by finding the setting of the optimal variational posterior $q(s_t)$ that minimizes the variational free energy. For the simple POMDP generative model and posterior we’re considering here, this update reduces to a remarkably simple update rule, that is essentially proportional to Bayes` rule:</p>
+<p>$$
+\begin{align}
+q(s_t) = \sigma\left(\ln \mathbf{A}[o,:] + \ln\mathbf{B}[:,:,u] \cdot q(s_{t-1})\right)
+\end{align}
+$$</p>
+<p>Import the <code class="docutils literal notranslate"><span class="pre">softmax</span></code> function and a numerically-stable version of <code class="docutils literal notranslate"><span class="pre">np.log</span></code> from <code class="docutils literal notranslate"><span class="pre">pymdp.maths</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.maths</span><span class="w"> </span><span class="kn">import</span> <span class="n">softmax</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.maths</span><span class="w"> </span><span class="kn">import</span> <span class="n">spm_log_single</span> <span class="k">as</span> <span class="n">log_stable</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Below we implement the <code class="docutils literal notranslate"><span class="pre">infer_states()</span></code> function</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create an infer states function that implements the math we just discussed&quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">infer_states</span><span class="p">(</span><span class="n">observation_index</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prior</span><span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Implement inference here -- NOTE: prior is already passed in, so you don&#39;t need to do anything with the B matrix. &quot;&quot;&quot;</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; This function has already been given P(s_t). The conditional expectation that creates &quot;today&#39;s prior&quot;, using &quot;yesterday&#39;s posterior&quot;, will happen *before calling* this function&quot;&quot;&quot;</span>
+  
+  <span class="n">log_likelihood</span> <span class="o">=</span> <span class="n">log_stable</span><span class="p">(</span><span class="n">A</span><span class="p">[</span><span class="n">observation_index</span><span class="p">,:])</span>
+
+  <span class="n">log_prior</span> <span class="o">=</span> <span class="n">log_stable</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span>
+
+  <span class="n">qs</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">log_likelihood</span> <span class="o">+</span> <span class="n">log_prior</span><span class="p">)</span>
+   
+  <span class="k">return</span> <span class="n">qs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s do a simulated single timestep of hidden state inference</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs_past</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="n">n_states</span><span class="p">)</span> <span class="c1"># agent believes they were at location 4 -- i.e. (1,1) one timestep ago</span>
+
+<span class="n">last_action</span> <span class="o">=</span> <span class="s2">&quot;UP&quot;</span> <span class="c1"># the agent knew it moved &quot;UP&quot; one timestep ago</span>
+<span class="n">action_id</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">last_action</span><span class="p">)</span> <span class="c1"># get the action index for moving &quot;UP&quot;</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Get “today’s prior” using the past posterior and the past action, i.e. calculate:</p>
+<p>$$ \begin{align}
+P(s_t) = \mathbf{E}<em>{q(s</em>{t-1})}\left[P(s_t | s_{t-1}, u_{t-1})\right]
+\end{align}
+$$</p>
+<p>and choose an observation that is consistent with the new location</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">prior</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span><span class="n">action_id</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_past</span><span class="p">)</span>
+
+<span class="n">observation_index</span> <span class="o">=</span> <span class="mi">1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now run the <code class="docutils literal notranslate"><span class="pre">infer_states()</span></code> function, using the observation, the $\mathbf{A}$ matrix, and the prior we just calculated above</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">qs_new</span> <span class="o">=</span> <span class="n">infer_states</span><span class="p">(</span><span class="n">observation_index</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prior</span><span class="p">)</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_new</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Beliefs about hidden states&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/e0280765822b8c82ad661042ce985d62aecd9b9878f0df34e403bab87e2cf22a.png" src="../_images/e0280765822b8c82ad661042ce985d62aecd9b9878f0df34e403bab87e2cf22a.png" />
+</div>
+</div>
+<p>Let’s see what happens if observation and the prior “disagree” with eachother?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Get an observation that &#39;conflicts&#39; with the prior &quot;&quot;&quot;</span>
+<span class="n">observation_index</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># this is like the agent is seeing itself in location (0, 2)</span>
+<span class="n">qs_new</span> <span class="o">=</span> <span class="n">infer_states</span><span class="p">(</span><span class="n">observation_index</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prior</span><span class="p">)</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_new</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/a44dace379ae1ba970921bc56a26feafb925e027954cab2e339f2e2ad1adf1d6.png" src="../_images/a44dace379ae1ba970921bc56a26feafb925e027954cab2e339f2e2ad1adf1d6.png" />
+</div>
+</div>
+<p>What happens if likelihood and prior are partially ambiguous?</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create an ambiguous A matrix &quot;&quot;&quot;</span>
+<span class="n">A_partially_ambiguous</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">A_partially_ambiguous</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[[0.254 0.093 0.093 0.093 0.093 0.093 0.093 0.093 0.093]
+ [0.093 0.254 0.093 0.093 0.093 0.093 0.093 0.093 0.093]
+ [0.093 0.093 0.254 0.093 0.093 0.093 0.093 0.093 0.093]
+ [0.093 0.093 0.093 0.254 0.093 0.093 0.093 0.093 0.093]
+ [0.093 0.093 0.093 0.093 0.254 0.093 0.093 0.093 0.093]
+ [0.093 0.093 0.093 0.093 0.093 0.254 0.093 0.093 0.093]
+ [0.093 0.093 0.093 0.093 0.093 0.093 0.254 0.093 0.093]
+ [0.093 0.093 0.093 0.093 0.093 0.093 0.093 0.254 0.093]
+ [0.093 0.093 0.093 0.093 0.093 0.093 0.093 0.093 0.254]]
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; ... and a noisy prior &quot;&quot;&quot;</span>
+<span class="n">noisy_prior</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="n">prior</span><span class="p">)</span> 
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">noisy_prior</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/8c5ce2143feca25c590e3877c689df79429cc2fbd970e48a5bf193fcd37fb657.png" src="../_images/8c5ce2143feca25c590e3877c689df79429cc2fbd970e48a5bf193fcd37fb657.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Do inference with the new, partially-ambiguous A matrix and the noised-up prior &quot;&quot;&quot;</span>
+<span class="n">qs_new</span> <span class="o">=</span> <span class="n">infer_states</span><span class="p">(</span><span class="n">observation_index</span><span class="p">,</span> <span class="n">A_partially_ambiguous</span><span class="p">,</span> <span class="n">noisy_prior</span><span class="p">)</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_new</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7a075fbf3f729aad4fa9382239aced2903ce633c6b15d31da077be68eb469917.png" src="../_images/7a075fbf3f729aad4fa9382239aced2903ce633c6b15d31da077be68eb469917.png" />
+</div>
+</div>
+</section>
+<section id="action-selection-and-the-expected-free-energy">
+<h2><strong>Action Selection and the Expected Free Energy</strong><a class="headerlink" href="#action-selection-and-the-expected-free-energy" title="Link to this heading"></a></h2>
+<p>Now we’ll write functions to compute the expected states $Q(s_{t+1}|u_t)$, expected observations $Q(o_{t+1}|u_t)$, the entropy of $P(o|s)$: $\mathbf{H}\left[\mathbf{A}\right]$, and the KL divergence between the expected observations and the prior preferences $\mathbf{C}$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; define component functions for computing expected free energy &quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_expected_states</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">action</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Compute the expected states one step into the future, given a particular action &quot;&quot;&quot;</span>
+  <span class="n">qs_u</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span><span class="n">action</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_current</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">qs_u</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">get_expected_observations</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">qs_u</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Compute the expected observations one step into the future, given a particular action &quot;&quot;&quot;</span>
+
+  <span class="n">qo_u</span> <span class="o">=</span> <span class="n">A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_u</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">qo_u</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">entropy</span><span class="p">(</span><span class="n">A</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Compute the entropy of a set of conditional distributions, i.e. one entropy value per column &quot;&quot;&quot;</span>
+
+  <span class="n">H_A</span> <span class="o">=</span> <span class="o">-</span> <span class="p">(</span><span class="n">A</span> <span class="o">*</span> <span class="n">log_stable</span><span class="p">(</span><span class="n">A</span><span class="p">))</span><span class="o">.</span><span class="n">sum</span><span class="p">(</span><span class="n">axis</span><span class="o">=</span><span class="mi">0</span><span class="p">)</span>
+
+  <span class="k">return</span> <span class="n">H_A</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">kl_divergence</span><span class="p">(</span><span class="n">qo_u</span><span class="p">,</span> <span class="n">C</span><span class="p">):</span>
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Compute the Kullback-Leibler divergence between two 1-D categorical distributions&quot;&quot;&quot;</span>
+  
+  <span class="k">return</span> <span class="p">(</span><span class="n">log_stable</span><span class="p">(</span><span class="n">qo_u</span><span class="p">)</span> <span class="o">-</span> <span class="n">log_stable</span><span class="p">(</span><span class="n">C</span><span class="p">))</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qo_u</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s imagine we’re in some starting state, like (1,1)
+N.B. This is the generative process we’re talking about – i.e. the true state of the world</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Get state index, create state vector for (1,1) &quot;&quot;&quot;</span>
+
+<span class="n">state_idx</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">state_vector</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">state_idx</span><span class="p">,</span> <span class="n">n_states</span><span class="p">)</span>
+<span class="n">plot_point_on_grid</span><span class="p">(</span><span class="n">state_vector</span><span class="p">,</span> <span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/86a0b534b3ecc6cc50168353e2647273200635c3ac163cc2bca1b9ff54bbdb04.png" src="../_images/86a0b534b3ecc6cc50168353e2647273200635c3ac163cc2bca1b9ff54bbdb04.png" />
+</div>
+</div>
+<p>And let’s furthermore assume we start with the (accurate) belief about our location, that we are in location (1,1). So let’s just make our current $Q(s_t)$ equal to the true state vector. You could think of this as if we just did one ‘step’ of inference using our current observation along with precise <code class="docutils literal notranslate"><span class="pre">A</span></code>/<code class="docutils literal notranslate"><span class="pre">B</span></code> matrices.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Make qs_current identical to the true starting state &quot;&quot;&quot;</span> 
+<span class="n">qs_current</span> <span class="o">=</span> <span class="n">state_vector</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span>
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_current</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span><span class="s2">&quot;Where do we believe we are?&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/d12551dd5261f127e6c929fd6668d79ab050c6d4d278c1a85da4951925bb0f42.png" src="../_images/d12551dd5261f127e6c929fd6668d79ab050c6d4d278c1a85da4951925bb0f42.png" />
+</div>
+</div>
+<p>And we prefer to be in state (1,2). So we express that as high probability over the corresponding entry of the $\mathbf{C}$ vector – that happens to be index 5.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_grid</span><span class="p">(</span><span class="n">grid_locations</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" src="../_images/f7a6b49f2edef267b6c0a63ac973ae13e873c77dd3ad244fa338aed86a34338a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Create a preference to be in (1,2) &quot;&quot;&quot;</span>
+
+<span class="n">desired_idx</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">desired_idx</span><span class="p">,</span> <span class="n">n_observations</span><span class="p">)</span>
+
+<span class="n">plot_beliefs</span><span class="p">(</span><span class="n">C</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="s2">&quot;Preferences&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/1fa4c4c6c81105990d80b0e0165ba3e04d9107bec28925c4fa0074adec06846d.png" src="../_images/1fa4c4c6c81105990d80b0e0165ba3e04d9107bec28925c4fa0074adec06846d.png" />
+</div>
+</div>
+<p>Now to keep things simple, let’s evaluate the expected free energies $\mathbf{G}$ of just two actions that we could take from our current position – either moving LEFT or moving RIGHT. Let’s remind ourselves of what action indices those are</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">left_idx</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;LEFT&quot;</span><span class="p">)</span>
+<span class="n">right_idx</span> <span class="o">=</span> <span class="n">actions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="s2">&quot;RIGHT&quot;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Action index of moving left: </span><span class="si">{</span><span class="n">left_idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Action index of moving right: </span><span class="si">{</span><span class="n">right_idx</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action index of moving left: 2
+Action index of moving right: 3
+</pre></div>
+</div>
+</div>
+</div>
+<p>And now let’s use the functions we’ve just defined, in combination with our <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code> arrays and our current posterior <code class="docutils literal notranslate"><span class="pre">qs_current</span></code>, to compute the expected free energies for the two actions</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Compute the expected free energies for moving left vs. moving right &quot;&quot;&quot;</span>
+<span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="mi">2</span><span class="p">)</span> <span class="c1"># store the expected free energies for each action in here</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Compute G for MOVE LEFT here </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">qs_u_left</span> <span class="o">=</span> <span class="n">get_expected_states</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">left_idx</span><span class="p">)</span>
+<span class="c1"># alternative</span>
+<span class="c1"># qs_u_left = B[:,:,left_idx].dot(qs_current)</span>
+
+<span class="n">H_A</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">qo_u_left</span> <span class="o">=</span> <span class="n">get_expected_observations</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">qs_u_left</span><span class="p">)</span>
+<span class="c1"># alternative</span>
+<span class="c1"># qo_u_left = A.dot(qs_u_left)</span>
+
+<span class="n">predicted_uncertainty_left</span> <span class="o">=</span> <span class="n">H_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_u_left</span><span class="p">)</span>
+<span class="n">predicted_divergence_left</span> <span class="o">=</span> <span class="n">kl_divergence</span><span class="p">(</span><span class="n">qo_u_left</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+<span class="n">G</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_uncertainty_left</span> <span class="o">+</span> <span class="n">predicted_divergence_left</span>
+
+<span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">Compute G for MOVE RIGHT here </span>
+<span class="sd">&quot;&quot;&quot;</span>
+
+<span class="n">qs_u_right</span> <span class="o">=</span> <span class="n">get_expected_states</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">right_idx</span><span class="p">)</span>
+<span class="c1"># alternative</span>
+<span class="c1"># qs_u_right = B[:,:,right_idx].dot(qs_current)</span>
+
+<span class="n">H_A</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>
+<span class="n">qo_u_right</span> <span class="o">=</span> <span class="n">get_expected_observations</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">qs_u_right</span><span class="p">)</span>
+<span class="c1"># alternative</span>
+<span class="c1"># qo_u_right = A.dot(qs_u_right)</span>
+
+<span class="n">predicted_uncertainty_right</span> <span class="o">=</span> <span class="n">H_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_u_right</span><span class="p">)</span>
+<span class="n">predicted_divergence_right</span> <span class="o">=</span> <span class="n">kl_divergence</span><span class="p">(</span><span class="n">qo_u_right</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span>
+<span class="n">G</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">predicted_uncertainty_right</span> <span class="o">+</span> <span class="n">predicted_divergence_right</span>
+
+
+
+<span class="sd">&quot;&quot;&quot; Now let&#39;s print the expected free energies for the two actions, that we just calculated &quot;&quot;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected free energy of moving left: </span><span class="si">{</span><span class="n">G</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Expected free energy of moving right: </span><span class="si">{</span><span class="n">G</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Expected free energy of moving left: 36.841361487904734
+
+Expected free energy of moving right: 0.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s use formula for the posterior over actions, i.e.</p>
+<p>$$ \begin{align}
+Q(u_t) = \sigma(-\mathbf{G})
+\end{align} $$</p>
+<p>to compute the probabilities of each action</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">Q_u</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="o">-</span><span class="n">G</span><span class="p">)</span>
+
+<span class="sd">&quot;&quot;&quot; and print the probability of each action &quot;&quot;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Probability of moving left: </span><span class="si">{</span><span class="n">Q_u</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Probability of moving right: </span><span class="si">{</span><span class="n">Q_u</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Probability of moving left: 9.999999999999965e-17
+Probability of moving right: 1.0
+</pre></div>
+</div>
+</div>
+</div>
+<p>For usefulness later on, let’s wrap the expected free energy calculations into a function</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_G</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">actions</span><span class="p">):</span>
+
+  <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">))</span> <span class="c1"># vector of expected free energies, one per action</span>
+
+  <span class="n">H_A</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span> <span class="c1"># entropy of the observation model, P(o|s)</span>
+
+  <span class="k">for</span> <span class="n">action_i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)):</span>
+    
+    <span class="n">qs_u</span> <span class="o">=</span> <span class="n">get_expected_states</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">action_i</span><span class="p">)</span> <span class="c1"># expected states, under the action we&#39;re currently looping over</span>
+    <span class="n">qo_u</span> <span class="o">=</span> <span class="n">get_expected_observations</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">qs_u</span><span class="p">)</span>           <span class="c1"># expected observations, under the action we&#39;re currently looping over</span>
+
+    <span class="n">pred_uncertainty</span> <span class="o">=</span> <span class="n">H_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_u</span><span class="p">)</span> <span class="c1"># predicted uncertainty, i.e. expected entropy of the A matrix</span>
+    <span class="n">pred_div</span> <span class="o">=</span> <span class="n">kl_divergence</span><span class="p">(</span><span class="n">qo_u</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span> <span class="c1"># predicted divergence</span>
+
+    <span class="n">G</span><span class="p">[</span><span class="n">action_i</span><span class="p">]</span> <span class="o">=</span> <span class="n">pred_uncertainty</span> <span class="o">+</span> <span class="n">pred_div</span> <span class="c1"># sum them together to get expected free energy</span>
+  
+  <span class="k">return</span> <span class="n">G</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="complete-recipe-for-active-inference">
+<h2><strong>Complete Recipe for Active Inference</strong><a class="headerlink" href="#complete-recipe-for-active-inference" title="Link to this heading"></a></h2>
+<ol class="arabic simple">
+<li><p>Sample an observation $o_t$ from the current state of the environment</p></li>
+<li><p>Perform inference over hidden states i.e., optimize $q(s)$ through free-energy minimization</p></li>
+<li><p>Calculate expected free energy of actions $\mathbf{G}$</p></li>
+<li><p>Sample action from the posterior over actions $Q(u_t) \sim \sigma(-\mathbf{G})$.</p></li>
+<li><p>Use the sampled action $a_t$ to perturb the generative process and go back to step 1.</p></li>
+</ol>
+<hr class="docutils" />
+<p>Let’s start by creating a class that will represent the Grid World environment (i.e., <em>generative process</em>) that our active inference agent will navigate within. Note that we don’t need to specify the generative process in terms of <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> matrices - the generative process will be as arbitrary and complex as the environment is. The <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> matrices are just the agent’s <em>representation</em> of the world and the task, which in this case happen to capture the Markovian, noiseless dynamics of the world perfectly.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GridWorldEnv</span><span class="p">():</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">starting_state</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_state</span> <span class="o">=</span> <span class="n">starting_state</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_state</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting state is </span><span class="si">{</span><span class="n">starting_state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">action_label</span><span class="p">):</span>
+
+        <span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span>
+
+        <span class="k">if</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span> 
+          
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span> 
+
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span><span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&lt;</span> <span class="mi">2</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;STAY&quot;</span><span class="p">:</span>
+          <span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span> <span class="o">=</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span> 
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span><span class="p">)</span> <span class="c1"># store the new grid location</span>
+
+        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="c1"># agent always directly observes the grid location they&#39;re in </span>
+
+        <span class="k">return</span> <span class="n">obs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_state</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Re-initialized location to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">init_state</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_state</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;..and sampled observation </span><span class="si">{</span><span class="n">obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+        <span class="k">return</span> <span class="n">obs</span>
+    
+<span class="n">env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting state is (0, 0)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now equipped with an environment and a generative model (our <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, and <code class="docutils literal notranslate"><span class="pre">D</span></code>), we can code up the entire active inference loop</p>
+<hr class="docutils" />
+<p>To have everything in one place, let’s re-create the whole generative model</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Fill out the components of the generative model &quot;&quot;&quot;</span>
+
+<span class="n">A</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">n_observations</span><span class="p">,</span> <span class="n">n_states</span><span class="p">)</span>
+
+<span class="n">B</span> <span class="o">=</span> <span class="n">create_B_matrix</span><span class="p">()</span>
+
+<span class="n">C</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">)</span> <span class="p">),</span> <span class="n">n_observations</span><span class="p">)</span> <span class="c1"># make the agent prefer location (2,2) (lower right corner of grid world)</span>
+
+<span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">)</span> <span class="p">),</span> <span class="n">n_states</span><span class="p">)</span> <span class="c1"># start the agent with the prior belief that it starts in location (1,2) </span>
+
+<span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">,</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">,</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">,</span> <span class="s2">&quot;STAY&quot;</span><span class="p">]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s initialize the environment with starting state <code class="docutils literal notranslate"><span class="pre">(1,2)</span></code>, so that the agent has accurate beliefs about where it’s starting.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">(</span><span class="n">starting_state</span> <span class="o">=</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">2</span><span class="p">))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting state is (1, 2)
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s write a function that runs the whole active inference loop, and then run it for <code class="docutils literal notranslate"><span class="pre">T</span> <span class="pre">=</span> <span class="pre">5</span></code> timesteps.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Write a function that, when called, runs the entire active inference loop for a desired number of timesteps&quot;&quot;&quot;</span>
+
+<span class="k">def</span><span class="w"> </span><span class="nf">run_active_inference_loop</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Initialize the prior that will be passed in during inference to be the same as `D` &quot;&quot;&quot;</span>
+  <span class="n">prior</span> <span class="o">=</span> <span class="n">D</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># initial prior should be the D vector</span>
+
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Initialize the observation that will be passed in during inference - hint use env.reset()&quot;&quot;&quot;</span>
+  <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span> <span class="c1"># initialize the `obs` variable to be the first observation you sample from the environment, before `step`-ing it.</span>
+
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: Agent observes itself in location: </span><span class="si">{</span><span class="n">obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># convert the observation into the agent&#39;s observational state space (in terms of 0 through 8)</span>
+    <span class="n">obs_idx</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+
+    <span class="c1"># perform inference over hidden states</span>
+    <span class="n">qs_current</span> <span class="o">=</span> <span class="n">infer_states</span><span class="p">(</span><span class="n">obs_idx</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prior</span><span class="p">)</span>
+
+    <span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_current</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Beliefs about location at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># calculate expected free energy of actions</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">calculate_G</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">actions</span><span class="p">)</span>
+    
+    <span class="c1"># compute action posterior</span>
+    <span class="n">Q_u</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="o">-</span><span class="n">G</span><span class="p">)</span>
+
+    <span class="c1"># sample action from probability distribution over actions</span>
+    <span class="n">chosen_action</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">Q_u</span><span class="p">)</span>
+
+    <span class="c1"># compute prior for next timestep of inference</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span><span class="n">chosen_action</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_current</span><span class="p">)</span> 
+
+    <span class="c1"># update generative process</span>
+    <span class="n">action_label</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">chosen_action</span><span class="p">]</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action_label</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">qs_current</span>
+
+<span class="sd">&quot;&quot;&quot; Run the function we just wrote, for T = 5 timesteps &quot;&quot;&quot;</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">run_active_inference_loop</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Re-initialized location to (1, 2)
+..and sampled observation (1, 2)
+Time 0: Agent observes itself in location: (1, 2)
+</pre></div>
+</div>
+<img alt="../_images/c41f1cb9fc3edc7dd026b581e66c4cd7ef5bd7bca0c79303a635b65bec50b430.png" src="../_images/c41f1cb9fc3edc7dd026b581e66c4cd7ef5bd7bca0c79303a635b65bec50b430.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 1: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/80148f5db329857d021eeb1cc279896b5d83ed7c6fb71638879960e30b7fb001.png" src="../_images/80148f5db329857d021eeb1cc279896b5d83ed7c6fb71638879960e30b7fb001.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 2: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/f0909bc9c3bfaffa1c1ac24bb123b870b996737e22ecd8600940464631b3af64.png" src="../_images/f0909bc9c3bfaffa1c1ac24bb123b870b996737e22ecd8600940464631b3af64.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 3: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/abbd65b1ef7435e8b2d1aba2bec4c37b5ece483b265a1b2f7c169e606c352cf4.png" src="../_images/abbd65b1ef7435e8b2d1aba2bec4c37b5ece483b265a1b2f7c169e606c352cf4.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 4: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/dfe54d56bf89fa4c75b635fda3ae6eb54ba74821e5a507947253c39ef0a9b38e.png" src="../_images/dfe54d56bf89fa4c75b635fda3ae6eb54ba74821e5a507947253c39ef0a9b38e.png" />
+</div>
+</div>
+</section>
+<section id="planning">
+<h2><strong>Planning</strong><a class="headerlink" href="#planning" title="Link to this heading"></a></h2>
+<p>But there’s a problem. Imagine we started the agent at the top left corner (coordinate <code class="docutils literal notranslate"><span class="pre">(0,0)</span></code>) rather than one step away from the target location</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">n_states</span><span class="p">)</span> <span class="c1"># let&#39;s have the agent believe it starts in location (0,0)</span>
+
+<span class="n">env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">(</span><span class="n">starting_state</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">qs</span> <span class="o">=</span> <span class="n">run_active_inference_loop</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">actions</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting state is (0, 0)
+Re-initialized location to (0, 0)
+..and sampled observation (0, 0)
+Time 0: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/897ceb482b41596af036c3561c1f4a0d3c5b2f855a79ce1cfcb47aa7eaec5ccf.png" src="../_images/897ceb482b41596af036c3561c1f4a0d3c5b2f855a79ce1cfcb47aa7eaec5ccf.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 1: Agent observes itself in location: (0, 1)
+</pre></div>
+</div>
+<img alt="../_images/1252702cee10b4f4eaea91fb7c90ccc984a0ffdb4c34a51a58e925b0ffb0b703.png" src="../_images/1252702cee10b4f4eaea91fb7c90ccc984a0ffdb4c34a51a58e925b0ffb0b703.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 2: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/9e8164c9950d551624117dcf75d7fbfcfce94b7c0f0fb5ca4c9f5ce65b46c3b0.png" src="../_images/9e8164c9950d551624117dcf75d7fbfcfce94b7c0f0fb5ca4c9f5ce65b46c3b0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 3: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/4f9e6ba097303c04cfd24c94cd0900f0bc80d6077e64ce9ef908435406a0977b.png" src="../_images/4f9e6ba097303c04cfd24c94cd0900f0bc80d6077e64ce9ef908435406a0977b.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 4: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/a7c7b63562420a232380137f71d2e79d3b7ef9671b58fc097acf767ce7427afa.png" src="../_images/a7c7b63562420a232380137f71d2e79d3b7ef9671b58fc097acf767ce7427afa.png" />
+</div>
+</div>
+<p>Because the expected free energy of each action is only evaluated for one timestep in the future, the agent has no way of knowing which action to initially take, to get closer to its final “goal” of <code class="docutils literal notranslate"><span class="pre">(2,2)</span></code>. This is because the expected divergence term for all actions $\operatorname{D}_{KL}(Q(o|u) \parallel \mathbf{C})$ is identical for all considered actions (which are just 1-step moves away from starting from <code class="docutils literal notranslate"><span class="pre">(0,0)</span></code> ). This speaks to the importance of planning, or <em>multiple timestep policies</em>.</p>
+<p>Now let’s do active inference with multi-step policies</p>
+<p>We can rely on a useful function from <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>’s <code class="docutils literal notranslate"><span class="pre">control</span></code> module called <code class="docutils literal notranslate"><span class="pre">construct_policies()</span></code> to automatically generate a list of all the policies we want to entertain, for a given number of control states (actions) and a desired temporal horizon.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.control</span><span class="w"> </span><span class="kn">import</span> <span class="n">construct_policies</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">policy_len</span> <span class="o">=</span> <span class="mi">4</span>
+<span class="n">n_actions</span> <span class="o">=</span> <span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">)</span>
+
+<span class="c1"># we have to wrap `n_states` and `n_actions` in a list for reasons that will become clear in Part II</span>
+<span class="n">all_policies</span> <span class="o">=</span> <span class="n">construct_policies</span><span class="p">([</span><span class="n">n_states</span><span class="p">],</span> <span class="p">[</span><span class="n">n_actions</span><span class="p">],</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="n">policy_len</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Total number of policies for </span><span class="si">{</span><span class="n">n_actions</span><span class="si">}</span><span class="s1"> possible actions and a planning horizon of </span><span class="si">{</span><span class="n">policy_len</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="nb">len</span><span class="p">(</span><span class="n">all_policies</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Total number of policies for 5 possible actions and a planning horizon of 4: 625
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s re-write our expected free energy function, but now we loop over policies (sequences of actions), rather than actions (1-step policies)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">calculate_G_policies</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">policies</span><span class="p">):</span>
+
+  <span class="n">G</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">policies</span><span class="p">))</span> <span class="c1"># initialize the vector of expected free energies, one per policy</span>
+  <span class="n">H_A</span> <span class="o">=</span> <span class="n">entropy</span><span class="p">(</span><span class="n">A</span><span class="p">)</span>            <span class="c1"># can calculate the entropy of the A matrix beforehand, since it&#39;ll be the same for all policies</span>
+  <span class="n">qs_pi_t</span> <span class="o">=</span> <span class="kc">None</span>
+  <span class="k">for</span> <span class="n">policy_id</span><span class="p">,</span> <span class="n">policy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">policies</span><span class="p">):</span> <span class="c1"># loop over policies - policy_id will be the linear index of the policy (0, 1, 2, ...) and `policy` will be a column vector where `policy[t,0]` indexes the action entailed by that policy at time `t`</span>
+
+    <span class="n">t_horizon</span> <span class="o">=</span> <span class="n">policy</span><span class="o">.</span><span class="n">shape</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># temporal depth of the policy</span>
+
+    <span class="n">G_pi</span> <span class="o">=</span> <span class="mf">0.0</span> <span class="c1"># initialize expected free energy for this policy</span>
+
+    <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">t_horizon</span><span class="p">):</span> <span class="c1"># loop over temporal depth of the policy</span>
+
+      <span class="n">action</span> <span class="o">=</span> <span class="n">policy</span><span class="p">[</span><span class="n">t</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># action entailed by this particular policy, at time `t`</span>
+
+      <span class="c1"># get the past predictive posterior - which is either your current posterior at the current time (not the policy time) or the predictive posterior entailed by this policy, one timstep ago (in policy time)</span>
+      <span class="k">if</span> <span class="n">t</span> <span class="o">==</span> <span class="mi">0</span><span class="p">:</span>
+        <span class="n">qs_prev</span> <span class="o">=</span> <span class="n">qs_current</span> 
+      <span class="k">else</span><span class="p">:</span>
+        <span class="n">qs_prev</span> <span class="o">=</span> <span class="n">qs_pi_t</span>
+        
+      <span class="n">qs_pi_t</span> <span class="o">=</span> <span class="n">get_expected_states</span><span class="p">(</span><span class="n">B</span><span class="p">,</span> <span class="n">qs_prev</span><span class="p">,</span> <span class="n">action</span><span class="p">)</span> <span class="c1"># expected states, under the action entailed by the policy at this particular time</span>
+      <span class="n">qo_pi_t</span> <span class="o">=</span> <span class="n">get_expected_observations</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">qs_pi_t</span><span class="p">)</span>   <span class="c1"># expected observations, under the action entailed by the policy at this particular time</span>
+
+      <span class="n">kld</span> <span class="o">=</span> <span class="n">kl_divergence</span><span class="p">(</span><span class="n">qo_pi_t</span><span class="p">,</span> <span class="n">C</span><span class="p">)</span> <span class="c1"># Kullback-Leibler divergence between expected observations and the prior preferences C</span>
+
+      <span class="n">G_pi_t</span> <span class="o">=</span> <span class="n">H_A</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_pi_t</span><span class="p">)</span> <span class="o">+</span> <span class="n">kld</span> <span class="c1"># predicted uncertainty + predicted divergence, for this policy &amp; timepoint</span>
+
+      <span class="n">G_pi</span> <span class="o">+=</span> <span class="n">G_pi_t</span> <span class="c1"># accumulate the expected free energy for each timepoint into the overall EFE for the policy</span>
+
+    <span class="n">G</span><span class="p">[</span><span class="n">policy_id</span><span class="p">]</span> <span class="o">+=</span> <span class="n">G_pi</span>
+  
+  <span class="k">return</span> <span class="n">G</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s write a function for computing the action posterior, given the posterior probability of each policy:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">compute_prob_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">policies</span><span class="p">,</span> <span class="n">Q_pi</span><span class="p">):</span>
+  <span class="n">P_u</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">actions</span><span class="p">))</span> <span class="c1"># initialize the vector of probabilities of each action</span>
+
+  <span class="k">for</span> <span class="n">policy_id</span><span class="p">,</span> <span class="n">policy</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">policies</span><span class="p">):</span>
+    <span class="n">P_u</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">policy</span><span class="p">[</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">])]</span> <span class="o">+=</span> <span class="n">Q_pi</span><span class="p">[</span><span class="n">policy_id</span><span class="p">]</span> <span class="c1"># get the marginal probability for the given action, entailed by this policy at the first timestep</span>
+  
+  <span class="n">P_u</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist</span><span class="p">(</span><span class="n">P_u</span><span class="p">)</span> <span class="c1"># normalize the action probabilities</span>
+  
+  <span class="k">return</span> <span class="n">P_u</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can write a new active inference function, that uses temporally-deep planning</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">def</span><span class="w"> </span><span class="nf">active_inference_with_planning</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">n_actions</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="mi">2</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">5</span><span class="p">):</span>
+
+<span class="w">  </span><span class="sd">&quot;&quot;&quot; Initialize prior, first observation, and policies &quot;&quot;&quot;</span>
+  
+  <span class="n">prior</span> <span class="o">=</span> <span class="n">D</span> <span class="c1"># initial prior should be the D vector</span>
+
+  <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span> <span class="c1"># get the initial observation</span>
+
+  <span class="n">policies</span> <span class="o">=</span> <span class="n">construct_policies</span><span class="p">([</span><span class="n">n_states</span><span class="p">],</span> <span class="p">[</span><span class="n">n_actions</span><span class="p">],</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="n">policy_len</span><span class="p">)</span>
+
+  <span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: Agent observes itself in location: </span><span class="si">{</span><span class="n">obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="c1"># convert the observation into the agent&#39;s observational state space (in terms of 0 through 8)</span>
+    <span class="n">obs_idx</span> <span class="o">=</span> <span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+
+    <span class="c1"># perform inference over hidden states</span>
+    <span class="n">qs_current</span> <span class="o">=</span> <span class="n">infer_states</span><span class="p">(</span><span class="n">obs_idx</span><span class="p">,</span> <span class="n">A</span><span class="p">,</span> <span class="n">prior</span><span class="p">)</span>
+    <span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qs_current</span><span class="p">,</span> <span class="n">title_str</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;Beliefs about location at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+
+    <span class="c1"># calculate expected free energy of actions</span>
+    <span class="n">G</span> <span class="o">=</span> <span class="n">calculate_G_policies</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">qs_current</span><span class="p">,</span> <span class="n">policies</span><span class="p">)</span>
+
+    <span class="c1"># to get action posterior, we marginalize P(u|pi) with the probabilities of each policy Q(pi), given by \sigma(-G)</span>
+    <span class="n">Q_pi</span> <span class="o">=</span> <span class="n">softmax</span><span class="p">(</span><span class="o">-</span><span class="n">G</span><span class="p">)</span>
+
+    <span class="c1"># compute the probability of each action</span>
+    <span class="n">P_u</span> <span class="o">=</span> <span class="n">compute_prob_actions</span><span class="p">(</span><span class="n">actions</span><span class="p">,</span> <span class="n">policies</span><span class="p">,</span> <span class="n">Q_pi</span><span class="p">)</span>
+
+    <span class="c1"># sample action from probability distribution over actions</span>
+    <span class="n">chosen_action</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">P_u</span><span class="p">)</span>
+
+    <span class="c1"># compute prior for next timestep of inference</span>
+    <span class="n">prior</span> <span class="o">=</span> <span class="n">B</span><span class="p">[:,:,</span><span class="n">chosen_action</span><span class="p">]</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">qs_current</span><span class="p">)</span> 
+
+    <span class="c1"># step the generative process and get new observation</span>
+    <span class="n">action_label</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">chosen_action</span><span class="p">]</span>
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action_label</span><span class="p">)</span>
+  
+  <span class="k">return</span> <span class="n">qs_current</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now run it to see if the agent is able to navigate to location <code class="docutils literal notranslate"><span class="pre">(2,2)</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">grid_locations</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">n_states</span><span class="p">)</span> <span class="c1"># let&#39;s have the agent believe it starts in location (0,0) (upper left corner) </span>
+<span class="n">env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">(</span><span class="n">starting_state</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">))</span>
+<span class="n">qs_final</span> <span class="o">=</span> <span class="n">active_inference_with_planning</span><span class="p">(</span><span class="n">A</span><span class="p">,</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span><span class="p">,</span> <span class="n">n_actions</span><span class="p">,</span> <span class="n">env</span><span class="p">,</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="mi">3</span><span class="p">,</span> <span class="n">T</span> <span class="o">=</span> <span class="mi">10</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting state is (0, 0)
+Re-initialized location to (0, 0)
+..and sampled observation (0, 0)
+Time 0: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/897ceb482b41596af036c3561c1f4a0d3c5b2f855a79ce1cfcb47aa7eaec5ccf.png" src="../_images/897ceb482b41596af036c3561c1f4a0d3c5b2f855a79ce1cfcb47aa7eaec5ccf.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 1: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/10ded7e86bc114895129b64b9be496f12c3f5a6be27d0d160f99bdbdfd169dbf.png" src="../_images/10ded7e86bc114895129b64b9be496f12c3f5a6be27d0d160f99bdbdfd169dbf.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 2: Agent observes itself in location: (0, 0)
+</pre></div>
+</div>
+<img alt="../_images/9e8164c9950d551624117dcf75d7fbfcfce94b7c0f0fb5ca4c9f5ce65b46c3b0.png" src="../_images/9e8164c9950d551624117dcf75d7fbfcfce94b7c0f0fb5ca4c9f5ce65b46c3b0.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 3: Agent observes itself in location: (0, 1)
+</pre></div>
+</div>
+<img alt="../_images/fd89f50dd8d2ed7fd698e20c0f3825ca1ca1067f717abae93bfa21e91e2f3bb5.png" src="../_images/fd89f50dd8d2ed7fd698e20c0f3825ca1ca1067f717abae93bfa21e91e2f3bb5.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 4: Agent observes itself in location: (0, 2)
+</pre></div>
+</div>
+<img alt="../_images/6c2e4e8184297c0a4c1484b0d657f83874ea62d6e30b50bac8f5a811669e780d.png" src="../_images/6c2e4e8184297c0a4c1484b0d657f83874ea62d6e30b50bac8f5a811669e780d.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 5: Agent observes itself in location: (1, 2)
+</pre></div>
+</div>
+<img alt="../_images/7b16e8a72359082e68c30334894a86680c297368a272bf4c17dc05e1cc102536.png" src="../_images/7b16e8a72359082e68c30334894a86680c297368a272bf4c17dc05e1cc102536.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 6: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/f978dbffa6e30ce73ecbd312ea3bc56461a8710e4405f1d830f8d3794c15a257.png" src="../_images/f978dbffa6e30ce73ecbd312ea3bc56461a8710e4405f1d830f8d3794c15a257.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 7: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/563e7beeb44f35b821bc1d08d7d1c36f73f31c0377043ae203d2473f9cd60c74.png" src="../_images/563e7beeb44f35b821bc1d08d7d1c36f73f31c0377043ae203d2473f9cd60c74.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 8: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/69f97fb34098cd91f67520315bcbc27b4674b9117126a11e2864a7d5db77ce88.png" src="../_images/69f97fb34098cd91f67520315bcbc27b4674b9117126a11e2864a7d5db77ce88.png" />
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Time 9: Agent observes itself in location: (2, 2)
+</pre></div>
+</div>
+<img alt="../_images/9a2e55fedee2528972d4ef683ae8ce812e0a5df8f6052f197579f976b78e68ca.png" src="../_images/9a2e55fedee2528972d4ef683ae8ce812e0a5df8f6052f197579f976b78e68ca.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="pymdp_fundamentals.html" class="btn btn-neutral float-left" title="pymdp Fundamentals" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="using_the_agent_class.html" class="btn btn-neutral float-right" title="Tutorial 2: the Agent API" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

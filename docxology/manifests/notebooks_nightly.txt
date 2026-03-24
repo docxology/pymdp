@@ -1,0 +1,5 @@
+# Matches test/notebooks/nightly_notebooks.txt for this repository tree.
+examples/advanced/pymdp_with_neural_encoder.ipynb
+examples/learning/learning_gridworld.ipynb
+examples/model_fitting/fitting_with_pybefit.ipynb
+examples/sparse/sparse_benchmark.ipynb

@@ -1,0 +1,44 @@
+{
+  "ok": true,
+  "id": "inductive_inference/inductive_inference_gridworld",
+  "I_shape": [
+    4,
+    3
+  ],
+  "diagnostics": {
+    "I_matrix": [
+      [
+        0.0,
+        0.0,
+        1.0
+      ],
+      [
+        0.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ],
+      [
+        1.0,
+        1.0,
+        1.0
+      ]
+    ],
+    "H_vector": [
+      0.0,
+      0.0,
+      1.0
+    ],
+    "B_shape": [
+      3,
+      3,
+      1
+    ],
+    "threshold": 0.5,
+    "depth": 4
+  }
+}

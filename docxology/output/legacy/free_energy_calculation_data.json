@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "id": "legacy/free_energy_calculation",
+  "log_sum": -2.407945608651871,
+  "diagnostics": {
+    "input_distribution": [
+      0.1,
+      0.9
+    ],
+    "spm_log_values": [
+      -2.3025850929940446,
+      -0.10536051565782616
+    ],
+    "log_sum": -2.407945608651871,
+    "entropy": 0.325082973391448
+  }
+}

@@ -1,0 +1,61 @@
+Traceback (most recent call last):
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/jupyter_cache/executors/utils.py", line 58, in single_nb_execution
+    executenb(
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/nbclient/client.py", line 1305, in execute
+    return NotebookClient(nb=nb, resources=resources, km=km, **kwargs).execute()
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/jupyter_core/utils/__init__.py", line 165, in wrapped
+    return loop.run_until_complete(inner)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/Users/4d/miniforge3/lib/python3.12/asyncio/base_events.py", line 691, in run_until_complete
+    return future.result()
+           ^^^^^^^^^^^^^^^
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/nbclient/client.py", line 705, in async_execute
+    await self.async_execute_cell(
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/nbclient/client.py", line 1058, in async_execute_cell
+    await self._check_raise_for_error(cell, cell_index, exec_reply)
+  File "/Users/4d/Documents/GitHub/template/projects/pymdp/.venv/lib/python3.12/site-packages/nbclient/client.py", line 914, in _check_raise_for_error
+    raise CellExecutionError.from_cell_and_msg(cell, exec_reply_content)
+nbclient.exceptions.CellExecutionError: An error occurred while executing the following cell:
+------------------
+""" Quickly build a random active inference agent, give it an observation and have it do hidden state and policy inference """
+
+from pymdp import utils
+from pymdp.agent import Agent
+
+num_obs = [3, 5] # observation modality dimensions
+num_states = [4, 2, 3] # hidden state factor dimensions
+num_controls = [4, 1, 1] # control state factor dimensions
+A_array = utils.random_A_matrix(num_obs, num_states) # create sensory likelihood (A matrix)
+B_array = utils.random_B_matrix(num_states, num_controls) # create transition likelihood (B matrix)
+
+C_vector = utils.obj_array_uniform(num_obs) # uniform preferences
+
+# instantiate a quick agent using your A, B and C arrays
+my_agent = Agent( A = A_array, B = B_array, C = C_vector)
+
+# give the agent a random observation and get the optimized posterior beliefs
+
+observation = [1, 4] # a list specifying the indices of the observation, for each observation modality
+
+qs = my_agent.infer_states(observation) # get posterior over hidden states (a multi-factor belief)
+
+# Do active inference
+
+q_pi, neg_efe = my_agent.infer_policies() # return the policy posterior and return (negative) expected free energies of each policy as well
+
+action = my_agent.sample_action() # sample an action from the posterior over policies
+------------------
+
+
+[31m---------------------------------------------------------------------------[39m
+[31mAttributeError[39m                            Traceback (most recent call last)
+[36mCell[39m[36m [39m[32mIn[2][39m[32m, line 9[39m
+[32m      7[39m num_states = [[32m4[39m, [32m2[39m, [32m3[39m] [38;5;66;03m# hidden state factor dimensions[39;00m
+[32m      8[39m num_controls = [[32m4[39m, [32m1[39m, [32m1[39m] [38;5;66;03m# control state factor dimensions[39;00m
+[32m----> [39m[32m9[39m A_array = [43mutils[49m[43m.[49m[43mrandom_A_matrix[49m(num_obs, num_states) [38;5;66;03m# create sensory likelihood (A matrix)[39;00m
+[32m     10[39m B_array = utils.random_B_matrix(num_states, num_controls) [38;5;66;03m# create transition likelihood (B matrix)[39;00m
+[32m     12[39m C_vector = utils.obj_array_uniform(num_obs) [38;5;66;03m# uniform preferences[39;00m
+
+[31mAttributeError[39m: module 'pymdp.utils' has no attribute 'random_A_matrix'
+

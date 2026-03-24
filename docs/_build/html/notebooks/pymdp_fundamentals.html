@@ -1,0 +1,544 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>pymdp Fundamentals &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Tutorial 1: Active inference from scratch" href="active_inference_from_scratch.html" />
+    <link rel="prev" title="Docxology sidecar" href="../docxology_sidecar.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#very-brief-pymdp-and-active-inference-background"><em>Very brief</em> <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> and active inference background</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#data-structures-in-pymdp">Data structures in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#numpy-object-arrays"><code class="docutils literal notranslate"><span class="pre">numpy</span></code> object arrays</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#deeper-dive-on-object-arrays">Deeper dive on object arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#constructing-factorized-distributions-with-object-arrays">Constructing factorized distributions with object arrays</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#object-arrays-and-conditional-distributions">Object arrays and conditional distributions</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#handy-functions-for-dealing-with-object-arrays">Handy functions for dealing with object arrays.</a><ul>
+<li class="toctree-l4"><a class="reference internal" href="#normalization">Normalization</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#sampling">Sampling</a></li>
+<li class="toctree-l4"><a class="reference internal" href="#conditional-expectation">Conditional expectation</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/pymdp_fundamentals.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="pymdp-fundamentals">
+<h1><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals<a class="headerlink" href="#pymdp-fundamentals" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/pymdp_fundamentals.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="very-brief-pymdp-and-active-inference-background">
+<h2><em>Very brief</em> <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> and active inference background<a class="headerlink" href="#very-brief-pymdp-and-active-inference-background" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> is a Python library, written primarily in <a class="reference external" href="https://numpy.org/">NumPy</a>, for solving <strong>P</strong>artially-<strong>O</strong>bserved <strong>M</strong>arkov <strong>D</strong>ecision <em>P</em>rocesses (POMDPs) using active inference, a modelling framework for perception, learning and action, originally derived from the Free Energy Principle. POMDP models have traditionally been used in disciplines ranging from control theory and robotics, to biological fields concerned with empirically modelling human and animal behavior.</p>
+<p>For a theoretical overview of active inference and the motivations for developing this package, please see our companion paper: <a class="reference external" href="https://arxiv.org/abs/2201.03904">“pymdp: A Python library for active inference in discrete state spaces”</a>.</p>
+<p>More in-depth coverage of applying active inference to POMDPs can be found in the following two papers: <a class="reference external" href="https://direct.mit.edu/neco/article-abstract/29/1/1/8207/Active-Inference-A-Process-Theory"><em>Active Inference: A Process Theory</em></a> and <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022249620300857"><em>Active Inference in Discrete State Spaces: A Synthesis</em></a></p>
+<p>Below are links to a few useful papers, talks, and blog posts that concern active inference and the free energy principle more broadly:</p>
+<ul class="simple">
+<li><p>Blog post: <a class="reference external" href="https://medium.com/&#64;solopchuk/tutorial-on-active-inference-30edcf50f5dc">Tutorial on Active Inference</a> by Oleg Solopchuk</p></li>
+<li><p>Talk: <a class="reference external" href="https://www.youtube.com/watch?v=zWFfZHqOnvM">The variational foundations of movement</a> by Karl Friston</p></li>
+<li><p>Podcast: <a class="reference external" href="https://www.youtube.com/watch?v=NwzuibY5kUs">Karl Friston: Neuroscience and the Free Energy Principle</a> hosted on Lex Fridman Podcast #99</p></li>
+<li><p>Paper: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022249615000759"><em>A tutorial on the free-energy framework for modelling perception and learning</em></a> by Rafal Bogacz</p></li>
+<li><p>Paper: <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022249617300962"><em>The free energy principle for action and perception: A mathematical review</em></a> by Christopher Buckley, Chang Sub Kim, Simon McGregor, and Anil Seth</p></li>
+<li><p>Paper: <a class="reference external" href="https://www.fil.ion.ucl.ac.uk/~karl/A%20free%20energy%20principle%20for%20the%20brain.pdf"><em>A free energy principle for the brain</em></a> by Karl Friston</p></li>
+<li><p>Paper: <a class="reference external" href="https://psyarxiv.com/b4jm6/"><em>A Step-by-Step Tutorial on Active Inference and its Application to Empirical Data</em></a> by Ryan Smith and Christopher Whyte</p></li>
+</ul>
+<p>Also see <a class="reference external" href="https://jaredtumiel.github.io/blog/2020/10/14/spinning-up-in-ai.html">Jared Tumiel’s blog post</a> and <a class="reference external" href="https://github.com/BerenMillidge/FEP_Active_Inference_Papers">Beren Millidge’s github repository</a> for more literature and pedagogical materials related to active inference and the free energy principle.</p>
+</section>
+<section id="data-structures-in-pymdp">
+<h2>Data structures in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code><a class="headerlink" href="#data-structures-in-pymdp" title="Link to this heading"></a></h2>
+<p>In this tutorial notebook we’ll be walking through the core functionalities and data structures used by <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, most of which will be easy to grasp for anyone who’s familiar with array programming in <code class="docutils literal notranslate"><span class="pre">numpy</span></code> or even MATLAB, where much of the existing code related to active inference currently exists.</p>
+<p>We’ll start by running through a full usage example of quickly building and running a random active inference agent in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>.</p>
+<p>In the interest of focusing on data structures and syntax, we’ll just initialize the agent to have a random POMDP generative model – we don’t need to analogize this generative model to any hypothetical task environment that our agent will be behaving within. The agent will just have random beliefs about how the world evolves and how it gives rise to observations. The focus here is on how we store these objects (e.g. components of the generative model) in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>.</p>
+<p>For more in-depth tutorials that actually work through full, tutorial-style examples of building active inference agents and running them, please see the <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/active_inference_from_scratch.html">Active inference from scratch</a> tutorial and <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/using_the_agent_class.html">Using the agent class</a> tutorial.</p>
+<p>Other examples in the Examples section (e.g. the <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/tmaze_demo.html">T-Maze demo</a> or the <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/cue_chaining_demo.html">Epistemic chaining demo</a> provide walk-throughs of building active inference agents in particular task environments.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="sd">&quot;&quot;&quot; Quickly build a random active inference agent, give it an observation and have it do hidden state and policy inference &quot;&quot;&quot;</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+
+<span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># observation modality dimensions</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># hidden state factor dimensions</span>
+<span class="n">num_controls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># control state factor dimensions</span>
+<span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_A_matrix</span><span class="p">(</span><span class="n">num_obs</span><span class="p">,</span> <span class="n">num_states</span><span class="p">)</span> <span class="c1"># create sensory likelihood (A matrix)</span>
+<span class="n">B_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_B_matrix</span><span class="p">(</span><span class="n">num_states</span><span class="p">,</span> <span class="n">num_controls</span><span class="p">)</span> <span class="c1"># create transition likelihood (B matrix)</span>
+
+<span class="n">C_vector</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_uniform</span><span class="p">(</span><span class="n">num_obs</span><span class="p">)</span> <span class="c1"># uniform preferences</span>
+
+<span class="c1"># instantiate a quick agent using your A, B and C arrays</span>
+<span class="n">my_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span> <span class="n">A</span> <span class="o">=</span> <span class="n">A_array</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B_array</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">C_vector</span><span class="p">)</span>
+
+<span class="c1"># give the agent a random observation and get the optimized posterior beliefs</span>
+
+<span class="n">observation</span> <span class="o">=</span> <span class="p">[</span><span class="mi">1</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># a list specifying the indices of the observation, for each observation modality</span>
+
+<span class="n">qs</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_states</span><span class="p">(</span><span class="n">observation</span><span class="p">)</span> <span class="c1"># get posterior over hidden states (a multi-factor belief)</span>
+
+<span class="c1"># Do active inference</span>
+
+<span class="n">q_pi</span><span class="p">,</span> <span class="n">neg_efe</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_policies</span><span class="p">()</span> <span class="c1"># return the policy posterior and return (negative) expected free energies of each policy as well</span>
+
+<span class="n">action</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">sample_action</span><span class="p">()</span> <span class="c1"># sample an action from the posterior over policies</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">9</span>
+<span class="g g-Whitespace">      </span><span class="mi">7</span> <span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># hidden state factor dimensions</span>
+<span class="g g-Whitespace">      </span><span class="mi">8</span> <span class="n">num_controls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># control state factor dimensions</span>
+<span class="ne">----&gt; </span><span class="mi">9</span> <span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_A_matrix</span><span class="p">(</span><span class="n">num_obs</span><span class="p">,</span> <span class="n">num_states</span><span class="p">)</span> <span class="c1"># create sensory likelihood (A matrix)</span>
+<span class="g g-Whitespace">     </span><span class="mi">10</span> <span class="n">B_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_B_matrix</span><span class="p">(</span><span class="n">num_states</span><span class="p">,</span> <span class="n">num_controls</span><span class="p">)</span> <span class="c1"># create transition likelihood (B matrix)</span>
+<span class="g g-Whitespace">     </span><span class="mi">12</span> <span class="n">C_vector</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_uniform</span><span class="p">(</span><span class="n">num_obs</span><span class="p">)</span> <span class="c1"># uniform preferences</span>
+
+<span class="ne">AttributeError</span>: module &#39;pymdp.utils&#39; has no attribute &#39;random_A_matrix&#39;
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="numpy-object-arrays">
+<h2><code class="docutils literal notranslate"><span class="pre">numpy</span></code> object arrays<a class="headerlink" href="#numpy-object-arrays" title="Link to this heading"></a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, both generative model distributions (e.g. <code class="docutils literal notranslate"><span class="pre">A</span></code> or <code class="docutils literal notranslate"><span class="pre">B</span></code>) as well as posterior distributions over hidden states (e.g. <code class="docutils literal notranslate"><span class="pre">qs</span></code>) and observations are represented as what we call “object arrays”. Note that other conventions may refer to these arrays as “arrays-of-arrays”, “nested arrays”, or “ragged/jagged arrays.”</p>
+<p>Object arrays differ from more “classical” <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code> that have numerical (e.g. <code class="docutils literal notranslate"><span class="pre">np.float64</span></code>) data types. The typical <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of float or integer data type, can only have scalar values as its entries. Object arrays (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> with <code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">=</span> <span class="pre">object</span></code>) however, do not have this restriction. Their array elements can be arbitrary Python data structures or objects. The entries of an object array can thus have arbitrary type and dimensionality.</p>
+<section id="deeper-dive-on-object-arrays">
+<h3>Deeper dive on object arrays<a class="headerlink" href="#deeper-dive-on-object-arrays" title="Link to this heading"></a></h3>
+<p>Object arrays can be initialized standard <code class="docutils literal notranslate"><span class="pre">numpy</span></code> constructors, but by also explicitly declaring <code class="docutils literal notranslate"><span class="pre">dtype</span> <span class="pre">=</span> <span class="pre">object</span></code>.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">my_empty_array</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">empty</span><span class="p">(</span><span class="mi">5</span><span class="p">,</span> <span class="n">dtype</span> <span class="o">=</span> <span class="nb">object</span><span class="p">)</span>
+</pre></div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">pymdp.utils</span></code> module provides a set of functions in that allow you to quickly construct, convert between, and perform mathematical operations on these object arrays. Fundamentally underpinning these <code class="docutils literal notranslate"><span class="pre">utils</span></code> operations is the assumption that the elements of the input object array are <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code> with numerical data type. In other words, we simply use object arrays to store collections of multi-dimensional arrays or standard <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code>.  This construction is chosen to allow <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> to easily perform probabilistic computations on collections of multi-dimensional arrays, where each constituent array within the collection represents a particular factor or marginal distribution within a factorized representation. In the next section we’ll get into why this constructino is useful and how it’s mathematically motivated.</p>
+</section>
+<section id="constructing-factorized-distributions-with-object-arrays">
+<h3>Constructing factorized distributions with object arrays<a class="headerlink" href="#constructing-factorized-distributions-with-object-arrays" title="Link to this heading"></a></h3>
+<p>For example, let’s imagine a joint categorical probability distribution over some variable $\mathbf{s}$ that factorizes into the product of a set of 3 marginal (i.e. univariate) distributions. Mathematically, we can express that factorization as:</p>
+<p>$$
+P(\mathbf{s}) = \prod_i^3 P(s_i)
+$$</p>
+<p>In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, instead of encoding this distribution as the fully-enumerated product of marginals $P(\mathbf{s}) = P(s_1) \times P(s_2) \times P(s_3)$, we instead exploit the factorization and <em>only store</em> the separate marginals $P(s_i)$ of the full distribution. Specifically, we store each marginal as a single <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of <code class="docutils literal notranslate"><span class="pre">ndim</span> <span class="pre">==</span> <span class="pre">1</span></code> (i.e. a row vector) in a different entry of a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of <code class="docutils literal notranslate"><span class="pre">dtype</span></code> object. The object array representation be easily constructed and manipulated using <code class="docutils literal notranslate"><span class="pre">utils</span></code> functions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_factors</span> <span class="o">=</span> <span class="mi">3</span> <span class="c1"># we have 3 factors total</span>
+
+<span class="n">dim_of_each_factor</span> <span class="o">=</span> <span class="p">[</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">]</span> <span class="c1"># factor 1 has 2 levels, factor 2 has 2 levels, factor 4 has 4 levels</span>
+
+<span class="n">P_s</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_single_categorical</span><span class="p">(</span><span class="n">dim_of_each_factor</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">P_s</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.13370366 0.86629634]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Here we used the utility function <code class="docutils literal notranslate"><span class="pre">random_single_categorical(shape_list)</span></code> to create a random collection of marginal categorical distributions, representing the different factorized components of the full distribution $P(\mathbf{s})$.</p>
+<p>Each of these marginal categorical distributions is stored in an according entry of the object array <code class="docutils literal notranslate"><span class="pre">P_s</span></code>.</p>
+<p>This representation is advantageous for several reasons, but one of the main advantages is sparsity / memory overhead. If we had to store the entire joint distribution $P(\mathbf{s})$ as a product of all the marginals, we could either store that as a single 1D categorical distribution with <code class="docutils literal notranslate"><span class="pre">2</span> <span class="pre">*</span> <span class="pre">2</span> <span class="pre">*</span> <span class="pre">4</span></code> different levels (the combinatorics of all the hidden state dimensionalities), or as a multi-dimensional array with size <code class="docutils literal notranslate"><span class="pre">(2,</span> <span class="pre">2,</span> <span class="pre">4)</span></code>, where each entry of the joint <code class="docutils literal notranslate"><span class="pre">Ps[i,j,k]</span></code> stores the joint probability of $P(s^1 = i, s^2 = j, s^3 = k)$. Either way, we’d have to store polynomially more values $2 \times 2 \times 4$ is twice the size of $2 + 2 + 4$. But since we know that the marginals are by construction independent, we can just store them separately without losing any information.</p>
+<p><em>Side note</em>: Here’s an alternative way to generate multi-factor categorical distributions.</p>
+<p>if you knew what your factors were to begin with, and you wanted to construct the full distribution from the factors, you could use another utility function to build the object array from a <code class="docutils literal notranslate"><span class="pre">list</span></code> of the factorized distributions.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="n">ps1</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">ps2</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])</span>
+<span class="n">ps3</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">,</span> <span class="mf">1.</span><span class="o">/</span><span class="mf">6.</span><span class="p">])</span>
+
+<span class="n">P_s</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_from_list</span><span class="p">([</span><span class="n">ps1</span><span class="p">,</span> <span class="n">ps2</span><span class="p">,</span> <span class="n">ps3</span><span class="p">])</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">P_s</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.5        0.16666667 0.16666667 0.16666667]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="object-arrays-and-conditional-distributions">
+<h3>Object arrays and conditional distributions<a class="headerlink" href="#object-arrays-and-conditional-distributions" title="Link to this heading"></a></h3>
+<p>Understanding the representation of factorized probability distributions as object arrays is critical for understanding and constructing generative models in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>. This object array representation applies not only to multi-factor, unconditional categorical distributions (like the example above: a joint categorical distribution being factorized into a product of univariate marginals), but also is used to represent collections of <em>conditional</em> categorical distributions.</p>
+<p>In particular, we use object arrays to encode the observation and transition models (also known as the observation likelihood and transition likelihood) of the agent’s generative model. Object arrays are necessary in this case, due to the convention of factorizing the observation space into multiple <strong>observation modalities</strong> and the hidden states into multiple <strong>hidden state factors</strong>. Mathematically, this can be expressed as follows:</p>
+<p>$$
+\mathbf{o}<em>t = \prod</em>{i = 1}^{M} \delta_{O_i}(o^{i}<em>t) \hspace{15 mm} \mathbf{s}<em>t = \prod</em>{i = 1}^{F} \delta</em>{S_i}(s^{i}_t) \
+$$</p>
+<p>where any particular observation $\mathbf{o}_t$ is actually factorized into a product of Dirac delta functions over different modality-specific observations $o^m_t$, i.e. “one-hot” vectors or unit vectors in $\mathbb{R}^{O_m}$. The same factorization applies to multi-factorial hidden states $\mathbf{s}<em>t$. The notation $\delta</em>{X_i}(x^{i})$ denotes a Dirac delta function with discrete support $X_i$ evaluated at point $x^i$.</p>
+<p>This factorization of observations across modalities and hidden states across hidden state factors, carries forward into the specification of the <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays, the representation of the conditional distributions $P(\mathbf{o}_t|\mathbf{s}<em>t)$ and $P(\mathbf{s}<em>t|\mathbf{s}</em>{t-1}, \mathbf{u}</em>{t-1})$ in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>. These two arrays of conditional distributions can also be factorized by modality and factor, respectively.</p>
+<p>The <code class="docutils literal notranslate"><span class="pre">A</span></code> array, for instance, contains the agent’s observation model, that relates hidden states $\mathbf{s}_t$ to observations $\mathbf{o}_t$:</p>
+<p>$$
+\mathbf{A} = {A^1, A^2, …, A^M }, \hspace{5mm} A^m = P(o^m_t | s^1_t, s^2_t, …, s^F_t)
+$$</p>
+<p>Therefore, we represent the <code class="docutils literal notranslate"><span class="pre">A</span></code> array as an object array whose constituent arrays are multidimensional <code class="docutils literal notranslate"><span class="pre">numpy.ndarrays</span></code> that encode conjunctive relationships between combinations of hidden states and observations.</p>
+<p>This is best explained using the example in the original example code at the top of this tutorial. It is custom to build lists of the dimensionalities of the modalities (resp. hidden state factors) of your model, typically using lists named <code class="docutils literal notranslate"><span class="pre">num_obs</span></code> (for the dimensionalities of the observation modalities) and <code class="docutils literal notranslate"><span class="pre">num_states</span></code> (dimensionalities of the hidden state factors). These lists can then be used to automatically construct the <code class="docutils literal notranslate"><span class="pre">A</span></code> array with the correct shape.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">]</span> <span class="c1"># observation modality dimensions</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># hidden state factor dimensions</span>
+
+<span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_A_matrix</span><span class="p">(</span><span class="n">num_obs</span><span class="p">,</span> <span class="n">num_states</span><span class="p">)</span> <span class="c1"># create sensory likelihood (A array)</span>
+
+<span class="k">for</span> <span class="n">m</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_obs</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dimensionality of A array for modality </span><span class="si">{</span><span class="n">m</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">A_array</span><span class="p">[</span><span class="n">m</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimensionality of A array for modality 1: (3, 4, 2, 3)
+Dimensionality of A array for modality 2: (5, 4, 2, 3)
+</pre></div>
+</div>
+</div>
+</div>
+<p>For example, <code class="docutils literal notranslate"><span class="pre">A_array[0]</span></code> stores the conditional relationships between the hidden states $\mathbf{s}$ and observations within the first modality $o^1_t$, which has dimensionality <code class="docutils literal notranslate"><span class="pre">3</span></code>. This explains why the <code class="docutils literal notranslate"><span class="pre">shape</span></code> of <code class="docutils literal notranslate"><span class="pre">A_array[0]</span></code> is <code class="docutils literal notranslate"><span class="pre">(3,</span> <span class="pre">4,</span> <span class="pre">2,</span> <span class="pre">3)</span></code> – it stores the conditional relationships between each setting of the hidden state factors (which have dimensionalities <code class="docutils literal notranslate"><span class="pre">[4,</span> <span class="pre">2,</span> <span class="pre">3]</span></code>) and the observations within the first modality, which has dimensionality <code class="docutils literal notranslate"><span class="pre">3</span></code>. Crucially, each sub-array <code class="docutils literal notranslate"><span class="pre">A[m]</span></code> stores the conditional dependencies between <em>all</em> the hidden state factor combinations (configurations of $s^1, s^2, …, s^F$) and the observations along modality <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
+<p>In this case, we used the <code class="docutils literal notranslate"><span class="pre">pymdp.utils</span></code> function <code class="docutils literal notranslate"><span class="pre">random_A_matrix()</span></code> to generate a random <code class="docutils literal notranslate"><span class="pre">A</span></code> array, but in most cases users will want to design their own bespoke observation models (or at least initialize them to some reasonable starting values). In such a scenario, the usual route is to initialize the <code class="docutils literal notranslate"><span class="pre">A</span></code> array to a series of identically-valued multidimensional arrays (e.g. arrays filled with 0’s or uniform values), and then fill out the conditional probability entries “by hand”, according to the task the user is interested in modelling.</p>
+<p>For this purpose, utility functions like <code class="docutils literal notranslate"><span class="pre">obj_array_zeros</span></code> and <code class="docutils literal notranslate"><span class="pre">obj_array_uniform</span></code> come in handy. These functions takes as inputs list of shapes, where each shape contains the dimensionality (e.g. <code class="docutils literal notranslate"><span class="pre">[2,</span> <span class="pre">3,</span> <span class="pre">4]</span></code>) of one of the multi-dimensional arrays that will populate the final object array. For example, creating this shape list for the <code class="docutils literal notranslate"><span class="pre">A</span></code> array, given <code class="docutils literal notranslate"><span class="pre">num_obs</span></code> and <code class="docutils literal notranslate"><span class="pre">num_states</span></code> is quite straightforward:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_shapes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">o_dim</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_states</span> <span class="k">for</span> <span class="n">o_dim</span> <span class="ow">in</span> <span class="n">num_obs</span><span class="p">]</span>
+
+<span class="c1"># initialize the A array to all 0&#39;s</span>
+<span class="n">empty_A</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">A_shapes</span><span class="p">)</span>
+
+<span class="c1"># initialize the A array to uniform distributions as columns</span>
+<span class="c1"># uniform_A = utils.obj_array_uniform(A_shapes)</span>
+
+<span class="c1"># then fill out your A matrix elements as appropriate, depending on the task</span>
+<span class="c1"># empty_A[0][:,0,1,2] = np.array([0.7, 0.15, 0.15])</span>
+<span class="c1"># empty_A[0][:,...] = ....</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Similarly, we can create <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays that encode the temporal dependencies between the hidden state factors over time, further conditioned on control factors (or state factors that correspond to action-states). Mathematically, the <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays are expressed as follows:</p>
+<p>$$
+\mathbf{B} = {B^1, B^2, …, B^F }, \hspace{5mm} B^f = P(s^f_t | s^f_{t-1}, u^f_{t-1})
+$$</p>
+<p>where $u^f_{t-1}$ denotes the control state for control factor $f$, taken at time $t-1$.</p>
+<p>We can construct these matrices this by introducing an additional list <code class="docutils literal notranslate"><span class="pre">num_controls</span></code> that stores the dimensionalities of each control factor, which in combination with <code class="docutils literal notranslate"><span class="pre">num_states</span></code> can be used to specify the <code class="docutils literal notranslate"><span class="pre">B</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">,</span> <span class="mi">3</span><span class="p">]</span> <span class="c1"># hidden state factor dimensions</span>
+<span class="n">num_controls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">4</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span> <span class="c1"># control state factor dimensions</span>
+
+<span class="n">B_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_B_matrix</span><span class="p">(</span><span class="n">num_states</span><span class="p">,</span> <span class="n">num_controls</span><span class="p">)</span> <span class="c1"># create transition likelihood (B matrix)</span>
+
+<span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">_</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_states</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Dimensionality of B array for hidden state factor </span><span class="si">{</span><span class="n">f</span><span class="w"> </span><span class="o">+</span><span class="w"> </span><span class="mi">1</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">B_array</span><span class="p">[</span><span class="n">f</span><span class="p">]</span><span class="o">.</span><span class="n">shape</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Dimensionality of B array for hidden state factor 1: (4, 4, 4)
+Dimensionality of B array for hidden state factor 2: (2, 2, 1)
+Dimensionality of B array for hidden state factor 3: (3, 3, 1)
+</pre></div>
+</div>
+</div>
+</div>
+<p>As we can see here, each factor-specific <code class="docutils literal notranslate"><span class="pre">B</span></code> array (e.g. <code class="docutils literal notranslate"><span class="pre">B[2]</span></code>) has shape <code class="docutils literal notranslate"><span class="pre">(num_states[f],</span> <span class="pre">num_states[f],</span> <span class="pre">num_controls[f])</span></code>, encoding the conditional dependencies between states for a given factor <code class="docutils literal notranslate"><span class="pre">f</span></code> at subsequent timepoints, further conditioned on actions or control states along that factor. This construction means that hidden state factors are statistically independent of one another – i.e. hidden state factor <code class="docutils literal notranslate"><span class="pre">f</span></code> is only affected by its own state at the previous timestep, as well as the state of the <code class="docutils literal notranslate"><span class="pre">f</span></code>-th control factor.</p>
+<p>And of course, as with the <code class="docutils literal notranslate"><span class="pre">A</span></code> array, we can also pre-allocate our <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays to have the correct shape and then fill them out by hand, using the following template:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B_shapes</span> <span class="o">=</span> <span class="p">[[</span><span class="n">s_dim</span><span class="p">,</span> <span class="n">s_dim</span><span class="p">,</span> <span class="n">num_controls</span><span class="p">[</span><span class="n">f</span><span class="p">]]</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">s_dim</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+
+<span class="c1"># initialize the B array to all 0&#39;s</span>
+<span class="n">empty_B</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">B_shapes</span><span class="p">)</span>
+
+<span class="c1"># initialize the B array to uniform distributions as columns</span>
+<span class="c1"># uniform_B = utils.obj_array_uniform(B_shapes)</span>
+
+<span class="c1"># then assign your B matrix elements as appropriate, depending on the task</span>
+<span class="c1"># empty_B[0][0,:,0] = 1.</span>
+<span class="c1"># empty_B[0][1,:,1] = 1.</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="handy-functions-for-dealing-with-object-arrays">
+<h3>Handy functions for dealing with object arrays.<a class="headerlink" href="#handy-functions-for-dealing-with-object-arrays" title="Link to this heading"></a></h3>
+<p>The <code class="docutils literal notranslate"><span class="pre">utils</span></code> library is also equipped with a set of handy functions for dealing with object arrays – this includes operations like normalization and sampling.</p>
+<section id="normalization">
+<h4>Normalization<a class="headerlink" href="#normalization" title="Link to this heading"></a></h4>
+<p>For instance, let’s imagine you generated an <code class="docutils literal notranslate"><span class="pre">A</span></code> array by hand with the following structure:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span>
+
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span>
+
+<span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array</span><span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="n">num_obs</span><span class="p">))</span> <span class="c1"># create an empty object array with as many elements as there are observation modalities (here, only 1 modality)</span>
+
+<span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">num_obs</span> <span class="o">+</span> <span class="n">num_states</span><span class="p">)</span> <span class="c1"># initialize the likelihood mapping for the single modality</span>
+
+<span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># assign the mapping between hidden states of factor 0 and observations, given factor 1 == 0</span>
+<span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>       <span class="c1"># assign the mapping between hidden states of factor 0 and observation of level 0, given factor 1 == 1</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">A</span></code> array corresponds to an observation model with a single modality and two hidden state factors.</p>
+<p>We can check if this <code class="docutils literal notranslate"><span class="pre">A</span></code> array is a proper conditional distribution by using the <code class="docutils literal notranslate"><span class="pre">utils</span></code> function <code class="docutils literal notranslate"><span class="pre">is_normalized</span></code>, which checks to make sure each column of each sub-array within <code class="docutils literal notranslate"><span class="pre">A</span></code> sums to <code class="docutils literal notranslate"><span class="pre">1</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">utils</span><span class="o">.</span><span class="n">is_normalized</span><span class="p">(</span><span class="n">A_array</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>False
+</pre></div>
+</div>
+</div>
+</div>
+<p>This <code class="docutils literal notranslate"><span class="pre">A</span></code> is not properly normalized because of this line:</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">0.5</span>   
+</pre></div>
+</div>
+<p>This is problematic, because we’ve only assigned a single outcome to have 50% probability under all the hidden state configurations of factor 0, given factor 1 == level 1. That means each column of <code class="docutils literal notranslate"><span class="pre">A_array[0][:,:,1]</span></code> is not a proper conditional distribution, since there’s still 50% of ‘unaccounted’ probability. In particular, the distributions encoded in the columns of this array do not each sum to 1.</p>
+<p>We can fix this by hand (by changing our code to allocate the remaining 50% of probability for each of those columns) or, depending on the intended final distributions, by using the <code class="docutils literal notranslate"><span class="pre">norm_dist_obj_arr</span></code> function, which column-normalizes every <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> contained within an object array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist_obj_arr</span><span class="p">(</span><span class="n">A_array</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;P(o0 | s0, s1 == 1) after normalization: </span><span class="se">\n</span><span class="s1"> </span><span class="si">{</span><span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">1</span><span class="p">]</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Is the full distribution is now normalized? </span><span class="si">{</span><span class="s2">&quot;Yes!&quot;</span><span class="w"> </span><span class="k">if</span><span class="w"> </span><span class="n">utils</span><span class="o">.</span><span class="n">is_normalized</span><span class="p">(</span><span class="n">A_array</span><span class="p">)</span><span class="w"> </span><span class="k">else</span><span class="w"> </span><span class="s2">&quot;No!&quot;</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>P(o0 | s0, s1 == 1) after normalization: 
+ [[1. 1. 1.]
+ [0. 0. 0.]
+ [0. 0. 0.]]
+
+Is the full distribution is now normalized? Yes!
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="sampling">
+<h4>Sampling<a class="headerlink" href="#sampling" title="Link to this heading"></a></h4>
+<p>Sometimes we will also want to sample from categorical probability distributions, for instance when sampling observations from the generative process or sampling actions from the agent’s posterior over policies. We have two functions in <code class="docutils literal notranslate"><span class="pre">utils</span></code>, <code class="docutils literal notranslate"><span class="pre">sample</span></code> and <code class="docutils literal notranslate"><span class="pre">sample_obj_arr</span></code> that can deal with sampling from either single probability distributions (<code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code> of <code class="docutils literal notranslate"><span class="pre">ndim</span> <span class="pre">==</span> <span class="pre">1</span></code>) as well as collections of factorized distributions, stored in object arrays.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># sample from a single random categorical distribution</span>
+
+<span class="n">my_categorical</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">random</span><span class="o">.</span><span class="n">rand</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
+<span class="n">my_categorical</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">)</span> <span class="c1"># the `utils.norm_dist` function works on single vectors or matrices that represent non-factorized probability distributions</span>
+<span class="n">sampled_outcome</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample</span><span class="p">(</span><span class="n">my_categorical</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">sampled_outcome</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># sample from a multi-factor categorical distribution</span>
+
+<span class="n">my_multifactor_categorical</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">random_single_categorical</span><span class="p">([</span><span class="mi">3</span><span class="p">,</span> <span class="mi">4</span><span class="p">,</span> <span class="mi">10</span><span class="p">])</span> <span class="c1"># creates a collection of 3 marginal categorical distributions, each of different dimension</span>
+
+<span class="n">sampled_outcome_list</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">sample_obj_array</span><span class="p">(</span><span class="n">my_multifactor_categorical</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="n">sampled_outcome_list</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[2, 2, 0]
+</pre></div>
+</div>
+</div>
+</div>
+<p>Note that when sampling from categorical distributions, the returned values are integers that represent the index of the support (i.e. which “outcome” or “level”) that is sampled. In the case of multi-factor distributions, the returned value is a list of integers, one sampled outcome per marginal categorical distribution</p>
+</section>
+<section id="conditional-expectation">
+<h4>Conditional expectation<a class="headerlink" href="#conditional-expectation" title="Link to this heading"></a></h4>
+<p>We can also compute conditional expectations of single random variables that depend on a multi-factor random variables using a function from the <code class="docutils literal notranslate"><span class="pre">pymdp.maths</span></code> utility package called <code class="docutils literal notranslate"><span class="pre">spm_dot</span></code>, that is based on the original function of the same name from <code class="docutils literal notranslate"><span class="pre">SPM</span></code>, where active inference was first implemented.</p>
+<p>Let’s imagine we have an observation model as above, with one observation modality with dimensionality <code class="docutils literal notranslate"><span class="pre">3</span></code> and two hidden state factors, with dimensionalities <code class="docutils literal notranslate"><span class="pre">3</span></code> and <code class="docutils literal notranslate"><span class="pre">2</span></code>. Given a factorized distribution over the two hidden state factors (i.e. an object array of marginal categorical distributions, one with <code class="docutils literal notranslate"><span class="pre">3</span></code> levels and the other with <code class="docutils literal notranslate"><span class="pre">2</span></code> levels), we want to generate a conditional expectation over the values of the observation distribution with dimension <code class="docutils literal notranslate"><span class="pre">3</span></code>. In other words, we want to evaluate:</p>
+<p>$$
+\mathbb{E}<em>{P(\mathbf{s})}[P(o | \mathbf{s})] = \mathbb{E}</em>{P(s^1)P(s^2)}[P(o^1 | s^1, s^2)]
+$$</p>
+<p>given a conditional distribution $P(o^1 | s^1, s^2)$ and some “priors” $P(s^1), P(s^2)$ over hidden states.</p>
+<p>Implementing this conditional expectation in practice can be written as a multi-dimensional dot product of the modality-specific <code class="docutils literal notranslate"><span class="pre">A</span></code> array (<code class="docutils literal notranslate"><span class="pre">A[0]</span></code>) with each of the hidden state factor distributions, $P(s^1)$ and $P(s^2)$. Under the hood, the <code class="docutils literal notranslate"><span class="pre">spm_dot</span></code> function of <code class="docutils literal notranslate"><span class="pre">pymdp.maths</span></code> achieves this using an optimized <code class="docutils literal notranslate"><span class="pre">numpy</span></code> function called <a class="reference external" href="https://numpy.org/doc/stable/reference/generated/numpy.einsum.html"><code class="docutils literal notranslate"><span class="pre">einsum</span></code></a>, or einstein summation. Let’s see what computing this conditional expectation with <code class="docutils literal notranslate"><span class="pre">spm_dot</span></code> looks like in practice:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">maths</span>
+
+<span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="c1"># dimensionalities of observation modalities (just one here, for simplicity)</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="mi">3</span><span class="p">,</span> <span class="mi">2</span><span class="p">]</span> <span class="c1"># dimensionalities of hidden state factors </span>
+
+<span class="n">A_shapes</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_obs</span> <span class="o">+</span> <span class="n">num_states</span><span class="p">]</span> <span class="c1"># shape of the A arrays (only one shape needed, (3, 3, 2))</span>
+<span class="n">A_array</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">A_shapes</span><span class="p">)</span> <span class="c1"># create our conditional distribution using the provided shape list</span>
+
+<span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span> <span class="c1"># when s2 == 0, s1 fully determines the value of o1</span>
+<span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.</span>        <span class="c1"># when s2 == 1, the value of o1 is always 2, regardless of the setting of s1</span>
+
+<span class="n">Ps</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_from_list</span><span class="p">([</span><span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.0</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]),</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.75</span><span class="p">,</span> <span class="mf">0.25</span><span class="p">])])</span> <span class="c1"># create our &quot;prior&quot; or beliefs about hidden states, that will be used in the expectation</span>
+
+<span class="n">E_o_ps</span> <span class="o">=</span> <span class="n">maths</span><span class="o">.</span><span class="n">spm_dot</span><span class="p">(</span><span class="n">A_array</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">Ps</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Expected distribution over observations, given the value of Ps:</span><span class="se">\n</span><span class="s2"> </span><span class="si">{</span><span class="n">E_o_ps</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Expected distribution over observations, given the value of Ps:
+ [[0.375]
+ [0.25 ]
+ [0.375]]
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../docxology_sidecar.html" class="btn btn-neutral float-left" title="Docxology sidecar" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="active_inference_from_scratch.html" class="btn btn-neutral float-right" title="Tutorial 1: Active inference from scratch" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

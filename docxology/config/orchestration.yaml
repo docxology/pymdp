@@ -1,0 +1,7 @@
+# Default flags for docxology/scripts/run_docxology_orchestrations.py (optional).
+# CLI arguments override these values when passed explicitly.
+seed: 0
+fast: true
+skip_heavy: true
+verbose: false
+# output_dir: null

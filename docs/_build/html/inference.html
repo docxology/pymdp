@@ -1,0 +1,277 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Inference &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="_static/pymdp_logo_2-removebg.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Control" href="control.html" />
+    <link rel="prev" title="Active Inference Demo: Epistemic Chaining" href="notebooks/cue_chaining_demo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Inference</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.inference.VFEInfo"><code class="docutils literal notranslate"><span class="pre">VFEInfo</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.inference.joint_dist_factor"><code class="docutils literal notranslate"><span class="pre">joint_dist_factor()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.inference.smoothing_exact"><code class="docutils literal notranslate"><span class="pre">smoothing_exact()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.inference.smoothing_ovf"><code class="docutils literal notranslate"><span class="pre">smoothing_ovf()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.inference.update_posterior_states"><code class="docutils literal notranslate"><span class="pre">update_posterior_states()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Inference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/inference.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="inference">
+<h1>Inference<a class="headerlink" href="#inference" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">inference.py</span></code> module contains the functions for performing inference of discrete hidden states (categorical distributions) in POMDP generative models.</p>
+<div class="admonition-docxology admonition">
+<p class="admonition-title">Docxology</p>
+<p>State inference, MMP/FPI, VFE: <code class="docutils literal notranslate"><span class="pre">docxology/docs/validation_matrix.md</span></code>. Gallery: <code class="docutils literal notranslate"><span class="pre">examples/inference_and_learning/inference_methods_comparison.ipynb</span></code>. Lower-level API: <a class="reference internal" href="algos/index.html"><span class="doc">Algos</span></a>. Legacy VFE notebook: <code class="docutils literal notranslate"><span class="pre">docs/notebooks/free_energy_calculation.ipynb</span></code> (see also <code class="docutils literal notranslate"><span class="pre">examples/legacy/free_energy_calculation.ipynb</span></code>).</p>
+</div>
+<p id="module-pymdp.inference">State inference and smoothing utilities for modern JAX-based pymdp agents.</p>
+<p>This module provides:
+- one-step posterior updates (<cite>fpi</cite>, <cite>exact</cite>, <cite>ovf</cite>),
+- sequence-based inference (<cite>mmp</cite>, <cite>vmp</cite>),
+- backward smoothing utilities for transition/posterior learning.</p>
+<p>All public functions operate on JAX arrays and pytrees and are designed to
+work with batched agent execution (<cite>vmap</cite>) and fixed-window sequence buffers.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pymdp.inference.VFEInfo">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymdp.inference.</span></span><span class="sig-name descname"><span class="pre">VFEInfo</span></span><a class="headerlink" href="#pymdp.inference.VFEInfo" title="Link to this definition"></a></dt>
+<dd></dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.inference.joint_dist_factor">
+<span class="sig-prename descclassname"><span class="pre">pymdp.inference.</span></span><span class="sig-name descname"><span class="pre">joint_dist_factor</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">b</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">number</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TypedNdArray</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">filtered_qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">ndarray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">number</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">bool</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">float</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">complex</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">TypedNdArray</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.inference.joint_dist_factor" title="Link to this definition"></a></dt>
+<dd><p>Compute smoothed marginals and pairwise joints for one factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>b</strong> (<em>Array</em>) – Either an action-conditioned transition sequence
+<cite>(T-1, K_next, K_curr)</cite> or a transition tensor with action axis
+<cite>(…, K_next, K_curr, n_actions)</cite>.</p></li>
+<li><p><strong>filtered_qs</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Filtered posterior sequence for this factor with leading time axis.</p></li>
+<li><p><strong>actions</strong> (<em>Array</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Optional action sequence to select transitions from <cite>b</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>(smoothed_marginals, pairwise_joints)</cite> where:
+- smoothed marginals have shape <cite>(T, K)</cite>
+- joints have shape <cite>(T-1, K_next, K_curr)</cite></p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Array, Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.inference.smoothing_exact">
+<span class="sig-prename descclassname"><span class="pre">pymdp.inference.</span></span><span class="sig-name descname"><span class="pre">smoothing_exact</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filtered_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.inference.smoothing_exact" title="Link to this definition"></a></dt>
+<dd><p>Exact single-factor HMM backward smoothing from online filtering history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filtered_post</strong> – List containing one <cite>(T, K)</cite> array of filtering marginals.</p></li>
+<li><p><strong>B</strong> – List containing one transition tensor in pymdp column-stochastic orientation.</p></li>
+<li><p><strong>past_actions</strong> – <cite>(T-1, 1)</cite> or <cite>(T-1,)</cite> action history used to select transitions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>marginals: list with one <cite>(T, K)</cite> smoothed marginal array.
+joints: list with one <cite>(T-1, K_next, K_curr)</cite> pairwise posterior array.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>(marginals, joints)</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.inference.smoothing_ovf">
+<span class="sig-prename descclassname"><span class="pre">pymdp.inference.</span></span><span class="sig-name descname"><span class="pre">smoothing_ovf</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">filtered_post</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.inference.smoothing_ovf" title="Link to this definition"></a></dt>
+<dd><p>Run backward smoothing for factorized online variational filtering history.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>filtered_post</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Filtering posteriors per factor, each with shape <cite>(T, K_f)</cite> (or
+equivalent leading-time layout for a batch element).</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition tensors per factor.</p></li>
+<li><p><strong>past_actions</strong> (<em>Array</em>) – Action history with shape <cite>(T-1, num_factors)</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>(marginals, joints)</cite> per factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[Array], list[Array]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.inference.update_posterior_states">
+<span class="sig-prename descclassname"><span class="pre">pymdp.inference.</span></span><span class="sig-name descname"><span class="pre">update_posterior_states</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">past_actions</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_hist</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_iter</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">method</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'fpi'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">distr_obs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inference_horizon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">valid_steps</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">return_info</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><a class="reference internal" href="#pymdp.inference.VFEInfo" title="pymdp.inference.VFEInfo"><span class="pre">VFEInfo</span></a><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.inference.update_posterior_states" title="Link to this definition"></a></dt>
+<dd><p>Infer posterior beliefs over hidden states from observations.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood tensors per modality.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Transition model tensors per hidden-state factor. For one-step methods,
+this can be provided unchanged. For sequence methods and non-<cite>None</cite>
+<cite>past_actions</cite>, transitions are conditioned per timestep.</p></li>
+<li><p><strong>obs</strong> (<em>pytree</em>) – Observation sequence or single-step observation in distributional form
+(for example, one-hot vectors per modality).</p></li>
+<li><p><strong>past_actions</strong> (<em>Array</em><em> | </em><em>None</em>) – Action history with shape <cite>(T-1, num_factors)</cite> for sequence methods.
+Can be <cite>None</cite> when no valid history is available.</p></li>
+<li><p><strong>prior</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em><em>, </em><em>optional</em>) – Prior beliefs over hidden states. Required when <cite>return_info=True</cite>
+so canonical VFE diagnostics can be computed.</p></li>
+<li><p><strong>qs_hist</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em><em>, </em><em>optional</em>) – Existing posterior history buffer. If provided, one-step updates append
+to this history.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Sparse modality-to-factor dependency mapping.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Sparse transition-factor dependency mapping.</p></li>
+<li><p><strong>num_iter</strong> (<em>int</em><em>, </em><em>default=16</em>) – Number of variational update iterations.</p></li>
+<li><p><strong>method</strong> (<em>{&quot;fpi&quot;</em><em>, </em><em>&quot;ovf&quot;</em><em>, </em><em>&quot;mmp&quot;</em><em>, </em><em>&quot;vmp&quot;</em><em>, </em><em>&quot;exact&quot;}</em><em>, </em><em>default=&quot;fpi&quot;</em>) – Inference routine to execute.</p></li>
+<li><p><strong>distr_obs</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Whether observations are already distributional.</p></li>
+<li><p><strong>inference_horizon</strong> (<em>int</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Optional truncation horizon for sequence inference.</p></li>
+<li><p><strong>valid_steps</strong> (<em>int</em><em> | </em><em>Array</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – Number of valid (unpadded) timesteps for fixed-window sequence inputs.</p></li>
+<li><p><strong>return_info</strong> (<em>bool</em><em>, </em><em>default=False</em>) – If <cite>True</cite>, also return an info dictionary containing canonical VFE
+diagnostics (<cite>vfe_t</cite>, <cite>vfe</cite>, and component terms). For forward-only
+methods (<cite>fpi</cite>, <cite>ovf</cite>, <cite>exact</cite>) this reports the current posterior /
+history returned by the inference call; if you need a full smoothed
+sequence VFE for <cite>ovf</cite> or <cite>exact</cite>, first run <cite>smoothing_ovf(…)</cite> or
+<cite>smoothing_exact(…)</cite> and then call <cite>pymdp.maths.calc_vfe(…,
+joint_qs=…)</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Posterior state beliefs, with shape semantics depending on <cite>method</cite>:
+one-step methods return/append a time axis, sequence methods return full
+sequence posteriors. If <cite>return_info=True</cite>, a second return value
+contains canonical VFE diagnostics.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Array] or tuple[list[Array], <a class="reference internal" href="#pymdp.inference.VFEInfo" title="pymdp.inference.VFEInfo">VFEInfo</a>]</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="notebooks/cue_chaining_demo.html" class="btn btn-neutral float-left" title="Active Inference Demo: Epistemic Chaining" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="control.html" class="btn btn-neutral float-right" title="Control" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

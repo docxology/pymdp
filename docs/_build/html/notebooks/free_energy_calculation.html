@@ -1,0 +1,660 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Computing the variational free energy in categorical models &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+      <script async="async" src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="Env" href="../env.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Computing the variational free energy in categorical models</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#a-simple-generative-model-composed-of-a-likelihood-and-a-prior">A simple generative model composed of a likelihood and a prior</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#bayesian-inference">Bayesian inference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#compute-the-likelihood-over-hidden-states-given-the-observation">1. Compute the likelihood over hidden states, given the observation</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#hspace-60mm-p-s-o-t-frac-p-o-o-t-s-p-s-p-o-o-t">$ \hspace{60mm} P(s | o _t) = \frac{P(o = o_t | s)P(s)}{P(o = o_t)} $</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-joint-distribution-p-o-o-t-s-p-o-o-t-s-p-s">2. The joint distribution $P(o = o_t, s) = P(o = o_t|s)P(s)$</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#marginal-probability-or-marginal-likelihood-sum-s-p-o-o-t-s-p-o-o-t">3. Marginal probability or marginal likelihood: $\sum_s P(o = o_t, s) = P(o = o_t)$</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id1">$ \hspace{60mm} P(s | o _t) = \frac{P(o = o_t | s)P(s)}{P(o = o_t)} $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-p-o-sum-s-p-o-s-p-s">$ \hspace{60mm}P(o) = \sum_s P(o|s)P(s)$</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#compute-the-posterior-p-s-o-o-t">4. Compute the posterior $P(s|o=o_t)$</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-variational-free-energy">The variational free energy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-frac-q-s-p-o-s">$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln \frac{Q(s)}{P(o, s)}] $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-o-s">$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)] $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-s-o-ln-p-o">$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(s|o)] - \ln P(o) $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-mathcal-f-geq-ln-p-o">$ \hspace{60mm} \mathcal{F} \geq - \ln P(o) $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#id2">$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(s|o)] - \ln P(o) $</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-mathcal-f-0-ln-p-o-ln-p-o">$ \hspace{60mm} \mathcal{F} = 0 - \ln P(o) = - \ln P(o)$</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#bonus-material-auto-differentiation-to-perform-gradient-descent-on-the-variational-free-energy">Bonus material: auto-differentiation to perform gradient descent on the variational free energy</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#hspace-60mm-q-s-t-1-q-s-t-frac-partial-mathcal-f-partial-q-s-t">$ \hspace{60mm} Q(s)<em>{t+1} =Q(s)</em>{t} - \frac{\partial \mathcal{F}}{\partial Q(s)_{t}} $</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Computing the variational free energy in categorical models</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/free_energy_calculation.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="computing-the-variational-free-energy-in-categorical-models">
+<h1>Computing the variational free energy in categorical models<a class="headerlink" href="#computing-the-variational-free-energy-in-categorical-models" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/free_energy_calculation.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p>This notebook walks the user through the computation of the variational free energy (or <em>VFE</em>) for discrete generative models, composed of categorical distributions. We can represent these sorts of generative models easily in array-focused programming languages like <code class="docutils literal notranslate"><span class="pre">NumPy</span></code> and <code class="docutils literal notranslate"><span class="pre">MATLAB</span></code> using matrices and vectors.</p>
+<p>In the discrete state-space formulation, the variational free energy is very straightforward to compute when we take advantage of the NDarray representation of probability distributions. The highly-optimized matrix algebra built into today’s numerical computing paradigms can be exploited to write simple, one-line expressions for information-theoretic terms (like Kullback-Leibler divergences, cross-entropies, log-likelihoods, etc.). All these terms end up being variants of things like inner products, matrix-vector products or matrix-matrix multiplications.</p>
+<p>This notebook is inspired by the supplementary MATLAB script for the paper <a class="reference external" href="https://www.sciencedirect.com/science/article/pii/S0022249621000973">“A Step-by-Step Tutorial on Active Inference Modelling and its Application to Empirical Data”</a> by Ryan Smith, Karl Friston, and Christopher Whyte. The original MATLAB script is called <code class="docutils literal notranslate"><span class="pre">VFE_calculation_example.m</span></code>, and can be found on <a class="reference external" href="https://github.com/rssmith33/Active-Inference-Tutorial-Scripts">Ryan Smith’s GitHub repository</a>, which also contains a set of tutorial scripts that are supplementary to their paper.</p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<p>First, import <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> and the modules we’ll need.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">IPython.display</span><span class="w"> </span><span class="kn">import</span> <span class="n">display</span><span class="p">,</span> <span class="n">Latex</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span><span class="p">,</span> <span class="n">maths</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="a-simple-generative-model-composed-of-a-likelihood-and-a-prior">
+<h2>A simple generative model composed of a likelihood and a prior<a class="headerlink" href="#a-simple-generative-model-composed-of-a-likelihood-and-a-prior" title="Link to this heading"></a></h2>
+<p>We begin by constructing a simple generative model composed of two sets of categorical distributions: a likelihood distribution $P(o|s)$ and a prior distribution $P(s)$.</p>
+<p>Because both of these distributions are categorical distributions, we can represent them easily in code using matrices and vectors. The likelihood distribution is a conditional distribution that tells the probability that the generative model assigns to different observations, given different hidden states. Since observations and hidden states are both discrete, this can be efficiently represented as a matrix, each of whose <strong>columns</strong> store the conditional probabilities of all the observations (the <strong>rows</strong>), given a particular hidden state. Each hidden state setting is thus indexed by a column. For this reason, each column of this matrix is a categorical probability distributions and its entries must sum to one.</p>
+<p>The prior is represented as a 1-D vector and stores the prior probabilities that the generative model assigns to each hidden state.</p>
+<p>Finally, to set ourselves up later for showing model inversion and free energy calculations, we initialize an observation that we assume the agent or generative model has “gathered” or “seen.” In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> we can represent these observations either as one-hot vectors (a <code class="docutils literal notranslate"><span class="pre">1</span></code> in one entry, and <code class="docutils literal notranslate"><span class="pre">0</span></code>’s everywhere else) or more sparsely as simple indices (integers) that represent <em>which</em> of the observations was observed. Because observations are not distributions (or technically, they are Dirac distributions), you don’t need to store a whole vector of elements, you can just store a particular index.</p>
+<p>Below we create 3 main variables:</p>
+<ul class="simple">
+<li><p>An <code class="docutils literal notranslate"><span class="pre">observation</span></code> that represents a real observation that the agent or generative model “sees”.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">prior</span></code> distribution that represents the agent’s prior beliefs about the hidden states</p></li>
+<li><p>the <code class="docutils literal notranslate"><span class="pre">likliheood_dist</span></code> that represents the agent’s beliefs about how hidden states probabilistically relate to observations.</p></li>
+</ul>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1">## Define a quick helper function for printing arrays nicely (see https://gist.github.com/braingineer/d801735dac07ff3ac4d746e1f218ab75)</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">matprint</span><span class="p">(</span><span class="n">mat</span><span class="p">,</span> <span class="n">fmt</span><span class="o">=</span><span class="s2">&quot;g&quot;</span><span class="p">):</span>
+    <span class="n">col_maxes</span> <span class="o">=</span> <span class="p">[</span><span class="nb">max</span><span class="p">([</span><span class="nb">len</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="n">fmt</span><span class="o">+</span><span class="s2">&quot;}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">x</span><span class="p">))</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">col</span><span class="p">])</span> <span class="k">for</span> <span class="n">col</span> <span class="ow">in</span> <span class="n">mat</span><span class="o">.</span><span class="n">T</span><span class="p">]</span>
+    <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="n">mat</span><span class="p">:</span>
+        <span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">y</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">x</span><span class="p">):</span>
+            <span class="nb">print</span><span class="p">((</span><span class="s2">&quot;{:&quot;</span><span class="o">+</span><span class="nb">str</span><span class="p">(</span><span class="n">col_maxes</span><span class="p">[</span><span class="n">i</span><span class="p">])</span><span class="o">+</span><span class="n">fmt</span><span class="o">+</span><span class="s2">&quot;}&quot;</span><span class="p">)</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">y</span><span class="p">),</span> <span class="n">end</span><span class="o">=</span><span class="s2">&quot;  &quot;</span><span class="p">)</span>
+        <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">num_obs</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># dimensionality of observations (2 possible observation levels)</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="mi">2</span> <span class="c1"># dimensionality of observations (2 possible hidden state levels)</span>
+
+<span class="n">observation</span> <span class="o">=</span> <span class="mi">0</span> <span class="c1"># index representation</span>
+<span class="c1"># observation = np.array([1, 0]) # one hot representation</span>
+<span class="c1"># observation = utils.onehot(0, num_obs) # one hot representation, but use one of pymdp&#39;s utility functions to create a one-hot</span>
+
+<span class="n">prior</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span> <span class="c1"># simply set it by hand</span>
+<span class="c1"># prior = np.ones(num_states) / num_states # create a uniform prior distribution by creating a vector of ones and dividing each by the number of states</span>
+<span class="c1"># prior = utils.norm_dist(np.ones(num_states)) # use one of pymdp&#39;s utility functions to normalize any vector into a probability distribution</span>
+
+<span class="n">likelihood_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span> <span class="p">])</span>
+
+<span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Observation:</span><span class="si">{</span><span class="n">observation</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="k">else</span><span class="p">:</span>
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Observation: </span><span class="si">{</span><span class="n">observation</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Prior:</span><span class="si">{</span><span class="n">prior</span><span class="si">}</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Likelihood:&#39;</span><span class="p">)</span>
+<span class="n">matprint</span><span class="p">(</span><span class="n">likelihood_dist</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Observation: 0
+
+Prior:[0.5 0.5]
+
+Likelihood:
+0.8  0.2  
+0.2  0.8  
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="bayesian-inference">
+<h2>Bayesian inference<a class="headerlink" href="#bayesian-inference" title="Link to this heading"></a></h2>
+<p>Before we define variational free energy for this generative model, let’s step through the computations involved in inverting this model using Bayes’ rule, i.e. computing the optimal Bayesian posterior over hidden states, given our sensory observation (which we will formally refer to as $o_t$). By performing exact Bayesian inference first, we can directly compares its results to that of variational free energy minimization. This will help us better understand the meaning of the free energy calculations that come later.</p>
+<section id="compute-the-likelihood-over-hidden-states-given-the-observation">
+<h3>1. Compute the likelihood over hidden states, given the observation<a class="headerlink" href="#compute-the-likelihood-over-hidden-states-given-the-observation" title="Link to this heading"></a></h3>
+<p>Now that we have a generative model and have fixed a particular observatio $o_t$ (<code class="docutils literal notranslate"><span class="pre">observation</span></code>), we have to perform Bayes’ rule to compute the posterior. Mathematically, this can be expressed as follows:</p>
+</section>
+</section>
+<section id="hspace-60mm-p-s-o-t-frac-p-o-o-t-s-p-s-p-o-o-t">
+<h2>$ \hspace{60mm} P(s | o _t) = \frac{P(o = o_t | s)P(s)}{P(o = o_t)} $<a class="headerlink" href="#hspace-60mm-p-s-o-t-frac-p-o-o-t-s-p-s-p-o-o-t" title="Link to this heading"></a></h2>
+<p>Computing the posterior via Bayes’ rule (also known as “model inversion”) is the essence of optimal statistical inference, when one has a generative model of how one’s data is caused, and some data.</p>
+<p>To start with, let’s computing the likelihood term $P(o = o_t | s)$. We can represent the computation of the likelihood with this line of <code class="docutils literal notranslate"><span class="pre">NumPy</span></code>: <code class="docutils literal notranslate"><span class="pre">likelihood_dist[observation,:]</span></code>. By doing so, we are providing a numerical answer to the question: “What is the likelihood that State 1 vs State 2 caused the actual sensory data $o_t$ that I’ve observed?”.</p>
+<p>Mathematically, our likelihood function $P(o = o_t | s)$ (in the statistics literature also referred to as $L(\theta)$) is a <em>function of the hidden states</em>. The particular function over hidden states we use is <em>defined</em> by the observation $o_t$. So you can think of the likelihood as a multi-dimensional function or simply a space of functions, where the particular function you use for inference is determined by your data.</p>
+<p>This act of computing the likelihood via an indexing  operation <code class="docutils literal notranslate"><span class="pre">likelihood_dist[observation,:]</span></code>, is similar in spirit to the operation of <em>conditioning</em>. We are, in some sense, “conditioning” on a particular observation (slicing out a “row” of our <code class="docutils literal notranslate"><span class="pre">likelihood_dist</span></code> matrix), and then looking at the <em>induced</em> likelihood over possible causes (hidden states) that could’ve have been the latent source of that observation. This operation captures the essence of what we mean when we speak of “inverting” generative models. Generative models are referred to as <em>generative</em> because they can be used to generate fictive observations, given some fixed setting of latent parameters. <em>Inversion</em> is thus moving in the opposite direction – given some sensory data, what is the consequent likelihood over the <em>causes</em> or hidden states that might have generated that data?</p>
+<p><strong>Note</strong>: We can also compute the likelihood using a matrix-vector product, if the observation is represented as a one-hot vector.</p>
+<div class="highlight-default notranslate"><div class="highlight"><pre><span></span><span class="n">likelihood_s</span> <span class="o">=</span> <span class="n">likelihood_dist</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">observation</span>
+</pre></div>
+</div>
+<p>You can see think of this as a weighted average of the rows of the likelihood matrix, where the weights are provided by the observations. Since we have insisted that the observations are a one-hot vector, this is equivalent to just selecting a single row of the likelihood matrix (the one indexed by the entry of the observation that is <code class="docutils literal notranslate"><span class="pre">1.0</span></code>).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">if</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ndarray</span><span class="p">):</span> <span class="c1"># use the matrix-vector version if your observation is a one-hot vector</span>
+    <span class="n">likelihood_s</span> <span class="o">=</span> <span class="n">likelihood_dist</span><span class="o">.</span><span class="n">T</span> <span class="o">@</span> <span class="n">observation</span>
+<span class="k">elif</span> <span class="nb">isinstance</span><span class="p">(</span><span class="n">observation</span><span class="p">,</span> <span class="nb">int</span><span class="p">):</span> <span class="c1"># use the index version if your observation is an integer index</span>
+    <span class="n">likelihood_s</span> <span class="o">=</span> <span class="n">likelihood_dist</span><span class="p">[</span><span class="n">observation</span><span class="p">,:]</span> 
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$P(o=o_t|s):$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">likelihood_s</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[P(o=o_t|s):\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.8 0.2]
+==================
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-joint-distribution-p-o-o-t-s-p-o-o-t-s-p-s">
+<h3>2. The joint distribution $P(o = o_t, s) = P(o = o_t|s)P(s)$<a class="headerlink" href="#the-joint-distribution-p-o-o-t-s-p-o-o-t-s-p-s" title="Link to this heading"></a></h3>
+<p>To compute the full numerator on the right-hand side of the Bayes’ rule equation, we need to compute the joint distribution $P(o = o_t|s)P(s)$.</p>
+<p>The joint distribution, which also fully defines the generative model, is the product of the likelihood and prior distributions. The joint distribution expresses the joint probability of observations and hidden states, given the likelihood distribution and the prior over hidden states. If we condition on an actual observation $o_t$, as we have done here, then this joint distribution is, like the likelihood, a function of hidden states.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">joint_prob</span> <span class="o">=</span> <span class="n">likelihood_s</span> <span class="o">*</span> <span class="n">prior</span> <span class="c1"># element-wise product of the likelihood of each hidden state, given the observation, with the prior probability assigned to each hidden state</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$P(o = o_t,s) = P(o = o_t|s)P(s):$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">joint_prob</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[P(o = o_t,s) = P(o = o_t|s)P(s):\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>[0.4 0.1]
+==================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="marginal-probability-or-marginal-likelihood-sum-s-p-o-o-t-s-p-o-o-t">
+<h3>3. Marginal probability or marginal likelihood: $\sum_s P(o = o_t, s) = P(o = o_t)$<a class="headerlink" href="#marginal-probability-or-marginal-likelihood-sum-s-p-o-o-t-s-p-o-o-t" title="Link to this heading"></a></h3>
+<p>Let’s remind ourselves of Bayes’ rule below:</p>
+</section>
+<section id="id1">
+<h3>$ \hspace{60mm} P(s | o _t) = \frac{P(o = o_t | s)P(s)}{P(o = o_t)} $<a class="headerlink" href="#id1" title="Link to this heading"></a></h3>
+<p>So far, using the likelihood, the observation, and the prior, we have computed the numerator of this term: the unnormalized joint distribution $P(o = o_t,s)$. All that’s left is to do is then divide this term by the denominator $P(o=o_t)$. This term is also referred to as the model evidence or the marginal likelihood.</p>
+<p>This can be thought of as the probability of having seen the particular observation you saw, under all possible settings of the hidden states. This can be computed by marginalizing the joint distribution, using the prior probabilities of the hidden states:</p>
+</section>
+<section id="hspace-60mm-p-o-sum-s-p-o-s-p-s">
+<h3>$ \hspace{60mm}P(o) = \sum_s P(o|s)P(s)$<a class="headerlink" href="#hspace-60mm-p-o-sum-s-p-o-s-p-s" title="Link to this heading"></a></h3>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">p_o</span> <span class="o">=</span> <span class="n">joint_prob</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="compute-the-posterior-p-s-o-o-t">
+<h3>4. Compute the posterior $P(s|o=o_t)$<a class="headerlink" href="#compute-the-posterior-p-s-o-o-t" title="Link to this heading"></a></h3>
+<p>Now to compute the Bayes-optimal posterior, simply divide the numerator by the denominator!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">posterior</span> <span class="o">=</span> <span class="n">joint_prob</span> <span class="o">/</span> <span class="n">p_o</span> <span class="c1"># divide the joint by the marginal</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$P(s|o = o_t) = </span><span class="se">\\</span><span class="s1">frac{P(o = o_t,s)}{P(o=o_t)}$:&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Posterior over hidden states: </span><span class="si">{</span><span class="n">posterior</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[$P(s|o = o_t) = \frac{P(o = o_t,s)}{P(o=o_t)}$:\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Posterior over hidden states: [0.8 0.2]
+==================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="the-variational-free-energy">
+<h2>The variational free energy<a class="headerlink" href="#the-variational-free-energy" title="Link to this heading"></a></h2>
+<p>The variational free energy is an upper bound on <strong>surprise</strong>: surprise is define as $ - \ln p(o)$, and is also known as the negative (log) evidence. By minimizing free energy, we are <strong>minimizing</strong> surprise and thus <strong>maximizing</strong> log evidence.  This evidence is simply the (log of the) term we computed in the previous step, the normalizing denominator used in Bayes’ rule. We can thus first compute the surprise associated with the observation we saw earlier:</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">surprise</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_o</span><span class="p">)</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$- \ln P(o=o_t)$:&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Surprise: </span><span class="si">{</span><span class="n">surprise</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:3: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+&lt;&gt;:3: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/ipykernel_60651/1952223066.py:3: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+  display(Latex(&#39;$- \ln P(o=o_t)$:&#39;))
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[$- \ln P(o=o_t)$:\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Surprise: 0.693
+==================
+</pre></div>
+</div>
+</div>
+</div>
+<p>By minimizing variational free energy with respect to the parameters of an arbitrary, parametrized distribution, also known as the approximate or variational posterior $Q(s)$, we are forcing the surprise to go down, and the model evidence to go up. In doing so, the approximate posterior distribution will get “closer” to the true posterior distribution (the $P(s|o)$ we computed above), $Q(s) \approx P(s|o)$.</p>
+<p>This idea of minimizing a bound on surprise, is the core principle underlying the variational free energy principle, active inference, and the statistical methodology of variational principles more generally. This comes in handy because in many realistic scenarios where agents or systems need to make inferences about the hidden causes of sensory perturbations, performing Bayesian inference exactly becomes intractable (due mostly to the computation of the $P(o)$ denominator term, also known as the normalizing constant). Variational inference turns this intractable marginalization problem into a tractable optimization problem, where one only needs to change the approximate posterior $Q(s)$ in order to minimize a bound on surprise.</p>
+<p>But what is the variational free energy exactly, mathematically? It is commonly written as the expectation, under the approximate posterior, of the log ratio between the approximate posterior and the generative model:</p>
+<section id="hspace-60mm-mathcal-f-mathbb-e-q-s-ln-frac-q-s-p-o-s">
+<h3>$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln \frac{Q(s)}{P(o, s)}] $<a class="headerlink" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-frac-q-s-p-o-s" title="Link to this heading"></a></h3>
+<p>Because of the rules of logarithms, we can also express this as an expected difference between the log posterior and the log generative model:</p>
+</section>
+<section id="hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-o-s">
+<h3>$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)] $<a class="headerlink" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-o-s" title="Link to this heading"></a></h3>
+<p>By doing taking advantage of some more mathematical relationships (the factorization of the joint, rules for logarithms of products, and the definition of the conditional expectation), we can re-write this as an upper bound on surprise:</p>
+</section>
+<section id="hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-s-o-ln-p-o">
+<h3>$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(s|o)] - \ln P(o) $<a class="headerlink" href="#hspace-60mm-mathcal-f-mathbb-e-q-s-ln-q-s-ln-p-s-o-ln-p-o" title="Link to this heading"></a></h3>
+<p>By re-arranging this equality and taking advantage of the fact that the quantity $\mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(s|o)]$ (also known as the Kullback-Leibler divergence) is greater than or equal to 0, we can easily show that the VFE is an upper bound on surprise:</p>
+</section>
+<section id="hspace-60mm-mathcal-f-geq-ln-p-o">
+<h3>$ \hspace{60mm} \mathcal{F} \geq - \ln P(o) $<a class="headerlink" href="#hspace-60mm-mathcal-f-geq-ln-p-o" title="Link to this heading"></a></h3>
+<p>Let’s now compute the VFE numerically for our generative model and fixed observation. Given we already defined those two things ($o_t$ and $P(o,s)$), the last thing we need to do, is to define an initial setting of our approximate posterior $Q(s)$, and compute the variational free energy using one of the formulas above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># to begin with, set our initial Q(s) equal to our prior distribution -- i.e. a flat/uninformative belief about hidden states</span>
+<span class="n">initial_qs</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+
+<span class="c1"># redefine generative model and observation, for ease</span>
+<span class="n">observation</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">likelihood_dist</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">array</span><span class="p">([[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span> <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]])</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">norm_dist</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="mi">2</span><span class="p">))</span>
+
+<span class="c1"># compute the joint or generative model using the factorization: P(o=o|s)P(s)</span>
+<span class="n">joint_prob</span> <span class="o">=</span> <span class="n">likelihood_dist</span><span class="p">[</span><span class="n">observation</span><span class="p">,:]</span> <span class="o">*</span> <span class="n">prior</span>
+
+<span class="c1"># compute the variational free energy using the expected log difference formulation</span>
+<span class="n">initial_F</span> <span class="o">=</span> <span class="n">initial_qs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">initial_qs</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">joint_prob</span><span class="p">))</span>
+<span class="c1">## @NOTE: because of log-rules, `initial_F` can also be computed using the division inside the logarithm:</span>
+<span class="c1"># initial_F = initial_qs.dot(np.log(initial_qs/joint_prob))</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$\mathcal</span><span class="si">{F}</span><span class="s1"> = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln </span><span class="se">\\</span><span class="s1">frac{Q(s)}{P(o, s)}] = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln Q(s) - \ln P(o, s)]:$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Variational free energy (F) = </span><span class="si">{</span><span class="n">initial_F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:17: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+&lt;&gt;:17: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/ipykernel_60651/2097713651.py:17: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+  display(Latex(&#39;$\mathcal{F} = \mathbb{E}_{Q(s)}[\ln \\frac{Q(s)}{P(o, s)}] = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)]:$&#39;))
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\mathcal{F} = \mathbb{E}_{Q(s)}[\ln \frac{Q(s)}{P(o, s)}] = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)]:\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Variational free energy (F) = 0.916
+==================
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now let’s then change the approximate posterior $Q(s)$ and see what happens to the variational free energy.</p>
+<p>By definition, optimal inference (and ‘perfect’ VFE minimization) obtains when we set the approximate posterior $Q(s)$ to be equal to the true posterior, $Q(s) = P(s|o)$.</p>
+<p>As an extreme case, let’s do this and then measure the variational free energy. We can see that it has decreased, relative to it’s initial setting when the approximate posterior was equal to the prior $P(s)$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">final_qs</span> <span class="o">=</span> <span class="n">posterior</span><span class="o">.</span><span class="n">copy</span><span class="p">()</span> <span class="c1"># now we just assert that the approximate posterior is equal to the true posterior</span>
+<span class="n">final_F</span> <span class="o">=</span> <span class="n">final_qs</span><span class="o">.</span><span class="n">dot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">final_qs</span><span class="p">)</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">joint_prob</span><span class="p">))</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$\mathcal</span><span class="si">{F}</span><span class="s1"> = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln </span><span class="se">\\</span><span class="s1">frac{Q(s)}{P(o, s)}] = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln Q(s) - \ln P(o, s)]:$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;F = </span><span class="si">{</span><span class="n">final_F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+&lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/ipykernel_60651/1699700043.py:4: SyntaxWarning: invalid escape sequence &#39;\m&#39;
+  display(Latex(&#39;$\mathcal{F} = \mathbb{E}_{Q(s)}[\ln \\frac{Q(s)}{P(o, s)}] = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)]:$&#39;))
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[\mathcal{F} = \mathbb{E}_{Q(s)}[\ln \frac{Q(s)}{P(o, s)}] = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)]:\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>F = 0.693
+==================
+</pre></div>
+</div>
+</div>
+</div>
+<p>Notice that the free energy is 0.693 – if you recall, this is exactly the <strong>surprise</strong> or negative log marginal likelihood $-\ln P(o = o_t)$, related to the marginal likelihood quantity $P(o=o_t)$ that we had to compute when performing exact Bayesian inference earlier.</p>
+<p>It is easy to see why this equality should hold, when we consider the VFE in terms of the surprise bound:</p>
+</section>
+<section id="id2">
+<h3>$ \hspace{60mm} \mathcal{F} = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(s|o)] - \ln P(o) $<a class="headerlink" href="#id2" title="Link to this heading"></a></h3>
+<p>When $Q(s) = P(s|o)$, as we have enforced with the line <code class="docutils literal notranslate"><span class="pre">final_qs</span> <span class="pre">=</span> <span class="pre">posterior.copy()</span></code> above, the first term $\mathbb{E}<em>{Q(s)}[\ln Q(s) - \ln P(s|o)]$ will become 0. This is a property of the Kullback-Leibler divergence between two distributions $\operatorname{D}</em>{KL}(Q \parallel P) = \mathbb{E}_{Q}[\ln Q - \ln P]$.</p>
+<p>So since that KL divergence is 0, this is a case when the bound on surprise is exact:</p>
+</section>
+<section id="hspace-60mm-mathcal-f-0-ln-p-o-ln-p-o">
+<h3>$ \hspace{60mm} \mathcal{F} = 0 - \ln P(o) = - \ln P(o)$<a class="headerlink" href="#hspace-60mm-mathcal-f-0-ln-p-o-ln-p-o" title="Link to this heading"></a></h3>
+<p>In other words, minimizing free energy “as much as possible” in the case of this generative model, means that the approximate posterior equals the true posterior, and the free energy bound becomes “tight”, i.e. the free energy simply IS the negative log evidence!</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># compute the surprise (which we can do analytically for this simple generative model)</span>
+<span class="n">p_o</span> <span class="o">=</span> <span class="n">joint_prob</span><span class="o">.</span><span class="n">sum</span><span class="p">()</span>
+<span class="n">surprise</span> <span class="o">=</span> <span class="o">-</span> <span class="n">np</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">p_o</span><span class="p">)</span>
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$-\ln P(o):$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">surprise</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================</span><span class="se">\n</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stderr highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>&lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+&lt;&gt;:4: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+/var/folders/vc/rgmbpjpj0dbg61vr54xjskc80000gn/T/ipykernel_60651/2791439578.py:4: SyntaxWarning: invalid escape sequence &#39;\l&#39;
+  display(Latex(&#39;$-\ln P(o):$&#39;))
+</pre></div>
+</div>
+<div class="output text_latex math notranslate nohighlight">
+\[-\ln P(o):\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>0.693
+==================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="bonus-material-auto-differentiation-to-perform-gradient-descent-on-the-variational-free-energy">
+<h2>Bonus material: auto-differentiation to perform gradient descent on the variational free energy<a class="headerlink" href="#bonus-material-auto-differentiation-to-perform-gradient-descent-on-the-variational-free-energy" title="Link to this heading"></a></h2>
+<p>In this section, we are going to numerically differentiate the variational free energy with respect to the parameters of the approximate posterior. We can take advantage of modern autodifferentiation software, that can calculate the derivatives of arbitrary computer programs, to compute these derivatives without doing any analytic differentiation.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">autograd.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np_auto</span>   <span class="c1"># Thinly-wrapped version of Numpy that is auto-differentiable</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">autograd</span><span class="w"> </span><span class="kn">import</span> <span class="n">grad</span>          <span class="c1"># this is the function that we use to evaluate derivatives</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ModuleNotFoundError</span><span class="g g-Whitespace">                       </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">13</span><span class="p">],</span> <span class="n">line</span> <span class="mi">1</span>
+<span class="ne">----&gt; </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">autograd.numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np_auto</span>   <span class="c1"># Thinly-wrapped version of Numpy that is auto-differentiable</span>
+<span class="g g-Whitespace">      </span><span class="mi">2</span> <span class="kn">from</span><span class="w"> </span><span class="nn">autograd</span><span class="w"> </span><span class="kn">import</span> <span class="n">grad</span>          <span class="c1"># this is the function that we use to evaluate derivatives</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span><span class="w"> </span><span class="nn">functools</span><span class="w"> </span><span class="kn">import</span> <span class="n">partial</span>
+
+<span class="ne">ModuleNotFoundError</span>: No module named &#39;autograd&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>First, let’s create a variational free energy function, that takes as input the variational posterior <code class="docutils literal notranslate"><span class="pre">qs</span></code>, an observation <code class="docutils literal notranslate"><span class="pre">obs</span></code>, the likelihood matrix <code class="docutils literal notranslate"><span class="pre">likelihood</span></code> and a prior distribution <code class="docutils literal notranslate"><span class="pre">prior</span></code>.</p>
+<p>By defining this computation as a function, we can calculate its derivatives automatically using the autodifferentiation package <code class="docutils literal notranslate"><span class="pre">autograd</span></code>, which allows users to pass gradients through arbitrary Python code. It includes a special version of <code class="docutils literal notranslate"><span class="pre">numpy</span></code> (<code class="docutils literal notranslate"><span class="pre">autograd.numpy</span></code>) that has a differentiable back-end. We will thus use this “special” verison of <code class="docutils literal notranslate"><span class="pre">numpy</span></code> when we instantiate our arrays and perform numerical operations on them.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># define the variational free energy as a function of the approximate posterior, an observation, and the generative model</span>
+<span class="k">def</span><span class="w"> </span><span class="nf">vfe</span><span class="p">(</span><span class="n">qs</span><span class="p">,</span> <span class="n">obs</span><span class="p">,</span> <span class="n">likelihood</span><span class="p">,</span> <span class="n">prior</span><span class="p">):</span>
+<span class="w">    </span><span class="sd">&quot;&quot;&quot;</span>
+<span class="sd">    Quick docstring below on inputs</span>
+<span class="sd">    Arguments:</span>
+<span class="sd">    =========</span>
+<span class="sd">    `qs` [1D np_auto.ndarray]: variational posterior over hidden states</span>
+<span class="sd">    `obs` [int]: index of the observation</span>
+<span class="sd">    `likelihood` [2D np_auto.ndarray]: likelihood distribution P(o|s), relating hidden states probabilistically to observations</span>
+<span class="sd">    `prior` [1D np_auto.ndarray]: prior over hidden states</span>
+<span class="sd">    &quot;&quot;&quot;</span>
+
+    <span class="n">likelihood_s</span> <span class="o">=</span> <span class="n">likelihood</span><span class="p">[</span><span class="n">obs</span><span class="p">,:]</span>
+
+    <span class="n">joint</span> <span class="o">=</span> <span class="n">likelihood_s</span> <span class="o">*</span> <span class="n">prior</span>
+
+    <span class="n">vfe</span> <span class="o">=</span> <span class="n">qs</span> <span class="o">@</span> <span class="p">(</span><span class="n">np_auto</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">qs</span><span class="p">)</span> <span class="o">-</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">joint</span><span class="p">))</span>
+
+    <span class="k">return</span> <span class="n">vfe</span>
+
+<span class="c1"># initialize an observation, an initial variational posterior, a prior, and a likelihood matrix</span>
+<span class="n">obs</span> <span class="o">=</span> <span class="mi">0</span>
+<span class="n">init_qs</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">prior</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">array</span><span class="p">([</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">])</span>
+<span class="n">likelihood_dist</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">array</span><span class="p">([</span> <span class="p">[</span><span class="mf">0.8</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">],</span>
+                        <span class="p">[</span><span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.8</span><span class="p">]</span> <span class="p">])</span>
+
+<span class="c1"># this use of `partial` creates a version of the vfe function that is a function of Qs only, </span>
+<span class="c1"># with the other parameters (the observation, the generative model) fixed as constant parameters</span>
+<span class="n">vfe_qs</span> <span class="o">=</span> <span class="n">partial</span><span class="p">(</span><span class="n">vfe</span><span class="p">,</span> <span class="n">obs</span> <span class="o">=</span> <span class="n">obs</span><span class="p">,</span> <span class="n">likelihood</span> <span class="o">=</span> <span class="n">likelihood_dist</span><span class="p">,</span> <span class="n">prior</span> <span class="o">=</span> <span class="n">prior</span><span class="p">)</span>
+
+<span class="c1"># By calling `grad` on a function, we get out a function that can be used to compute the gradients of the VFE with respect to its input (in our case, `qs`)</span>
+<span class="n">grad_vfe_qs</span> <span class="o">=</span> <span class="n">grad</span><span class="p">(</span><span class="n">vfe_qs</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now that we have a variational free energy function, and a derivative function that will give us the gradients of the VFE, with respect $Q(s)$, we can use it to perform a gradient descent on VFE, with respect to the parameters of $Q(s)$. In other words, we will implement this discretized differential equation to update the approximate posterior:</p>
+<section id="hspace-60mm-q-s-t-1-q-s-t-frac-partial-mathcal-f-partial-q-s-t">
+<h3>$ \hspace{60mm} Q(s)<em>{t+1} =Q(s)</em>{t} - \frac{\partial \mathcal{F}}{\partial Q(s)_{t}} $<a class="headerlink" href="#hspace-60mm-q-s-t-1-q-s-t-frac-partial-mathcal-f-partial-q-s-t" title="Link to this heading"></a></h3>
+<p>Where the gradient term $\frac{\partial \mathcal{F}}{\partial Q(s)_{t}}$ will simply be the output of the gradient function <code class="docutils literal notranslate"><span class="pre">grad_vfe_qs</span></code> we’ve defined above.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># number of iterations of gradient descent to perform</span>
+<span class="n">n_iter</span> <span class="o">=</span> <span class="mi">40</span>
+
+<span class="n">qs_hist</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">zeros</span><span class="p">((</span><span class="n">n_iter</span><span class="p">,</span> <span class="mi">2</span><span class="p">))</span>
+<span class="n">qs_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">init_qs</span>
+
+<span class="n">vfe_hist</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">zeros</span><span class="p">(</span><span class="n">n_iter</span><span class="p">)</span>
+<span class="n">vfe_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">vfe_qs</span><span class="p">(</span><span class="n">qs</span> <span class="o">=</span> <span class="n">init_qs</span><span class="p">)</span>
+
+<span class="n">learning_rate</span> <span class="o">=</span> <span class="mf">0.1</span> <span class="c1"># learning rate to prevent gradient steps that are too big (overshooting)</span>
+<span class="k">for</span> <span class="n">i</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">n_iter</span><span class="o">-</span><span class="mi">1</span><span class="p">):</span>   
+
+    <span class="n">dFdqs</span> <span class="o">=</span> <span class="n">grad_vfe_qs</span><span class="p">(</span><span class="n">qs_hist</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span>
+
+    <span class="n">ln_qs</span> <span class="o">=</span> <span class="n">np_auto</span><span class="o">.</span><span class="n">log</span><span class="p">(</span><span class="n">qs_hist</span><span class="p">[</span><span class="n">i</span><span class="p">,:])</span> <span class="o">-</span> <span class="n">learning_rate</span> <span class="o">*</span> <span class="n">dFdqs</span> <span class="c1"># transform qs to log-space to perform gradient descent</span>
+    <span class="n">qs_hist</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,:]</span> <span class="o">=</span> <span class="n">maths</span><span class="o">.</span><span class="n">softmax</span><span class="p">(</span><span class="n">ln_qs</span><span class="p">)</span> <span class="c1"># re-normalize to make it a proper, categorical Q(s) again</span>
+
+    <span class="n">vfe_hist</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="n">vfe_qs</span><span class="p">(</span><span class="n">qs</span> <span class="o">=</span> <span class="n">qs_hist</span><span class="p">[</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,:])</span> <span class="c1"># measure final variational free energy</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Since we were storing the history of the variational free energy over the course of the gradient descent, we can plot its trajectory below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">fig</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">figure</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">8</span><span class="p">,</span><span class="mi">6</span><span class="p">))</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">vfe_hist</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylabel</span><span class="p">(</span><span class="s1">&#39;$</span><span class="se">\\</span><span class="s1">mathcal</span><span class="si">{F}</span><span class="s1">$&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlabel</span><span class="p">(</span><span class="s2">&quot;Iteration&quot;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">22</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">xlim</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">n_iter</span><span class="p">)</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">ylim</span><span class="p">(</span><span class="n">vfe_hist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">],</span> <span class="n">vfe_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+<span class="n">plt</span><span class="o">.</span><span class="n">title</span><span class="p">(</span><span class="s1">&#39;Gradient descent on VFE&#39;</span><span class="p">,</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">24</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Gradient descent on VFE&#39;)
+</pre></div>
+</div>
+<img alt="../_images/f86e0f30f8ed63161d18bb546c385d606e74fb69ef30540d4a58684fc478b22b.png" src="../_images/f86e0f30f8ed63161d18bb546c385d606e74fb69ef30540d4a58684fc478b22b.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">final_qs</span><span class="p">,</span> <span class="n">initial_F</span><span class="p">,</span> <span class="n">final_F</span> <span class="o">=</span> <span class="n">qs_hist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">,:],</span> <span class="n">vfe_hist</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">vfe_hist</span><span class="p">[</span><span class="o">-</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="n">display</span><span class="p">(</span><span class="n">Latex</span><span class="p">(</span><span class="s1">&#39;$\mathcal</span><span class="si">{F}</span><span class="s1"> = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln </span><span class="se">\\</span><span class="s1">frac{Q(s)}{P(o, s)}] = \mathbb</span><span class="si">{E}</span><span class="s1">_{Q(s)}[\ln Q(s) - \ln P(o, s)]:$&#39;</span><span class="p">))</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Initial F = </span><span class="si">{</span><span class="n">initial_F</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;Final posterior:&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;</span><span class="si">{</span><span class="n">final_qs</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span> <span class="c1"># note that because of numerical imprecision in the gradient descent (constant learning rate, etc.), the approximate posterior will not exactly be the optimal posterior</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Final F = </span><span class="si">{</span><span class="n">vfe_qs</span><span class="p">(</span><span class="n">final_qs</span><span class="p">)</span><span class="o">.</span><span class="n">round</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+<span class="nb">print</span><span class="p">(</span><span class="s1">&#39;==================&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_latex math notranslate nohighlight">
+\[\mathcal{F} = \mathbb{E}_{Q(s)}[\ln \frac{Q(s)}{P(o, s)}] = \mathbb{E}_{Q(s)}[\ln Q(s) - \ln P(o, s)]:\]</div>
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Initial F = 0.916
+==================
+Final posterior:
+[0.8 0.2]
+==================
+Final F = 0.693
+==================
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="../env.html" class="btn btn-neutral float-left" title="Env" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,539 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Inference Demo: T-Maze Environment &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Active Inference Demo: Epistemic Chaining" href="cue_chaining_demo.html" />
+    <link rel="prev" title="Tutorial 2: the Agent API" href="using_the_agent_class.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Active Inference Demo: T-Maze Environment</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#auxiliary-functions">Auxiliary Functions</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#environment">Environment</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initialize-environment">Initialize environment</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#structure-of-the-state-outcome-mapping">Structure of the state –&gt; outcome mapping</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#transition-dynamics">Transition Dynamics</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#controllable-transition-dynamics">(Controllable-) Transition Dynamics</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#the-generative-model">The generative model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#important-concept-to-note-here"><strong>Important Concept to Note Here!!!</strong></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#introducing-the-agent-class">Introducing the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> class</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#active-inference">Active Inference</a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Active Inference Demo: T-Maze Environment</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/tmaze_demo.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="active-inference-demo-t-maze-environment">
+<h1>Active Inference Demo: T-Maze Environment<a class="headerlink" href="#active-inference-demo-t-maze-environment" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/tmaze_demo.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p>This demo notebook provides a full walk-through of active inference using the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> class of <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>. The canonical example used here is the ‘T-maze’ task, often used in the active inference literature in discussions of epistemic behavior (see, for example, <a class="reference external" href="https://pubmed.ncbi.nlm.nih.gov/25689102/">“Active Inference and Epistemic Value”</a>)</p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<p>First, import <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> and the modules we’ll need.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_beliefs</span><span class="p">,</span> <span class="n">plot_likelihood</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.envs</span><span class="w"> </span><span class="kn">import</span> <span class="n">TMazeEnv</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">ImportError</span><span class="g g-Whitespace">                               </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">2</span><span class="p">],</span> <span class="n">line</span> <span class="mi">4</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="kn">import</span><span class="w"> </span><span class="nn">copy</span>
+<span class="g g-Whitespace">      </span><span class="mi">3</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="ne">----&gt; </span><span class="mi">4</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.utils</span><span class="w"> </span><span class="kn">import</span> <span class="n">plot_beliefs</span><span class="p">,</span> <span class="n">plot_likelihood</span>
+<span class="g g-Whitespace">      </span><span class="mi">5</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+<span class="g g-Whitespace">      </span><span class="mi">6</span> <span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.envs</span><span class="w"> </span><span class="kn">import</span> <span class="n">TMazeEnv</span>
+
+<span class="ne">ImportError</span>: cannot import name &#39;plot_beliefs&#39; from &#39;pymdp.utils&#39; (/Users/4d/Documents/GitHub/template/projects/pymdp/pymdp/utils.py)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="auxiliary-functions">
+<h2>Auxiliary Functions<a class="headerlink" href="#auxiliary-functions" title="Link to this heading"></a></h2>
+<p>Define some utility functions that will be helpful for plotting.</p>
+</section>
+<section id="environment">
+<h2>Environment<a class="headerlink" href="#environment" title="Link to this heading"></a></h2>
+<p>Here we consider an agent navigating a three-armed ‘T-maze,’ with the agent starting in a central location of the maze. The bottom arm of the maze contains an informative cue, which signals in which of the two top arms (‘Left’ or ‘Right’, the ends of the ‘T’) a reward is likely to be found.</p>
+<p>At each timestep, the environment is described by the joint occurrence of two qualitatively-different ‘kinds’ of states (hereafter referred to as <em>hidden state factors</em>). These hidden state factors are independent of one another.</p>
+<p>The first hidden state factor (<code class="docutils literal notranslate"><span class="pre">Location</span></code>) is a discrete random variable with 4 levels, that encodes the current position of the agent. Each of its four levels can be mapped to the following values: {<code class="docutils literal notranslate"><span class="pre">CENTER</span></code>, <code class="docutils literal notranslate"><span class="pre">RIGHT</span> <span class="pre">ARM</span></code>, <code class="docutils literal notranslate"><span class="pre">LEFT</span> <span class="pre">ARM</span></code>, or <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION</span></code>}. The random variable <code class="docutils literal notranslate"><span class="pre">Location</span></code> taking a particular value can be represented as a one-hot vector with a <code class="docutils literal notranslate"><span class="pre">1</span></code> at the appropriate level, and <code class="docutils literal notranslate"><span class="pre">0</span></code>’s everywhere else. For example, if the agent is in the <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION</span></code>, the current state of this factor would be $s_1 = \begin{bmatrix} 0 &amp; 0 &amp; 0 &amp; 1 \end{bmatrix}$.</p>
+<p>We represent the second hidden state factor (<code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">Condition</span></code>) is a discrete random variable with 2 levels, that encodes the reward condition of the trial: {<code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Right</span></code>, or <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Left</span></code>}.  A trial where the condition is reward is <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Left</span></code> is thus encoded as the state $s_2 = \begin{bmatrix} 0 &amp; 1\end{bmatrix}$.</p>
+<p>The environment is designed such that when the agent is located in the <code class="docutils literal notranslate"><span class="pre">RIGHT</span> <span class="pre">ARM</span></code> and the reward condition is <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Right</span></code>, the agent has a specified probability $a$ (where $a &gt; 0.5$) of receiving a reward, and a low probability $b = 1 - a$ of receiving a ‘loss’ (we can think of this as an aversive or unpreferred stimulus). If the agent is in the <code class="docutils literal notranslate"><span class="pre">LEFT</span> <span class="pre">ARM</span></code> for the same reward condition, the reward probabilities are swapped, and the agent experiences loss with probability $a$, and reward with lower probability $b = 1 - a$. These reward contingencies are intuitively swapped for the <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Left</span></code> condition.</p>
+<p>For instance, we can encode the state of the environment at the first time step in a <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">on</span> <span class="pre">Right</span></code> trial with the following pair of hidden state vectors: $s_1 = \begin{bmatrix} 1 &amp; 0 &amp; 0 &amp; 0\end{bmatrix}$, $s_2 = \begin{bmatrix} 1 &amp; 0\end{bmatrix}$, where we assume the agent starts sitting in the central location. If the agent moved to the right arm, then the corresponding hidden state vectors would now be $s_1 = \begin{bmatrix} 0 &amp; 1 &amp; 0 &amp; 0\end{bmatrix}$, $s_2 = \begin{bmatrix} 1 &amp; 0\end{bmatrix}$. This highlights the <em>independence</em> of the two hidden state factors. In other words, the location of the agent ($s_1$) can change without affecting the identity of the reward condition ($s_2$).</p>
+<section id="initialize-environment">
+<h3>Initialize environment<a class="headerlink" href="#initialize-environment" title="Link to this heading"></a></h3>
+<p>Now we can initialize the T-maze environment using the built-in <code class="docutils literal notranslate"><span class="pre">TMazeEnv</span></code> class from the <code class="docutils literal notranslate"><span class="pre">pymdp.envs</span></code> module.</p>
+<p>Choose reward probabilities $a$ and $b$, where $a$ and $b$ are the probabilities of reward / loss in the ‘correct’ arm, and the probabilities of loss / reward in the ‘incorrect’ arm. Which arm counts as ‘correct’ vs. ‘incorrect’ depends on the reward condition (state of the 2nd hidden state factor).</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">reward_probabilities</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.98</span><span class="p">,</span> <span class="mf">0.02</span><span class="p">]</span> <span class="c1"># probabilities used in the original SPM T-maze demo</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Initialize an instance of the T-maze environment</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">env</span> <span class="o">=</span> <span class="n">TMazeEnv</span><span class="p">(</span><span class="n">reward_probs</span> <span class="o">=</span> <span class="n">reward_probabilities</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="structure-of-the-state-outcome-mapping">
+<h3>Structure of the state –&gt; outcome mapping<a class="headerlink" href="#structure-of-the-state-outcome-mapping" title="Link to this heading"></a></h3>
+<p>We can ‘peer into’ the rules encoded by the environment (also known as the <em>generative process</em> ) by looking at the probability distributions that map from hidden states to observations. Following the SPM version of active inference, we refer to this collection of probabilistic relationships as the <code class="docutils literal notranslate"><span class="pre">A</span></code> array. In the case of the true rules of the environment, we refer to this array as <code class="docutils literal notranslate"><span class="pre">A_gp</span></code> (where the suffix <code class="docutils literal notranslate"><span class="pre">_gp</span></code> denotes the generative process).</p>
+<p>It is worth outlining what constitute the agent’s observations in this task. In this T-maze demo, we have three sensory channels or observation modalities: <code class="docutils literal notranslate"><span class="pre">Location</span></code>, <code class="docutils literal notranslate"><span class="pre">Reward</span></code>, and <code class="docutils literal notranslate"><span class="pre">Cue</span></code>.</p>
+<ol class="arabic simple">
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Location</span></code> observation values are identical to the <code class="docutils literal notranslate"><span class="pre">Location</span></code> hidden state values. In this case, the agent always unambiguously observes its own state - if the agent is in <code class="docutils literal notranslate"><span class="pre">RIGHT</span> <span class="pre">ARM</span></code>, it receives a <code class="docutils literal notranslate"><span class="pre">RIGHT</span> <span class="pre">ARM</span></code> observation in the corresponding modality. This might be analogized to a ‘proprioceptive’ sense of one’s own place.</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Reward</span></code> observation modality assumes the values <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">Reward</span></code>, <code class="docutils literal notranslate"><span class="pre">Reward</span></code> or <code class="docutils literal notranslate"><span class="pre">Loss</span></code>. The <code class="docutils literal notranslate"><span class="pre">No</span> <span class="pre">Reward</span></code> (index 0) observation is  observed whenever the agent isn’t occupying one of the two T-maze arms (the right or left arms). The <code class="docutils literal notranslate"><span class="pre">Reward</span></code> (index 1) and <code class="docutils literal notranslate"><span class="pre">Loss</span></code> (index 2) observations are observed in the right and left arms of the T-maze, with associated probabilities that depend on the reward condition (i.e. on the value of the second hidden state factor).</p></li>
+<li><p>The <code class="docutils literal notranslate"><span class="pre">Cue</span></code> observation modality assumes the values <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Right</span></code>, <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Left</span></code>. This observation unambiguously signals the reward condition of the trial, and therefore in which arm the <code class="docutils literal notranslate"><span class="pre">Reward</span></code> observation is more probable. When the agent occupies the other arms, the <code class="docutils literal notranslate"><span class="pre">Cue</span></code> observation will be <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Right</span></code> or <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Left</span></code> with equal probability. However (as we’ll see below when we intialise the agent), the agent’s beliefs about the likelihood mapping render these observations uninformative and irrelevant to state inference.</p></li>
+</ol>
+<p>In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, we store the set of probability distributions encoding the conditional probabilities of observations, under different configurations of hidden states, as a set of matrices referred to as the likelihood mapping or <code class="docutils literal notranslate"><span class="pre">A</span></code> array (this is a convention borrowed from SPM). The likelihood mapping <em>for a single modality</em> is stored as a single multidimensional array (a <code class="docutils literal notranslate"><span class="pre">numpy.ndarray</span></code>) <code class="docutils literal notranslate"><span class="pre">A[m]</span></code> with the larger likelihood array, where <code class="docutils literal notranslate"><span class="pre">m</span></code> is the index of the corresponding modality. Each modality-specific A array has <code class="docutils literal notranslate"><span class="pre">num_obs[m]</span></code> rows, and as many lagging dimensions (e.g. columns, ‘slices’ and higher-order dimensions) as there are hidden state factors. <code class="docutils literal notranslate"><span class="pre">num_obs[m]</span></code> tells you the number of observation values (also known as “levels”) for observation modality <code class="docutils literal notranslate"><span class="pre">m</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># here, we can get the likelihood mapping directly from the environmental class. So this is the likelihood mapping that truly describes the relatinoship between the </span>
+<span class="c1"># environment&#39;s hidden state and the observations the agent will get</span>
+
+<span class="n">A_gp</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_likelihood_dist</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_gp</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;Reward Right&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/7d3b1cc22ffd3f260a1779b0b925feacf4f172230f7682df6f3892fbb200d04c.png" src="../_images/7d3b1cc22ffd3f260a1779b0b925feacf4f172230f7682df6f3892fbb200d04c.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_gp</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;Reward Left&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fd2c39bcd332e39f6859ae8ef33172d514841d32296eee88543f335799850024.png" src="../_images/fd2c39bcd332e39f6859ae8ef33172d514841d32296eee88543f335799850024.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_gp</span><span class="p">[</span><span class="mi">2</span><span class="p">][:,</span><span class="mi">3</span><span class="p">,:],</span><span class="s1">&#39;Cue Mapping&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c53cdf08aade423b0344bcc2ea0ae95758452a153848b79bf537374283949f84.png" src="../_images/c53cdf08aade423b0344bcc2ea0ae95758452a153848b79bf537374283949f84.png" />
+</div>
+</div>
+</section>
+<section id="transition-dynamics">
+<h3>Transition Dynamics<a class="headerlink" href="#transition-dynamics" title="Link to this heading"></a></h3>
+<p>We represent the dynamics of the environment (e.g. changes in the location of the agent and changes to the reward condition) as conditional probability distributions that encode the likelihood of transitions between the states of a given hidden state factor. These distributions are collected into the so-called <code class="docutils literal notranslate"><span class="pre">B</span></code> array, also known as <em>transition likelihoods</em> or <em>transition distribution</em> . As with the <code class="docutils literal notranslate"><span class="pre">A</span></code> array, we denote the true probabilities describing the environmental dynamics as <code class="docutils literal notranslate"><span class="pre">B_gp</span></code>. Each sub-matrix <code class="docutils literal notranslate"><span class="pre">B_gp[f]</span></code> of the larger array encodes the transition probabilities between state-values of a given hidden state factor with index <code class="docutils literal notranslate"><span class="pre">f</span></code>. These matrices encode dynamics as Markovian transition probabilities, such that the entry $i,j$ of a given matrix encodes the probability of transition to state $i$ at time $t+1$, given state $j$ at $t$.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># here, we can get the transition mapping directly from the environmental class. So this is the transition mapping that truly describes the environment&#39;s dynamics</span>
+
+<span class="n">B_gp</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">get_transition_dist</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>For example, we can inspect the ‘dynamics’ of the <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">Condition</span></code> factor by indexing into the appropriate sub-matrix of <code class="docutils literal notranslate"><span class="pre">B_gp</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">B_gp</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;Reward Condition Transitions&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f38a8134e6642c63a54d2554fabfaec605fd0ef8d984958027e58cbdf122f0da.png" src="../_images/f38a8134e6642c63a54d2554fabfaec605fd0ef8d984958027e58cbdf122f0da.png" />
+</div>
+</div>
+<p>The above transition array is the ‘trivial’ identity matrix, meaning that the reward condition doesn’t change over time (it’s mapped from whatever it’s current value is to the same value at the next timestep).</p>
+</section>
+<section id="controllable-transition-dynamics">
+<h3>(Controllable-) Transition Dynamics<a class="headerlink" href="#controllable-transition-dynamics" title="Link to this heading"></a></h3>
+<p>Importantly, some hidden state factors are <em>controllable</em> by the agent, meaning that the probability of being in state $i$ at $t+1$ isn’t merely a function of the state at $t$, but also of actions (or from the agent’s perspective, <em>control states</em> ). So now each transition likelihood encodes conditional probability distributions over states at $t+1$, where the conditioning variables are both the states at $t-1$ <em>and</em> the actions at $t-1$. This extra conditioning on actions is encoded via an optional third dimension to each factor-specific <code class="docutils literal notranslate"><span class="pre">B</span></code> array.</p>
+<p>For example, in our case the first hidden state factor (<code class="docutils literal notranslate"><span class="pre">Location</span></code>) is under the control of the agent, which means the corresponding transition likelihoods <code class="docutils literal notranslate"><span class="pre">B[0]</span></code> are index-able by both previous state and action.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">B_gp</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;Transition likelihood for &quot;Move to Center&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c0fcfdf3c169dbea7785f5db614eea3f1b105cd527ab977011004e46187bd1f3.png" src="../_images/c0fcfdf3c169dbea7785f5db614eea3f1b105cd527ab977011004e46187bd1f3.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">B_gp</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;Transition likelihood for &quot;Move to Right Arm&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f57d425fd28f193a2a0ff1ef20ce172c8ccd9e432ea5e663e537f4dbdced0013.png" src="../_images/f57d425fd28f193a2a0ff1ef20ce172c8ccd9e432ea5e663e537f4dbdced0013.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">B_gp</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">2</span><span class="p">],</span><span class="s1">&#39;Transition likelihood for &quot;Move to Left Arm&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/6ed2172428f420588e133cbb9daf04c1d79e45423f6c9339ee2aec26e22d84e1.png" src="../_images/6ed2172428f420588e133cbb9daf04c1d79e45423f6c9339ee2aec26e22d84e1.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">B_gp</span><span class="p">[</span><span class="mi">0</span><span class="p">][:,:,</span><span class="mi">3</span><span class="p">],</span><span class="s1">&#39;Transition likelihood for &quot;Move to Cue Location&quot;&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/9fb1a230b8dd9f1bf0b48d45593e07578aeb26044f729ce17d7f86f051cc6820.png" src="../_images/9fb1a230b8dd9f1bf0b48d45593e07578aeb26044f729ce17d7f86f051cc6820.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="the-generative-model">
+<h2>The generative model<a class="headerlink" href="#the-generative-model" title="Link to this heading"></a></h2>
+<p>Now we can move onto setting up the <em>generative model</em> of the agent - namely, the agent’s <em>beliefs</em> or assumptions about how hidden states give rise to observations, and how hidden states transition among eachother.</p>
+<p>In almost all MDPs, the critical building blocks of this generative model are the agent’s representation of the observation likelihood, which we’ll refer to as <code class="docutils literal notranslate"><span class="pre">A_gm</span></code>, and its representation of the transition likelihood, which we’ll call <code class="docutils literal notranslate"><span class="pre">B_gm</span></code>.</p>
+<p>Here, we assume the agent has a veridical representation of the rules of the T-maze (namely, how hidden states cause observations) as well as its ability to control its own movements with certain consequences (i.e. ‘noiseless’ transitions). So in other words, the agent will have a veridical representation of the “rules” of the environment, as encoded in the arrays <code class="docutils literal notranslate"><span class="pre">A_gp</span></code> and <code class="docutils literal notranslate"><span class="pre">B_gp</span></code> of the generative process.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_gm</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">A_gp</span><span class="p">)</span> <span class="c1"># make a copy of the true observation likelihood to initialize the observation model</span>
+<span class="n">B_gm</span> <span class="o">=</span> <span class="n">copy</span><span class="o">.</span><span class="n">deepcopy</span><span class="p">(</span><span class="n">B_gp</span><span class="p">)</span> <span class="c1"># make a copy of the true transition likelihood to initialize the transition model</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="important-concept-to-note-here">
+<h3><strong>Important Concept to Note Here!!!</strong><a class="headerlink" href="#important-concept-to-note-here" title="Link to this heading"></a></h3>
+<p>It is not necessary, or even in many cases <em>important</em> , that the generative model is a veridical representation of the generative process. This distinction between generative model (essentially, beliefs entertained by the agent and its interaction with the world) and the generative process (the actual dynamical system ‘out there’ generating sensations) is of crucial importance to the active inference formalism and (in our experience) often overlooked in code.</p>
+<p>It is for notational and computational convenience that we encode the generative process using <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> matrices. By doing so, it simply puts the rules of the environment in a data structure that can easily be converted into the Markovian-style conditional distributions useful for encoding the agent’s generative model.</p>
+<p>Strictly speaking, however, all the generative process needs to do is generate observations that are ‘digestible’ by the agent, and be ‘perturbable’ by actions issued by the agent. The way in which it does so can be arbitrarily complex, non-linear, and unaccessible by the agent. Namely, it doesn’t have to be encoded by <code class="docutils literal notranslate"><span class="pre">A</span></code> and <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays (what amount to Markovian, conditional probability tables), but could be described by arbitrarily complex nonlinear or non-differentiable transformations of hidden states that generate observatons.</p>
+</section>
+</section>
+<section id="introducing-the-agent-class">
+<h2>Introducing the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> class<a class="headerlink" href="#introducing-the-agent-class" title="Link to this heading"></a></h2>
+<p>In <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, we have abstracted much of the computations required for active inference into the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> class, a flexible object that can be used to store necessary aspects of the generative model, the agent’s instantaneous observations and actions, and perform action / perception using functions like <code class="docutils literal notranslate"><span class="pre">Agent.infer_states</span></code> and <code class="docutils literal notranslate"><span class="pre">Agent.infer_policies</span></code>.</p>
+<p>An instance of <code class="docutils literal notranslate"><span class="pre">Agent</span></code> is straightforwardly initialized with a call to the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> constructor with a list of optional arguments.</p>
+<p>In our call to <code class="docutils literal notranslate"><span class="pre">Agent()</span></code>, we need to constrain the default behavior with some of our T-Maze-specific needs. For example, we want to make sure that the agent’s beliefs about transitions are constrained by the fact that it can only control the <code class="docutils literal notranslate"><span class="pre">Location</span></code> factor - <em>not</em> the <code class="docutils literal notranslate"><span class="pre">Reward</span> <span class="pre">Condition</span></code> (which we assumed stationary across an epoch of time). Therefore we specify this using a list of indices that will be passed as the <code class="docutils literal notranslate"><span class="pre">control_fac_idx</span></code> argument of the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> constructor.</p>
+<p>Each element in the list specifies a hidden state factor (in terms of its index) that is controllable by the agent. Hidden state factors whose indices are <em>not</em> in this list are assumed to be uncontrollable.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">controllable_indices</span> <span class="o">=</span> <span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="c1"># this is a list of the indices of the hidden state factors that are controllable</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can construct our agent…</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">A</span><span class="o">=</span><span class="n">A_gm</span><span class="p">,</span> <span class="n">B</span><span class="o">=</span><span class="n">B_gm</span><span class="p">,</span> <span class="n">control_fac_idx</span><span class="o">=</span><span class="n">controllable_indices</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can inspect properties (and change) of the agent as we see fit. Let’s look at the initial beliefs the agent has about its starting location and reward condition, encoded in the prior over hidden states $P(s)$, known in SPM-lingo as the <code class="docutils literal notranslate"><span class="pre">D</span></code> array.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;Beliefs about initial location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/2ec17e6bd91bbe055c5d7dc22826c93370b39cb19b8fffc8e87aee0107c5e345.png" src="../_images/2ec17e6bd91bbe055c5d7dc22826c93370b39cb19b8fffc8e87aee0107c5e345.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;Beliefs about reward condition&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/21b4da4c8a1bdbb6856d56b8b54d33500f9afd990f47c6cef5769a1b0f1a72ca.png" src="../_images/21b4da4c8a1bdbb6856d56b8b54d33500f9afd990f47c6cef5769a1b0f1a72ca.png" />
+</div>
+</div>
+<p>Let’s make it so that agent starts with precise and accurate prior beliefs about its starting location.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">agent</span><span class="o">.</span><span class="n">num_states</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>The <code class="docutils literal notranslate"><span class="pre">onehot(value,</span> <span class="pre">dimension)</span></code> function within <code class="docutils literal notranslate"><span class="pre">pymdp.utils</span></code> is a nice function for quickly generating a one-hot vector of dimensions <code class="docutils literal notranslate"><span class="pre">dimension</span></code> with a <code class="docutils literal notranslate"><span class="pre">1</span></code> at the index <code class="docutils literal notranslate"><span class="pre">value</span></code>.</p>
+<p>And now confirm that our agent knows (i.e. has accurate beliefs about) its initial state by visualizing its priors again.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="s2">&quot;Beliefs about initial location&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c97747a4b2a70b14402e027d4ed8b3300a0c156ede3f92af65cf44c4c4743b3d.png" src="../_images/c97747a4b2a70b14402e027d4ed8b3300a0c156ede3f92af65cf44c4c4743b3d.png" />
+</div>
+</div>
+<p>Another thing we want to do in this case is make sure the agent has a ‘sense’ of reward / loss and thus a motivation to be in the ‘correct’ arm (the arm that maximizes the probability of getting the reward outcome).</p>
+<p>We can do this by changing the prior beliefs about observations, the <code class="docutils literal notranslate"><span class="pre">C</span></code> array (also known as the <em>prior preferences</em> ). This is represented as a collection of distributions over observations for each modality. It is initialized by default to be all 0s. This means agent has no preference for particular outcomes. Since the second modality (index <code class="docutils literal notranslate"><span class="pre">1</span></code> of the <code class="docutils literal notranslate"><span class="pre">C</span></code> array) is the <code class="docutils literal notranslate"><span class="pre">Reward</span></code> modality, with the index of the <code class="docutils literal notranslate"><span class="pre">Reward</span></code> outcome being <code class="docutils literal notranslate"><span class="pre">1</span></code>, and that of the <code class="docutils literal notranslate"><span class="pre">Loss</span></code> outcome being <code class="docutils literal notranslate"><span class="pre">2</span></code>, we populate the corresponding entries with values whose relative magnitudes encode the preference for one outcome over another (technically, this is encoded directly in terms of relative log-probabilities).</p>
+<p>Our ability to make the agent’s prior beliefs that it tends to observe the outcome with index <code class="docutils literal notranslate"><span class="pre">1</span></code> in the <code class="docutils literal notranslate"><span class="pre">Reward</span></code> modality, more often than the outcome with index <code class="docutils literal notranslate"><span class="pre">2</span></code>, is what makes this modality a Reward modality in the first place – otherwise, it would just be an arbitrary observation with no extrinsic value <em>per se</em>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">3.0</span>
+<span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">3.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">agent</span><span class="o">.</span><span class="n">C</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;Prior beliefs about observations&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/f83ffb1912869fed24ee6f7eb967dc79e786005a5d329001a308761fb9332412.png" src="../_images/f83ffb1912869fed24ee6f7eb967dc79e786005a5d329001a308761fb9332412.png" />
+</div>
+</div>
+</section>
+<section id="active-inference">
+<h2>Active Inference<a class="headerlink" href="#active-inference" title="Link to this heading"></a></h2>
+<p>Now we can start off the T-maze with an initial observation and run active inference via a loop over a desired time interval.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">T</span> <span class="o">=</span> <span class="mi">5</span> <span class="c1"># number of timesteps</span>
+
+<span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span> <span class="c1"># reset the environment and get an initial observation</span>
+
+<span class="c1"># these are useful for displaying read-outs during the loop over time</span>
+<span class="n">reward_conditions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;Right&quot;</span><span class="p">,</span> <span class="s2">&quot;Left&quot;</span><span class="p">]</span>
+<span class="n">location_observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;CENTER&#39;</span><span class="p">,</span><span class="s1">&#39;RIGHT ARM&#39;</span><span class="p">,</span><span class="s1">&#39;LEFT ARM&#39;</span><span class="p">,</span><span class="s1">&#39;CUE LOCATION&#39;</span><span class="p">]</span>
+<span class="n">reward_observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;No reward&#39;</span><span class="p">,</span><span class="s1">&#39;Reward!&#39;</span><span class="p">,</span><span class="s1">&#39;Loss!&#39;</span><span class="p">]</span>
+<span class="n">cue_observations</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Cue Right&#39;</span><span class="p">,</span><span class="s1">&#39;Cue Left&#39;</span><span class="p">]</span>
+<span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot; === Starting experiment === </span><span class="se">\n</span><span class="s2"> Reward condition: </span><span class="si">{}</span><span class="s2">, Observation: [</span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">]&quot;&quot;&quot;</span>
+<span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">reward_conditions</span><span class="p">[</span><span class="n">env</span><span class="o">.</span><span class="n">reward_condition</span><span class="p">],</span> <span class="n">location_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">reward_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">cue_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+    <span class="n">qx</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">infer_states</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+
+    <span class="n">q_pi</span><span class="p">,</span> <span class="n">efe</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">infer_policies</span><span class="p">()</span>
+
+    <span class="n">action</span> <span class="o">=</span> <span class="n">agent</span><span class="o">.</span><span class="n">sample_action</span><span class="p">()</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;[Step </span><span class="si">{}</span><span class="s2">] Action: [Move to </span><span class="si">{}</span><span class="s2">]&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">location_observations</span><span class="p">[</span><span class="nb">int</span><span class="p">(</span><span class="n">action</span><span class="p">[</span><span class="mi">0</span><span class="p">])]))</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="n">env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">action</span><span class="p">)</span>
+
+    <span class="n">msg</span> <span class="o">=</span> <span class="s2">&quot;&quot;&quot;[Step </span><span class="si">{}</span><span class="s2">] Observation: [</span><span class="si">{}</span><span class="s2">,  </span><span class="si">{}</span><span class="s2">, </span><span class="si">{}</span><span class="s2">]&quot;&quot;&quot;</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">msg</span><span class="o">.</span><span class="n">format</span><span class="p">(</span><span class="n">t</span><span class="p">,</span> <span class="n">location_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">0</span><span class="p">]],</span> <span class="n">reward_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">1</span><span class="p">]],</span> <span class="n">cue_observations</span><span class="p">[</span><span class="n">obs</span><span class="p">[</span><span class="mi">2</span><span class="p">]]))</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span> === Starting experiment === 
+ Reward condition: Right, Observation: [CENTER, No reward, Cue Left]
+[Step 0] Action: [Move to CUE LOCATION]
+[Step 0] Observation: [CUE LOCATION,  No reward, Cue Right]
+[Step 1] Action: [Move to RIGHT ARM]
+[Step 1] Observation: [RIGHT ARM,  Reward!, Cue Right]
+[Step 2] Action: [Move to RIGHT ARM]
+[Step 2] Observation: [RIGHT ARM,  Reward!, Cue Left]
+[Step 3] Action: [Move to RIGHT ARM]
+[Step 3] Observation: [RIGHT ARM,  Reward!, Cue Right]
+[Step 4] Action: [Move to RIGHT ARM]
+[Step 4] Observation: [RIGHT ARM,  Reward!, Cue Right]
+</pre></div>
+</div>
+</div>
+</div>
+<p>The agent begins by moving to the <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION</span></code> to resolve its uncertainty about the reward condition - this is because it knows it will get an informative cue in this location, which will signal the true reward condition unambiguously. At the beginning of the next timestep, the agent then uses this observaiton to update its posterior beliefs about states <code class="docutils literal notranslate"><span class="pre">qx[1]</span></code> to reflect the true reward condition. Having resolved its uncertainty about the reward condition, the agent then moves to <code class="docutils literal notranslate"><span class="pre">RIGHT</span> <span class="pre">ARM</span></code> to maximize utility and continues to do so, given its (correct) beliefs about the reward condition and the mapping between hidden states and reward observations.</p>
+<p>Notice, perhaps confusingly, that the agent continues to receive observations in the 3rd modality (i.e. samples from <code class="docutils literal notranslate"><span class="pre">A_gp[2]</span></code>). These are observations of the form <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Right</span></code> or <code class="docutils literal notranslate"><span class="pre">Cue</span> <span class="pre">Left</span></code>. However, these ‘cue’ observations are random and totally umambiguous unless the agent is in the <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION</span></code> - this is reflected by totally entropic distributions in the corresponding columns of <code class="docutils literal notranslate"><span class="pre">A_gp[2]</span></code> (and the agents beliefs about this ambiguity, reflected in <code class="docutils literal notranslate"><span class="pre">A_gm[2]</span></code>. See below.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_gp</span><span class="p">[</span><span class="mi">2</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">],</span><span class="s1">&#39;Cue Observations when condition is Reward on Right, for Different Locations&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/92971dddf6c1e3fba69189a028dc66878c466680c2beffecb856919cb850482a.png" src="../_images/92971dddf6c1e3fba69189a028dc66878c466680c2beffecb856919cb850482a.png" />
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_likelihood</span><span class="p">(</span><span class="n">A_gp</span><span class="p">[</span><span class="mi">2</span><span class="p">][:,:,</span><span class="mi">1</span><span class="p">],</span><span class="s1">&#39;Cue Observations when condition is Reward on Left, for Different Locations&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/c32505652cc14bb638e6b7499b0a09c5c64a07364487fd721ed5613c56786345.png" src="../_images/c32505652cc14bb638e6b7499b0a09c5c64a07364487fd721ed5613c56786345.png" />
+</div>
+</div>
+<p>The final column on the right side of these matrices represents the distribution over cue observations, conditioned on the agent being in <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION</span></code> and the appropriate Reward Condition. This demonstrates that cue observations are uninformative / lacking epistemic value for the agent, <em>unless</em> they are in <code class="docutils literal notranslate"><span class="pre">CUE</span> <span class="pre">LOCATION.</span></code></p>
+<p>Now we can inspect the agent’s final beliefs about the reward condition characterizing the ‘trial,’ having undergone 10 timesteps of active inference.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">plot_beliefs</span><span class="p">(</span><span class="n">qx</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="s2">&quot;Final posterior beliefs about reward condition&quot;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/fac7afd5b8b442ff137a19557f96b13f15baea5406bba65459907e6b362aa17d.png" src="../_images/fac7afd5b8b442ff137a19557f96b13f15baea5406bba65459907e6b362aa17d.png" />
+</div>
+</div>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="using_the_agent_class.html" class="btn btn-neutral float-left" title="Tutorial 2: the Agent API" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="cue_chaining_demo.html" class="btn btn-neutral float-right" title="Active Inference Demo: Epistemic Chaining" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

@@ -1,0 +1,974 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="../">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Active Inference Demo: Epistemic Chaining &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="../_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="../_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="../_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="../_static/pymdp_logo_2-removebg.png"/>
+      <script src="../_static/jquery.js?v=5d32c60e"></script>
+      <script src="../_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="../_static/documentation_options.js?v=8d563738"></script>
+      <script src="../_static/doctools.js?v=9a2dae69"></script>
+      <script src="../_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="../_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="next" title="Inference" href="../inference.html" />
+    <link rel="prev" title="Active Inference Demo: T-Maze Environment" href="tmaze_demo.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="../index.html">
+            
+              <img src="../_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Active Inference Demo: Epistemic Chaining</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#imports">Imports</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#grid-world-parameters">Grid World Parameters</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#visualize-the-grid-world">Visualize the grid world</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#generative-model">Generative model</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#the-observation-model-a-array">The observation model: <strong>A</strong> array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#the-transition-model-b-array">The transition model: <strong>B</strong> array</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prior-preferences-the-c-vectors">Prior preferences: the <strong>C</strong> vectors</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#prior-over-initial-hidden-states-the-d-vectors">Prior over (initial) hidden states: the <strong>D</strong> vectors</a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#generative-process">Generative process</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#writing-a-custom-env">Writing a custom <code class="docutils literal notranslate"><span class="pre">env</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l2"><a class="reference internal" href="#active-inference">Active Inference</a><ul>
+<li class="toctree-l3"><a class="reference internal" href="#initialize-an-agent-and-an-instance-of-gridworldenv">Initialize an <code class="docutils literal notranslate"><span class="pre">Agent</span></code> and an instance of <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code></a></li>
+<li class="toctree-l3"><a class="reference internal" href="#run-an-active-inference-loop-over-time">Run an active inference loop over time</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#visualization">Visualization</a></li>
+<li class="toctree-l3"><a class="reference internal" href="#experimenting-with-different-environmental-structure">Experimenting with different environmental structure</a></li>
+</ul>
+</li>
+</ul>
+</li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="../agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="../env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="../index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Active Inference Demo: Epistemic Chaining</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="../_sources/notebooks/cue_chaining_demo.ipynb.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="active-inference-demo-epistemic-chaining">
+<h1>Active Inference Demo: Epistemic Chaining<a class="headerlink" href="#active-inference-demo-epistemic-chaining" title="Link to this heading"></a></h1>
+<p><a class="reference external" href="https://colab.research.google.com/github/infer-actively/pymdp/blob/main/docs/notebooks/cue_chaining_demo.ipynb"><img alt="Open in Colab" src="https://colab.research.google.com/assets/colab-badge.svg" /></a></p>
+<p><em>Author: Conor Heins</em></p>
+<p>This demo notebook builds a generative model from scratch, constructs an <code class="docutils literal notranslate"><span class="pre">Agent</span></code> instance using the constructed generative model, and then runs an active inference simulation in a simple environment.</p>
+<p>The environment used here is similar in spirit to the <a class="reference external" href="https://pymdp-rtd.readthedocs.io/en/latest/notebooks/tmaze_demo.html">T-Maze demo</a>, but the task structure is more complex. Here, we analogize the agent to a rat tasked with solving a spatial puzzle. The rat must sequentially visit a sequence of two cues located at different locations in a 2-D grid world, in order to ultimately reveal the locations of two (opposite) reward outcomes: one location will give the rat a reward (“Cheese”) and the other location will give the rat a punishment (“Shock”).</p>
+<p>Using active inference to solve a POMDP representation of this task, the rat can successfully forage the correct cues in sequence, in order to ultimately discover the location of the “Cheese”, and avoid the “Shock”.</p>
+<p><em>Note</em>: When running this notebook in Google Colab, you may have to run <code class="docutils literal notranslate"><span class="pre">!pip</span> <span class="pre">install</span> <span class="pre">inferactively-pymdp</span></code> at the top of the notebook, before you can <code class="docutils literal notranslate"><span class="pre">import</span> <span class="pre">pymdp</span></code>. That cell is left commented out below, in case you are running this notebook from Google Colab.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># ! pip install inferactively-pymdp</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="imports">
+<h2>Imports<a class="headerlink" href="#imports" title="Link to this heading"></a></h2>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">numpy</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">np</span>
+
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp.agent</span><span class="w"> </span><span class="kn">import</span> <span class="n">Agent</span>
+<span class="kn">from</span><span class="w"> </span><span class="nn">pymdp</span><span class="w"> </span><span class="kn">import</span> <span class="n">utils</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="grid-world-parameters">
+<h2>Grid World Parameters<a class="headerlink" href="#grid-world-parameters" title="Link to this heading"></a></h2>
+<p>Let’s begin by initializing several variables related to the physical environment inhabited by the agent. These variables will encode things like the dimensions of the grid, the possible locations of the different cues, and the possible locations of the reward or punishment.</p>
+<p>Having these variables defined will also come in handy when setting up the generative model of our agent and when creating the environment class.</p>
+<p>We will create a grid world with dimensions $5 \times 7$. Particular locations of the grid are indexed as (y, x) tuples, that select a particular row and column respectively of that location in the grid.</p>
+<p>By design of the task, one location in the grid world contain a cue: <strong>Cue 1</strong>. There will be four additional locations, that will serve as possible locations for a second cue: <strong>Cue 2</strong>. Crucially, only <em>one</em> of these four additional locations will actually contain <strong>Cue 2</strong> - the other 3 will be empty. When the agent visits <strong>Cue 1</strong> by moving to its location, one of four signals is presented, which each unambiguously signal which of the 4 possible locations <strong>Cue 2</strong> occupies – we can refer to these Cue-2-location-signals with obvious names: <code class="docutils literal notranslate"><span class="pre">L1</span></code>, <code class="docutils literal notranslate"><span class="pre">L2</span></code>, <code class="docutils literal notranslate"><span class="pre">L3</span></code>, <code class="docutils literal notranslate"><span class="pre">L4</span></code>. Once <strong>Cue 2</strong>’s location has been revealed, by visiting that location the agent will then receive one of two possible signals, that indicate where the hidden reward is located (and conversely, where the hidden punishment lies). These two possible reward/punishment locations are indicated by two locations: “TOP” (meaning the “Cheese” reward is on the upper of the two locations) or “BOTTOM” (meaning the “Cheese” reward is on the lower of the two locations).</p>
+<p>In this way, the most efficient and risk-sensitive way to achieve reward in this task is to first visit <strong>Cue 1</strong>, in order to figure out the location of <strong>Cue 2</strong>, in order to figure out the location of the reward.</p>
+<p><em>Tip</em>: When setting up <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> generative models and task environments, we recommend creating additional variables, like lists of strings or dicts with string-valued keys, that help you relate the values of various aspects of the task to semantically-meaning labels. These come in handy when generating print statements during debugging or labels for plotting. For example, below we create a list called <code class="docutils literal notranslate"><span class="pre">reward_conditions</span></code> that stores the “names” of the two reward conditions: <code class="docutils literal notranslate"><span class="pre">&quot;TOP&quot;</span></code> and <code class="docutils literal notranslate"><span class="pre">&quot;BOTTOM&quot;</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">grid_dims</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">7</span><span class="p">]</span> <span class="c1"># dimensions of the grid (number of rows, number of columns)</span>
+<span class="n">num_grid_points</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">prod</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">)</span> <span class="c1"># total number of grid locations (rows X columns)</span>
+
+<span class="c1"># create a look-up table `loc_list` that maps linear indices to tuples of (y, x) coordinates </span>
+<span class="n">grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">num_grid_points</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">)</span>
+<span class="n">it</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">nditer</span><span class="p">(</span><span class="n">grid</span><span class="p">,</span> <span class="n">flags</span><span class="o">=</span><span class="p">[</span><span class="s2">&quot;multi_index&quot;</span><span class="p">])</span>
+
+<span class="n">loc_list</span> <span class="o">=</span> <span class="p">[]</span>
+<span class="k">while</span> <span class="ow">not</span> <span class="n">it</span><span class="o">.</span><span class="n">finished</span><span class="p">:</span>
+    <span class="n">loc_list</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">it</span><span class="o">.</span><span class="n">multi_index</span><span class="p">)</span>
+    <span class="n">it</span><span class="o">.</span><span class="n">iternext</span><span class="p">()</span>
+
+<span class="c1"># (y, x) coordinate of the first cue&#39;s location, and then a list of the (y, x) coordinates of the possible locations of the second cue, and their labels (`L1`, `L2`, ...)</span>
+<span class="n">cue1_location</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
+
+<span class="n">cue2_loc_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="s1">&#39;L4&#39;</span><span class="p">]</span>
+<span class="n">cue2_locations</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">3</span><span class="p">),</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span> <span class="mi">2</span><span class="p">)]</span>
+
+<span class="c1"># names of the reward conditions and their locations</span>
+<span class="n">reward_conditions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;TOP&quot;</span><span class="p">,</span> <span class="s2">&quot;BOTTOM&quot;</span><span class="p">]</span>
+<span class="n">reward_locations</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">5</span><span class="p">),</span> <span class="p">(</span><span class="mi">3</span><span class="p">,</span> <span class="mi">5</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="visualize-the-grid-world">
+<h3>Visualize the grid world<a class="headerlink" href="#visualize-the-grid-world" title="Link to this heading"></a></h3>
+<p>Let’s quickly use the variables we just defined to visualize the grid world, including the <strong>Cue 1</strong> location, the possible <strong>Cue 2</strong> locations, and the possible reward locations (in gray, since we don’t know which one has the “Cheese” and which one has the “Shock”)</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.pyplot</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">plt</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.patches</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">patches</span>
+<span class="kn">import</span><span class="w"> </span><span class="nn">matplotlib.cm</span><span class="w"> </span><span class="k">as</span><span class="w"> </span><span class="nn">cm</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span> 
+
+<span class="c1"># create the grid visualization</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">),</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+
+<span class="c1"># Put gray boxes around the possible reward locations</span>
+<span class="n">reward_top</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]))</span>
+<span class="n">reward_bottom</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">]))</span>
+
+<span class="n">text_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]</span>
+
+<span class="n">cue_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">)</span>
+<span class="n">cue_grid</span><span class="p">[</span><span class="n">cue1_location</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">cue1_location</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">15.0</span>
+<span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">loc_ii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">):</span>
+  <span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span> <span class="o">=</span> <span class="n">loc_ii</span>
+  <span class="n">cue_grid</span><span class="p">[</span><span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">column_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cue2_loc_names</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+<span class="n">h</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">cue_grid</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<img alt="../_images/3f600532f4ab5899a2bc7003e0c28fd964f70bcdba3e516be62fa92b4a4c8fec.png" src="../_images/3f600532f4ab5899a2bc7003e0c28fd964f70bcdba3e516be62fa92b4a4c8fec.png" />
+</div>
+</div>
+</section>
+</section>
+<section id="generative-model">
+<h2>Generative model<a class="headerlink" href="#generative-model" title="Link to this heading"></a></h2>
+<p>The hidden states $\mathbf{s}$ of the generative model are factorized into three hidden states factors:</p>
+<ol class="arabic simple">
+<li><p>a <strong>Location</strong> hidden state factor with as many levels as there are grid locations. This encodes the agent’s location in the grid world.</p></li>
+<li><p>a <strong>Cue 2 Location</strong> hidden state factor with 4 levels – this encodes in which of the four possible locations <strong>Cue 2</strong> is located.</p></li>
+<li><p>a <strong>Reward Condition</strong> hidden state factor with 2 levels – this encodes which of the two reward locations (“TOP” or “BOTTOM”) the “Cheese” is to be found in. When the <strong>Reward Condition</strong> level is “TOP”, then the “Cheese” reward is the upper of the two locations, and the “Shock” punishment is on the lower of the two locations. The locations are switched in the “BOTTOM” level of the <strong>Reward Condition</strong> factor.</p></li>
+</ol>
+<p>The observations $\mathbf{o}$ of the generative model are factorized into four different observation modalities:</p>
+<ol class="arabic simple">
+<li><p>a <strong>Location</strong> observation modality with as many levels as there are grid locations, representing the agent’s observation of its location in the grid world.</p></li>
+<li><p>a <strong>Cue 1</strong> observation modality with 5 levels – this is an observation, only obtained at the <strong>Cue 1</strong> location, that signals in which of the 4 possible locations <strong>Cue 2</strong> is located. When not at the <strong>Cue 1</strong> location, the agent sees <code class="docutils literal notranslate"><span class="pre">Null</span></code> or a meaningless observation.</p></li>
+<li><p>a <strong>Cue 2</strong> observation modality with 3 levels – this is an observation, only obtained at the <strong>Cue 2</strong> location, that signals in which of the two reward locations (“TOP” or “BOTTOM”) the “Cheese” is located. When not at the <strong>Cue 2</strong> location, the agent sees <code class="docutils literal notranslate"><span class="pre">Null</span></code> or a meaningless observation.</p></li>
+<li><p>a <strong>Reward</strong> observation modality with 3 levels – this is an observation that signals whether the agent is receiving “Cheese”, “Shock” or nothing at all (“Null”). The agent only receives “Cheese” or “Shock” when occupying one of the two reward locations, and <code class="docutils literal notranslate"><span class="pre">Null</span></code> otherwise.</p></li>
+</ol>
+<p>As is the usual convention in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>, let’s create a list that contains the dimensionalities of the hidden state factors, named <code class="docutils literal notranslate"><span class="pre">num_states</span></code>, and a list that contains the dimensionalities of the observation modalities, named <code class="docutils literal notranslate"><span class="pre">num_obs</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># list of dimensionalities of the hidden states -- useful for creating generative model later on</span>
+<span class="n">num_states</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_grid_points</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward_conditions</span><span class="p">)]</span>
+
+<span class="c1"># Names of the cue1 observation levels, the cue2 observation levels, and the reward observation levels</span>
+<span class="n">cue1_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">]</span> <span class="o">+</span> <span class="n">cue2_loc_names</span> <span class="c1"># signals for the possible Cue 2 locations, that only are seen when agent is visiting Cue 1</span>
+<span class="n">cue2_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;reward_on_top&#39;</span><span class="p">,</span> <span class="s1">&#39;reward_on_bottom&#39;</span><span class="p">]</span>
+<span class="n">reward_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;Null&#39;</span><span class="p">,</span> <span class="s1">&#39;Cheese&#39;</span><span class="p">,</span> <span class="s1">&#39;Shock&#39;</span><span class="p">]</span>
+
+<span class="n">num_obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">num_grid_points</span><span class="p">,</span> <span class="nb">len</span><span class="p">(</span><span class="n">cue1_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">cue2_names</span><span class="p">),</span> <span class="nb">len</span><span class="p">(</span><span class="n">reward_names</span><span class="p">)]</span>
+</pre></div>
+</div>
+</div>
+</div>
+<section id="the-observation-model-a-array">
+<h3>The observation model: <strong>A</strong> array<a class="headerlink" href="#the-observation-model-a-array" title="Link to this heading"></a></h3>
+<p>Now using <code class="docutils literal notranslate"><span class="pre">num_states</span></code> and <code class="docutils literal notranslate"><span class="pre">num_obs</span></code> we can initialize <code class="docutils literal notranslate"><span class="pre">A</span></code>, the observation model</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">A_m_shapes</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="n">o_dim</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_states</span> <span class="k">for</span> <span class="n">o_dim</span> <span class="ow">in</span> <span class="n">num_obs</span><span class="p">]</span> <span class="c1"># list of shapes of modality-specific A[m] arrays</span>
+<span class="n">A</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">A_m_shapes</span><span class="p">)</span> <span class="c1"># initialize A array to an object array of all-zero subarrays</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output traceback highlight-ipythontb notranslate"><div class="highlight"><pre><span></span><span class="gt">---------------------------------------------------------------------------</span>
+<span class="ne">AttributeError</span><span class="g g-Whitespace">                            </span>Traceback (most recent call last)
+<span class="n">Cell</span> <span class="n">In</span><span class="p">[</span><span class="mi">6</span><span class="p">],</span> <span class="n">line</span> <span class="mi">2</span>
+<span class="g g-Whitespace">      </span><span class="mi">1</span> <span class="n">A_m_shapes</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="n">o_dim</span><span class="p">]</span> <span class="o">+</span> <span class="n">num_states</span> <span class="k">for</span> <span class="n">o_dim</span> <span class="ow">in</span> <span class="n">num_obs</span><span class="p">]</span> <span class="c1"># list of shapes of modality-specific A[m] arrays</span>
+<span class="ne">----&gt; </span><span class="mi">2</span> <span class="n">A</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">A_m_shapes</span><span class="p">)</span> <span class="c1"># initialize A array to an object array of all-zero subarrays</span>
+
+<span class="ne">AttributeError</span>: module &#39;pymdp.utils&#39; has no attribute &#39;obj_array_zeros&#39;
+</pre></div>
+</div>
+</div>
+</div>
+<p>Let’s fill out the various modalities of the <code class="docutils literal notranslate"><span class="pre">A</span></code> array, encoding the agents beliefs about how hidden states probabilistically cause observations within each modality.</p>
+<p>Starting with the <code class="docutils literal notranslate"><span class="pre">0</span></code>-th modality, the <strong>Location</strong> observation modality: <code class="docutils literal notranslate"><span class="pre">A[0]</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the location observation only depend on the location state (proprioceptive observation modality)</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">tile</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">expand_dims</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_grid_points</span><span class="p">),</span> <span class="p">(</span><span class="o">-</span><span class="mi">2</span><span class="p">,</span> <span class="o">-</span><span class="mi">1</span><span class="p">)),</span> <span class="p">(</span><span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="n">num_states</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">num_states</span><span class="p">[</span><span class="mi">2</span><span class="p">]))</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can build the <code class="docutils literal notranslate"><span class="pre">1</span></code>-st modality, the <strong>Cue 1</strong> observation modality: <code class="docutils literal notranslate"><span class="pre">A[1]</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the cue1 observation depend on the location (being at cue1_location) and the true location of cue2</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:,:]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># default makes Null the most likely observation everywhere</span>
+
+<span class="c1"># Make the Cue 1 signal depend on 1) being at the Cue 1 location and 2) the location of Cue 2</span>
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cue_loc2_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">):</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_location</span><span class="p">),</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="n">i</span><span class="o">+</span><span class="mi">1</span><span class="p">,</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_location</span><span class="p">),</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Now we can build the <code class="docutils literal notranslate"><span class="pre">2</span></code>-nd modality, the <strong>Cue 2</strong> observation modality: <code class="docutils literal notranslate"><span class="pre">A[2]</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the cue2 observation depend on the location (being at the correct cue2_location) and the reward condition</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:,:]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># default makes Null the most likely observation everywhere</span>
+
+<span class="k">for</span> <span class="n">i</span><span class="p">,</span> <span class="n">cue_loc2_i</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">):</span>
+
+    <span class="c1"># if the cue2-location is the one you&#39;re currently at, then you get a signal about where the reward is</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue_loc2_i</span><span class="p">),</span><span class="n">i</span><span class="p">,:]</span> <span class="o">=</span> <span class="mf">0.0</span> 
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue_loc2_i</span><span class="p">),</span><span class="n">i</span><span class="p">,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+    <span class="n">A</span><span class="p">[</span><span class="mi">2</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue_loc2_i</span><span class="p">),</span><span class="n">i</span><span class="p">,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Finally, we build the 3rd modality, the <strong>Reward</strong> observation modality: <code class="docutils literal notranslate"><span class="pre">A[3]</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># make the reward observation depend on the location (being at reward location) and the reward condition</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:,:]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># default makes Null the most likely observation everywhere</span>
+
+<span class="n">rew_top_idx</span> <span class="o">=</span> <span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># linear index of the location of the &quot;TOP&quot; reward location</span>
+<span class="n">rew_bott_idx</span> <span class="o">=</span> <span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># linear index of the location of the &quot;BOTTOM&quot; reward location</span>
+
+<span class="c1"># fill out the contingencies when the agent is in the &quot;TOP&quot; reward location</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># fill out the contingencies when the agent is in the &quot;BOTTOM&quot; reward location</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="the-transition-model-b-array">
+<h3>The transition model: <strong>B</strong> array<a class="headerlink" href="#the-transition-model-b-array" title="Link to this heading"></a></h3>
+<p>To create the <code class="docutils literal notranslate"><span class="pre">B</span></code> array or transition model, we have to further specify <code class="docutils literal notranslate"><span class="pre">num_controls</span></code>, which like <code class="docutils literal notranslate"><span class="pre">num_states</span></code> / <code class="docutils literal notranslate"><span class="pre">num_obs</span></code> is a list, but this time of the dimensionalities of each <em>control factor</em>, which are the hidden state factors that are controllable by the agent. Uncontrollable hidden state factors can be encoded as control factors of dimension 1. Once <code class="docutils literal notranslate"><span class="pre">num_controls</span></code> is defined, we can then use it and <code class="docutils literal notranslate"><span class="pre">num_states</span></code> to specify the dimensionality of the <code class="docutils literal notranslate"><span class="pre">B</span></code> arrays. Recall that in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> hidden state factors are conditionally independent of eachother, meaning that each sub-array <code class="docutils literal notranslate"><span class="pre">B[f]</span></code> describes the dynamics of only a single hidden state factor, and its probabilistic dependence on both its own state (at the previous time) and the state of its corresponding control factor.</p>
+<p>In the current grid world task, we will have the agent have the ability to make movements in the 4 cardinal directions (UP, DOWN, LEFT, RIGHT) as well as the option to stay in the same place (STAY). This means we will associate a single 5-dimensional control state factor with the first hidden state factor.</p>
+<p><em>Note</em>: Make sure the indices of the <code class="docutils literal notranslate"><span class="pre">num_controls</span></code> variables “lines up” with those of <code class="docutils literal notranslate"><span class="pre">num_states</span></code>.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># initialize `num_controls`</span>
+<span class="n">num_controls</span> <span class="o">=</span> <span class="p">[</span><span class="mi">5</span><span class="p">,</span> <span class="mi">1</span><span class="p">,</span> <span class="mi">1</span><span class="p">]</span>
+
+<span class="c1"># initialize the shapes of each sub-array `B[f]`</span>
+<span class="n">B_f_shapes</span> <span class="o">=</span> <span class="p">[</span> <span class="p">[</span><span class="n">ns</span><span class="p">,</span> <span class="n">ns</span><span class="p">,</span> <span class="n">num_controls</span><span class="p">[</span><span class="n">f</span><span class="p">]]</span> <span class="k">for</span> <span class="n">f</span><span class="p">,</span> <span class="n">ns</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">num_states</span><span class="p">)]</span>
+
+<span class="c1"># create the `B` array and fill it out</span>
+<span class="n">B</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">B_f_shapes</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fill out <code class="docutils literal notranslate"><span class="pre">B[0]</span></code> according to the expected consequences of each of the 5 actions. Note that we also create a list that stores the names of each action, for interpretability.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">actions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;UP&quot;</span><span class="p">,</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">,</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">,</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">,</span> <span class="s2">&quot;STAY&quot;</span><span class="p">]</span>
+
+<span class="c1"># fill out `B[0]` using the </span>
+<span class="k">for</span> <span class="n">action_id</span><span class="p">,</span> <span class="n">action_label</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">actions</span><span class="p">):</span>
+
+  <span class="k">for</span> <span class="n">curr_state</span><span class="p">,</span> <span class="n">grid_location</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">loc_list</span><span class="p">):</span>
+
+    <span class="n">y</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="n">grid_location</span>
+
+    <span class="k">if</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span>
+      <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">y</span> 
+      <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span>
+      <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">y</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">y</span> 
+      <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+    <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span>
+      <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">x</span> 
+      <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span>
+      <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">x</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">x</span> 
+      <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+    <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;STAY&quot;</span><span class="p">:</span>
+      <span class="n">next_x</span> <span class="o">=</span> <span class="n">x</span>
+      <span class="n">next_y</span> <span class="o">=</span> <span class="n">y</span>
+
+    <span class="n">new_location</span> <span class="o">=</span> <span class="p">(</span><span class="n">next_y</span><span class="p">,</span> <span class="n">next_x</span><span class="p">)</span>
+    <span class="n">next_state</span> <span class="o">=</span> <span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">new_location</span><span class="p">)</span>
+    <span class="n">B</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="n">next_state</span><span class="p">,</span> <span class="n">curr_state</span><span class="p">,</span> <span class="n">action_id</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+</pre></div>
+</div>
+</div>
+</div>
+<p>Fill out <code class="docutils literal notranslate"><span class="pre">B[1]</span></code> and <code class="docutils literal notranslate"><span class="pre">B[2]</span></code> as identity matrices, encoding the fact that those hidden states are uncontrollable</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">B</span><span class="p">[</span><span class="mi">1</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_states</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span>
+<span class="n">B</span><span class="p">[</span><span class="mi">2</span><span class="p">][:,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">eye</span><span class="p">(</span><span class="n">num_states</span><span class="p">[</span><span class="mi">2</span><span class="p">])</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="prior-preferences-the-c-vectors">
+<h3>Prior preferences: the <strong>C</strong> vectors<a class="headerlink" href="#prior-preferences-the-c-vectors" title="Link to this heading"></a></h3>
+<p>Now we specify the agent’s prior over observations, also known as the “prior preferences” or “goal vector.” This is not technically a part of the same generative model used for inference of hidden states, but part of a special predictive generative model using for policy inference.</p>
+<p>Since the prior preferences are defined in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> as priors over observations, not states, so <code class="docutils literal notranslate"><span class="pre">C</span></code> will be an object array whose sub-arrays correspond to the priors over specific observation modalities, e.g <code class="docutils literal notranslate"><span class="pre">C[3]</span></code> encodes the prior preferences for different levels of the <strong>Reward</strong> observation modality.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">C</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_zeros</span><span class="p">(</span><span class="n">num_obs</span><span class="p">)</span>
+
+<span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">2.0</span> <span class="c1"># make the agent want to encounter the &quot;Cheese&quot; observation level</span>
+<span class="n">C</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">]</span> <span class="o">=</span> <span class="o">-</span><span class="mf">4.0</span> <span class="c1"># make the agent not want to encounter the &quot;Shock&quot; observation level</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="prior-over-initial-hidden-states-the-d-vectors">
+<h3>Prior over (initial) hidden states: the <strong>D</strong> vectors<a class="headerlink" href="#prior-over-initial-hidden-states-the-d-vectors" title="Link to this heading"></a></h3>
+<p>Now we specify the agent’s prior over initial hidden states, the <code class="docutils literal notranslate"><span class="pre">D</span></code> array. Since it’s defined over the multi-factor hidden states in this case, <code class="docutils literal notranslate"><span class="pre">D</span></code> will be an object array whose sub-arrays correspond to the priors over specific hidden state factors, e.g <code class="docutils literal notranslate"><span class="pre">D[0]</span></code> encodes the prior beliefs over the initial location of the agent in the grid world.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">D</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">obj_array_uniform</span><span class="p">(</span><span class="n">num_states</span><span class="p">)</span>
+<span class="n">D</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="n">utils</span><span class="o">.</span><span class="n">onehot</span><span class="p">(</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">((</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">)),</span> <span class="n">num_grid_points</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="generative-process">
+<h2>Generative process<a class="headerlink" href="#generative-process" title="Link to this heading"></a></h2>
+<p>Now we need to write down the “rules” of the game, i.e. the environment that the agent will actually be interacting with. The most concise way to do this in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code> is by adopting a similar format to what’s used in frameworks like OpenAIGym – namely, we create an <code class="docutils literal notranslate"><span class="pre">env</span></code> class that takes actions as inputs to a <code class="docutils literal notranslate"><span class="pre">self.step()</span></code> method, and returns observations for the agent as outputs. In Active inference we refer to this agent-independent, physical “reality” in which the agent operates as the <em>generative process</em>, to be distinguished from the agent’s representation of that reality the <em>generative model</em> (the <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code> and <code class="docutils literal notranslate"><span class="pre">D</span></code> that we just wrote down above).</p>
+<section id="writing-a-custom-env">
+<h3>Writing a custom <code class="docutils literal notranslate"><span class="pre">env</span></code><a class="headerlink" href="#writing-a-custom-env" title="Link to this heading"></a></h3>
+<p>Now we’ll define an environment class called <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code>. The constructor for this class allows you to establish various parameters of the generative process, like where the agent starts in the grid-world at the beginning of the trial (<code class="docutils literal notranslate"><span class="pre">starting_loc</span></code>), the location of <strong>Cue 1</strong> (<code class="docutils literal notranslate"><span class="pre">cue1_loc</span></code>), the location of <strong>Cue 2</strong> (<code class="docutils literal notranslate"><span class="pre">cue2_loc</span></code>), and the reward condition (<code class="docutils literal notranslate"><span class="pre">reward_condition</span></code>).</p>
+<p><em>Note</em>: Remember the distinction between the generative model and the generative process: one can build the environment class to be as arbitrarily different from the agent’s generative model as desired. For example, for the <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code> example, you could construct the agent’s <code class="docutils literal notranslate"><span class="pre">A</span></code> array such that the agent <em>believes</em> <strong>Cue 1</strong> is in Location <code class="docutils literal notranslate"><span class="pre">(1,0)</span></code>, but in fact the cue is located somewhere else like <code class="docutils literal notranslate"><span class="pre">(3,0)</span></code> (as would be set by the <code class="docutils literal notranslate"><span class="pre">cue1_loc</span></code> argument to the <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code> constructor). Similarly, one could write the internal <code class="docutils literal notranslate"><span class="pre">step</span></code> method of the <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code> class so that the way the <code class="docutils literal notranslate"><span class="pre">reward_condition</span></code> is signalled is opposite from what the agent expects – so when the agent sees a particular signal at the <strong>Cue 2</strong> location, they <em>assume</em> (via the <code class="docutils literal notranslate"><span class="pre">A</span></code> array) it means that the “Cheese” is located on the <code class="docutils literal notranslate"><span class="pre">&quot;TOP&quot;</span></code> location, but in fact the rule is switched so that “Shock” is at the <code class="docutils literal notranslate"><span class="pre">&quot;TOP&quot;</span></code> location in reality, and “Cheese” is actually at the <code class="docutils literal notranslate"><span class="pre">&quot;BOTTOM&quot;</span></code> location.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">GridWorldEnv</span><span class="p">():</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">starting_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">cue1_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cue2</span> <span class="o">=</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="s1">&#39;TOP&#39;</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span> <span class="o">=</span> <span class="n">starting_loc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue1_loc</span> <span class="o">=</span> <span class="n">cue1_loc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span> <span class="o">=</span> <span class="n">cue2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="s1">&#39;L4&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc</span> <span class="o">=</span> <span class="n">cue2_locations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span><span class="p">)]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">=</span> <span class="n">reward_condition</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting location is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span><span class="si">}</span><span class="s1">, Reward condition is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span><span class="si">}</span><span class="s1">, cue is located in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">action_label</span><span class="p">):</span>
+
+        <span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span>
+
+        <span class="k">if</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span> 
+          
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span> 
+
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span><span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;STAY&quot;</span><span class="p">:</span>
+          <span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span> <span class="o">=</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span> 
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span><span class="p">)</span> <span class="c1"># store the new grid location</span>
+
+        <span class="n">loc_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="c1"># agent always directly observes the grid location they&#39;re in </span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue1_loc</span><span class="p">:</span>
+          <span class="n">cue1_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">cue1_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc</span><span class="p">:</span>
+          <span class="n">cue2_obs</span> <span class="o">=</span> <span class="n">cue2_names</span><span class="p">[</span><span class="n">reward_conditions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">cue2_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        
+        <span class="c1"># @NOTE: here we use the same variable `reward_locations` to create both the agent&#39;s generative model (the `A` matrix) as well as the generative process. </span>
+        <span class="c1"># This is just for simplicity, but it&#39;s not necessary -  you could have the agent believe that the Cheese/Shock are actually stored in arbitrary, incorrect locations.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">==</span> <span class="s1">&#39;TOP&#39;</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Cheese&#39;</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Shock&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">==</span> <span class="s1">&#39;BOTTOM&#39;</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Cheese&#39;</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Shock&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">return</span> <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Re-initialized location to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">loc_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span>
+        <span class="n">cue1_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        <span class="n">cue2_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">return</span> <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span>
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+</section>
+<section id="active-inference">
+<h2>Active Inference<a class="headerlink" href="#active-inference" title="Link to this heading"></a></h2>
+<p>Now that we have a generative model and generative process set up, we can quickly run active inference in <code class="docutils literal notranslate"><span class="pre">pymdp</span></code>. In order to do this, all we need to do is to create an <code class="docutils literal notranslate"><span class="pre">Agent</span></code> using the <code class="docutils literal notranslate"><span class="pre">Agent()</span></code> constructor and create a generative process / environment using our custom <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code> class. Then we just exchange observations and actions between the two in a loop over time, where the agent updates its beliefs and actions using the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> methods like <code class="docutils literal notranslate"><span class="pre">infer_states()</span></code> and <code class="docutils literal notranslate"><span class="pre">infer_policies()</span></code>.</p>
+<section id="initialize-an-agent-and-an-instance-of-gridworldenv">
+<h3>Initialize an <code class="docutils literal notranslate"><span class="pre">Agent</span></code> and an instance of <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code><a class="headerlink" href="#initialize-an-agent-and-an-instance-of-gridworldenv" title="Link to this heading"></a></h3>
+<p>We can quickly construct an instance of <code class="docutils literal notranslate"><span class="pre">Agent</span></code> using our generative model arrays as inputs: <code class="docutils literal notranslate"><span class="pre">A</span></code>, <code class="docutils literal notranslate"><span class="pre">B</span></code>, <code class="docutils literal notranslate"><span class="pre">C</span></code>, and <code class="docutils literal notranslate"><span class="pre">D</span></code>. Since we are dealing with a spatially-extended navigation example, we will also use a <code class="docutils literal notranslate"><span class="pre">policy_len</span></code> parameter that lets the agent plan its movements forward in time. This sort of temporally deep planning is needed because of A) the local nature of the agent’s action repetoire (only being able to move UP, LEFT, RIGHT, and DOWN), and B) the physical distance between the cues and reward locations in the grid world.</p>
+<p>We can also initialize the <code class="docutils literal notranslate"><span class="pre">GridWorldEnv</span></code> class using a desired starting location, a Cue 1 location, Cue 2 location, and reward condition. We can get the first (multi-modality) observation of the simulation by using <code class="docutils literal notranslate"><span class="pre">env.reset()</span></code></p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">,</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">my_env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">(</span><span class="n">starting_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">cue1_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cue2</span> <span class="o">=</span> <span class="s1">&#39;L4&#39;</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="s1">&#39;BOTTOM&#39;</span><span class="p">)</span>
+
+<span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting location is (0, 0), Reward condition is BOTTOM, cue is located in L4
+Re-initialized location to (0, 0)
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="run-an-active-inference-loop-over-time">
+<h3>Run an active inference loop over time<a class="headerlink" href="#run-an-active-inference-loop-over-time" title="Link to this heading"></a></h3>
+<p>…saving the history of the rat’s locations as you do so. Include some print statements if you want to see the output of the agent’s choices as they unfold.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">history_of_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_obs</span><span class="p">]</span>
+<span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">),</span> <span class="n">cue1_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_obs</span><span class="p">),</span> <span class="n">cue2_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue2_obs</span><span class="p">),</span> <span class="n">reward_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_obs</span><span class="p">)]</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># number of total timesteps</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_states</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+    
+    <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_policies</span><span class="p">()</span>
+    <span class="n">chosen_action_id</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">sample_action</span><span class="p">()</span>
+
+    <span class="n">movement_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chosen_action_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">choice_action</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">movement_id</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Action at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">choice_action</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">choice_action</span><span class="p">)</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">),</span> <span class="n">cue1_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_obs</span><span class="p">),</span> <span class="n">cue2_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue2_obs</span><span class="p">),</span> <span class="n">reward_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_obs</span><span class="p">)]</span>
+
+    <span class="n">history_of_locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Grid location at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">loc_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reward at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">reward_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Action at time 0: DOWN
+Grid location at time 0: (1, 0)
+Reward at time 0: Null
+Action at time 1: DOWN
+Grid location at time 1: (2, 0)
+Reward at time 1: Null
+Action at time 2: DOWN
+Grid location at time 2: (3, 0)
+Reward at time 2: Null
+Action at time 3: RIGHT
+Grid location at time 3: (3, 1)
+Reward at time 3: Null
+Action at time 4: DOWN
+Grid location at time 4: (4, 1)
+Reward at time 4: Null
+Action at time 5: RIGHT
+Grid location at time 5: (4, 2)
+Reward at time 5: Null
+Action at time 6: RIGHT
+Grid location at time 6: (4, 3)
+Reward at time 6: Null
+Action at time 7: RIGHT
+Grid location at time 7: (4, 4)
+Reward at time 7: Null
+Action at time 8: RIGHT
+Grid location at time 8: (4, 5)
+Reward at time 8: Null
+Action at time 9: UP
+Grid location at time 9: (3, 5)
+Reward at time 9: Cheese
+</pre></div>
+</div>
+</div>
+</div>
+</section>
+<section id="visualization">
+<h3>Visualization<a class="headerlink" href="#visualization" title="Link to this heading"></a></h3>
+<p>Now let’s do a quick visualization of the rat’s movements over a single trial. We’ll indicate the grid location and time of its movements using a hot colormap (so hotter colors means later in the trial), and indicate the Cue 1 and Cue 2 locations with purple outlined boxes. Each of the possible Cue 2 locations will be highlighted in a light blue.</p>
+<p>Try changing the initial settings of the generative process (the locations of Cue1, Cue 2, the reward condition, etc.) to see how and the extent to which the active inference agent can adapt its behavior to the changing environmental contingencies.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_locations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">history_of_locs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="c1"># create a matrix containing the agent&#39;s Y/X locations over time (each coordinate in one row of the matrix)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span> 
+
+<span class="c1"># create the grid visualization</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">),</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+
+<span class="c1"># get generative process global parameters (the locations of the Cues, the reward condition, etc.)</span>
+<span class="n">cue1_loc</span><span class="p">,</span> <span class="n">cue2_loc</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">cue1_loc</span><span class="p">,</span> <span class="n">my_env</span><span class="o">.</span><span class="n">cue2_loc</span><span class="p">,</span> <span class="n">my_env</span><span class="o">.</span><span class="n">reward_condition</span>
+<span class="n">reward_top</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">reward_bottom</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">reward_loc</span> <span class="o">=</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;TOP&quot;</span> <span class="k">else</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;TOP&quot;</span><span class="p">:</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">elif</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;BOTTOM&quot;</span><span class="p">:</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">reward_top</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">text_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]</span>
+<span class="n">cue_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">)</span>
+<span class="n">cue_grid</span><span class="p">[</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">15.0</span>
+<span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">loc_ii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">):</span>
+  <span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span> <span class="o">=</span> <span class="n">loc_ii</span>
+  <span class="n">cue_grid</span><span class="p">[</span><span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">column_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cue2_loc_names</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+  
+<span class="n">h</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">cue_grid</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+
+<span class="n">cue1_rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">cue2_rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">cue2_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">cue2_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">temporal_colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">hot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">dots</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">temporal_colormap</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cue 1 located at </span><span class="si">{</span><span class="n">cue2_loc</span><span class="si">}</span><span class="s2">, Cue 2 located at </span><span class="si">{</span><span class="n">cue2_loc</span><span class="si">}</span><span class="s2">, Cheese on </span><span class="si">{</span><span class="n">reward_condition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Cue 1 located at (4, 2), Cue 2 located at (4, 2), Cheese on BOTTOM&#39;)
+</pre></div>
+</div>
+<img alt="../_images/b34886c13c9d8ca442e240fffa7a668ef28f3fa9c5e11e96b2b324b0d974b1c6.png" src="../_images/b34886c13c9d8ca442e240fffa7a668ef28f3fa9c5e11e96b2b324b0d974b1c6.png" />
+</div>
+</div>
+</section>
+<section id="experimenting-with-different-environmental-structure">
+<h3>Experimenting with different environmental structure<a class="headerlink" href="#experimenting-with-different-environmental-structure" title="Link to this heading"></a></h3>
+<p>Try changing around the locations of the rewards, the cues, the agent’s beliefs, etc. For example, below we’ll change the location of the rewards, both in the generative model and the generative process.</p>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="c1"># names of the reward conditions and their locations</span>
+<span class="n">reward_conditions</span> <span class="o">=</span> <span class="p">[</span><span class="s2">&quot;LEFT&quot;</span><span class="p">,</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">]</span>
+<span class="n">reward_locations</span> <span class="o">=</span> <span class="p">[(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">2</span><span class="p">),</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">4</span><span class="p">)]</span> <span class="c1"># DIFFERENT REWARD LOCATIONS</span>
+
+<span class="c1">## reset `A[3]`, the reward observation model</span>
+
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">]</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">zeros</span><span class="p">([</span><span class="n">num_obs</span><span class="p">[</span><span class="mi">3</span><span class="p">]]</span> <span class="o">+</span> <span class="n">num_states</span><span class="p">)</span>
+<span class="c1"># make the reward observation depend on the location (being at reward location) and the reward condition</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,:,:,:]</span> <span class="o">=</span> <span class="mf">1.0</span> <span class="c1"># default makes Null the most likely observation everywhere</span>
+
+<span class="n">rew_top_idx</span> <span class="o">=</span> <span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span> <span class="c1"># linear index of the location of the &quot;TOP&quot; reward location</span>
+<span class="n">rew_bott_idx</span> <span class="o">=</span> <span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">])</span> <span class="c1"># linear index of the location of the &quot;BOTTOM&quot; reward location</span>
+
+<span class="c1"># fill out the contingencies when the agent is in the &quot;TOP&quot; reward location</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="n">rew_top_idx</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="c1"># fill out the contingencies when the agent is in the &quot;BOTTOM&quot; reward location</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">0</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,:]</span> <span class="o">=</span> <span class="mf">0.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">1</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,</span><span class="mi">1</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+<span class="n">A</span><span class="p">[</span><span class="mi">3</span><span class="p">][</span><span class="mi">2</span><span class="p">,</span><span class="n">rew_bott_idx</span><span class="p">,:,</span><span class="mi">0</span><span class="p">]</span> <span class="o">=</span> <span class="mf">1.0</span>
+
+<span class="k">class</span><span class="w"> </span><span class="nc">GridWorldEnv</span><span class="p">():</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">starting_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">4</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">cue1_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cue2</span> <span class="o">=</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="s1">&#39;LEFT&#39;</span><span class="p">):</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span> <span class="o">=</span> <span class="n">starting_loc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue1_loc</span> <span class="o">=</span> <span class="n">cue1_loc</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span> <span class="o">=</span> <span class="n">cue2</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc_names</span> <span class="o">=</span> <span class="p">[</span><span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="s1">&#39;L2&#39;</span><span class="p">,</span> <span class="s1">&#39;L3&#39;</span><span class="p">,</span> <span class="s1">&#39;L4&#39;</span><span class="p">]</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc</span> <span class="o">=</span> <span class="n">cue2_locations</span><span class="p">[</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span><span class="p">)]</span>
+
+        <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">=</span> <span class="n">reward_condition</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Starting location is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span><span class="si">}</span><span class="s1">, Reward condition is </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span><span class="si">}</span><span class="s1">, cue is located in </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+    
+    <span class="k">def</span><span class="w"> </span><span class="nf">step</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span><span class="n">action_label</span><span class="p">):</span>
+
+        <span class="p">(</span><span class="n">Y</span><span class="p">,</span> <span class="n">X</span><span class="p">)</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span>
+
+        <span class="k">if</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;UP&quot;</span><span class="p">:</span> 
+          
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;DOWN&quot;</span><span class="p">:</span> 
+
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span> <span class="o">+</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">Y</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">-</span> <span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&gt;</span> <span class="mi">0</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span> 
+          <span class="n">Y_new</span> <span class="o">=</span> <span class="n">Y</span>
+          <span class="n">X_new</span> <span class="o">=</span> <span class="n">X</span> <span class="o">+</span><span class="mi">1</span> <span class="k">if</span> <span class="n">X</span> <span class="o">&lt;</span> <span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span> <span class="k">else</span> <span class="n">X</span>
+
+        <span class="k">elif</span> <span class="n">action_label</span> <span class="o">==</span> <span class="s2">&quot;STAY&quot;</span><span class="p">:</span>
+          <span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span> <span class="o">=</span> <span class="n">Y</span><span class="p">,</span> <span class="n">X</span> 
+        
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="p">(</span><span class="n">Y_new</span><span class="p">,</span> <span class="n">X_new</span><span class="p">)</span> <span class="c1"># store the new grid location</span>
+
+        <span class="n">loc_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="c1"># agent always directly observes the grid location they&#39;re in </span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue1_loc</span><span class="p">:</span>
+          <span class="n">cue1_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue2_name</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">cue1_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">cue2_loc</span><span class="p">:</span>
+          <span class="n">cue2_obs</span> <span class="o">=</span> <span class="n">cue2_names</span><span class="p">[</span><span class="n">reward_conditions</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span><span class="p">)</span><span class="o">+</span><span class="mi">1</span><span class="p">]</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">cue2_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        
+        <span class="c1"># @NOTE: here we use the same variable `reward_locations` to create both the agent&#39;s generative model (the `A` matrix) as well as the generative process. </span>
+        <span class="c1"># This is just for simplicity, but it&#39;s not necessary -  you could have the agent believe that the Cheese/Shock are actually stored in arbitrary, incorrect locations.</span>
+
+        <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]:</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">==</span> <span class="s1">&#39;LEFT&#39;</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Cheese&#39;</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Shock&#39;</span>
+        <span class="k">elif</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">==</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">]:</span>
+          <span class="k">if</span> <span class="bp">self</span><span class="o">.</span><span class="n">reward_condition</span> <span class="o">==</span> <span class="s1">&#39;RIGHT&#39;</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Cheese&#39;</span>
+          <span class="k">else</span><span class="p">:</span>
+            <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Shock&#39;</span>
+        <span class="k">else</span><span class="p">:</span>
+          <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">return</span> <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span>
+
+    <span class="k">def</span><span class="w"> </span><span class="nf">reset</span><span class="p">(</span><span class="bp">self</span><span class="p">):</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span>
+        <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Re-initialized location to </span><span class="si">{</span><span class="bp">self</span><span class="o">.</span><span class="n">init_loc</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+        <span class="n">loc_obs</span> <span class="o">=</span> <span class="bp">self</span><span class="o">.</span><span class="n">current_location</span>
+        <span class="n">cue1_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        <span class="n">cue2_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+        <span class="n">reward_obs</span> <span class="o">=</span> <span class="s1">&#39;Null&#39;</span>
+
+        <span class="k">return</span> <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span>
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">my_agent</span> <span class="o">=</span> <span class="n">Agent</span><span class="p">(</span><span class="n">A</span> <span class="o">=</span> <span class="n">A</span><span class="p">,</span> <span class="n">B</span> <span class="o">=</span> <span class="n">B</span><span class="p">,</span> <span class="n">C</span> <span class="o">=</span> <span class="n">C</span><span class="p">,</span> <span class="n">D</span> <span class="o">=</span> <span class="n">D</span><span class="p">,</span> <span class="n">policy_len</span> <span class="o">=</span> <span class="mi">4</span><span class="p">)</span>
+
+<span class="n">my_env</span> <span class="o">=</span> <span class="n">GridWorldEnv</span><span class="p">(</span><span class="n">starting_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">0</span><span class="p">),</span> <span class="n">cue1_loc</span> <span class="o">=</span> <span class="p">(</span><span class="mi">2</span><span class="p">,</span> <span class="mi">0</span><span class="p">),</span> <span class="n">cue2</span> <span class="o">=</span> <span class="s1">&#39;L1&#39;</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="s1">&#39;RIGHT&#39;</span><span class="p">)</span>
+
+<span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">reset</span><span class="p">()</span>
+
+<span class="n">history_of_locs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_obs</span><span class="p">]</span>
+<span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">),</span> <span class="n">cue1_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_obs</span><span class="p">),</span> <span class="n">cue2_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue2_obs</span><span class="p">),</span> <span class="n">reward_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_obs</span><span class="p">)]</span>
+
+<span class="n">T</span> <span class="o">=</span> <span class="mi">10</span> <span class="c1"># number of total timesteps</span>
+
+<span class="k">for</span> <span class="n">t</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="n">T</span><span class="p">):</span>
+
+    <span class="n">qs</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_states</span><span class="p">(</span><span class="n">obs</span><span class="p">)</span>
+    
+    <span class="n">my_agent</span><span class="o">.</span><span class="n">infer_policies</span><span class="p">()</span>
+    <span class="n">chosen_action_id</span> <span class="o">=</span> <span class="n">my_agent</span><span class="o">.</span><span class="n">sample_action</span><span class="p">()</span>
+
+    <span class="n">movement_id</span> <span class="o">=</span> <span class="nb">int</span><span class="p">(</span><span class="n">chosen_action_id</span><span class="p">[</span><span class="mi">0</span><span class="p">])</span>
+
+    <span class="n">choice_action</span> <span class="o">=</span> <span class="n">actions</span><span class="p">[</span><span class="n">movement_id</span><span class="p">]</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Action at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">choice_action</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="n">loc_obs</span><span class="p">,</span> <span class="n">cue1_obs</span><span class="p">,</span> <span class="n">cue2_obs</span><span class="p">,</span> <span class="n">reward_obs</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">step</span><span class="p">(</span><span class="n">choice_action</span><span class="p">)</span>
+
+    <span class="n">obs</span> <span class="o">=</span> <span class="p">[</span><span class="n">loc_list</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">),</span> <span class="n">cue1_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue1_obs</span><span class="p">),</span> <span class="n">cue2_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">cue2_obs</span><span class="p">),</span> <span class="n">reward_names</span><span class="o">.</span><span class="n">index</span><span class="p">(</span><span class="n">reward_obs</span><span class="p">)]</span>
+
+    <span class="n">history_of_locs</span><span class="o">.</span><span class="n">append</span><span class="p">(</span><span class="n">loc_obs</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Grid location at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">loc_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+
+    <span class="nb">print</span><span class="p">(</span><span class="sa">f</span><span class="s1">&#39;Reward at time </span><span class="si">{</span><span class="n">t</span><span class="si">}</span><span class="s1">: </span><span class="si">{</span><span class="n">reward_obs</span><span class="si">}</span><span class="s1">&#39;</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output stream highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Starting location is (0, 0), Reward condition is RIGHT, cue is located in L1
+Re-initialized location to (0, 0)
+Action at time 0: DOWN
+Grid location at time 0: (1, 0)
+Reward at time 0: Null
+Action at time 1: DOWN
+Grid location at time 1: (2, 0)
+Reward at time 1: Null
+Action at time 2: UP
+Grid location at time 2: (1, 0)
+Reward at time 2: Null
+Action at time 3: RIGHT
+Grid location at time 3: (1, 1)
+Reward at time 3: Null
+Action at time 4: UP
+Grid location at time 4: (0, 1)
+Reward at time 4: Null
+Action at time 5: RIGHT
+Grid location at time 5: (0, 2)
+Reward at time 5: Null
+Action at time 6: RIGHT
+Grid location at time 6: (0, 3)
+Reward at time 6: Null
+Action at time 7: DOWN
+Grid location at time 7: (1, 3)
+Reward at time 7: Null
+Action at time 8: DOWN
+Grid location at time 8: (2, 3)
+Reward at time 8: Null
+Action at time 9: RIGHT
+Grid location at time 9: (2, 4)
+Reward at time 9: Cheese
+</pre></div>
+</div>
+</div>
+</div>
+<div class="cell docutils container">
+<div class="cell_input docutils container">
+<div class="highlight-ipython3 notranslate"><div class="highlight"><pre><span></span><span class="n">all_locations</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">vstack</span><span class="p">(</span><span class="n">history_of_locs</span><span class="p">)</span><span class="o">.</span><span class="n">astype</span><span class="p">(</span><span class="nb">float</span><span class="p">)</span> <span class="c1"># create a matrix containing the agent&#39;s Y/X locations over time (each coordinate in one row of the matrix)</span>
+
+<span class="n">fig</span><span class="p">,</span> <span class="n">ax</span> <span class="o">=</span> <span class="n">plt</span><span class="o">.</span><span class="n">subplots</span><span class="p">(</span><span class="n">figsize</span><span class="o">=</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">6</span><span class="p">))</span> 
+
+<span class="c1"># create the grid visualization</span>
+<span class="n">X</span><span class="p">,</span> <span class="n">Y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">meshgrid</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">),</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">h</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">pcolormesh</span><span class="p">(</span><span class="n">X</span><span class="p">,</span> <span class="n">Y</span><span class="p">,</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">),</span> <span class="n">edgecolors</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">,</span> <span class="n">vmin</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">vmax</span> <span class="o">=</span> <span class="mi">30</span><span class="p">,</span> <span class="n">linewidth</span><span class="o">=</span><span class="mi">3</span><span class="p">,</span> <span class="n">cmap</span> <span class="o">=</span> <span class="s1">&#39;coolwarm&#39;</span><span class="p">)</span>
+<span class="n">ax</span><span class="o">.</span><span class="n">invert_yaxis</span><span class="p">()</span>
+
+<span class="c1"># get generative process global parameters (the locations of the Cues, the reward condition, etc.)</span>
+<span class="n">cue1_loc</span><span class="p">,</span> <span class="n">cue2_loc</span><span class="p">,</span> <span class="n">reward_condition</span> <span class="o">=</span> <span class="n">my_env</span><span class="o">.</span><span class="n">cue1_loc</span><span class="p">,</span> <span class="n">my_env</span><span class="o">.</span><span class="n">cue2_loc</span><span class="p">,</span> <span class="n">my_env</span><span class="o">.</span><span class="n">reward_condition</span>
+<span class="n">reward_top</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">reward_bottom</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">1</span><span class="p">],</span><span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">][</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">5</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.5</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">reward_loc</span> <span class="o">=</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span> <span class="k">if</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span> <span class="k">else</span> <span class="n">reward_locations</span><span class="p">[</span><span class="mi">1</span><span class="p">]</span>
+
+<span class="k">if</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;LEFT&quot;</span><span class="p">:</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="k">elif</span> <span class="n">reward_condition</span> <span class="o">==</span> <span class="s2">&quot;RIGHT&quot;</span><span class="p">:</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">)</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_edgecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+    <span class="n">reward_top</span><span class="o">.</span><span class="n">set_facecolor</span><span class="p">([</span><span class="mf">0.7</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">])</span>
+<span class="n">reward_top</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+<span class="n">reward_bottom</span><span class="o">.</span><span class="n">set_zorder</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
+
+<span class="n">text_offsets</span> <span class="o">=</span> <span class="p">[</span><span class="mf">0.4</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">]</span>
+<span class="n">cue_grid</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">ones</span><span class="p">(</span><span class="n">grid_dims</span><span class="p">)</span>
+<span class="n">cue_grid</span><span class="p">[</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">]]</span> <span class="o">=</span> <span class="mf">15.0</span>
+<span class="k">for</span> <span class="n">ii</span><span class="p">,</span> <span class="n">loc_ii</span> <span class="ow">in</span> <span class="nb">enumerate</span><span class="p">(</span><span class="n">cue2_locations</span><span class="p">):</span>
+  <span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span> <span class="o">=</span> <span class="n">loc_ii</span>
+  <span class="n">cue_grid</span><span class="p">[</span><span class="n">row_coord</span><span class="p">,</span> <span class="n">column_coord</span><span class="p">]</span> <span class="o">=</span> <span class="mf">5.0</span>
+  <span class="n">ax</span><span class="o">.</span><span class="n">text</span><span class="p">(</span><span class="n">column_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">0</span><span class="p">],</span> <span class="n">row_coord</span><span class="o">+</span><span class="n">text_offsets</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span> <span class="n">cue2_loc_names</span><span class="p">[</span><span class="n">ii</span><span class="p">],</span> <span class="n">fontsize</span> <span class="o">=</span> <span class="mi">15</span><span class="p">,</span> <span class="n">color</span><span class="o">=</span><span class="s1">&#39;k&#39;</span><span class="p">)</span>
+  
+<span class="n">h</span><span class="o">.</span><span class="n">set_array</span><span class="p">(</span><span class="n">cue_grid</span><span class="o">.</span><span class="n">ravel</span><span class="p">())</span>
+
+<span class="n">cue1_rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">cue1_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+<span class="n">cue2_rect</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">add_patch</span><span class="p">(</span><span class="n">patches</span><span class="o">.</span><span class="n">Rectangle</span><span class="p">((</span><span class="n">cue2_loc</span><span class="p">[</span><span class="mi">1</span><span class="p">],</span><span class="n">cue2_loc</span><span class="p">[</span><span class="mi">0</span><span class="p">]),</span><span class="mf">1.0</span><span class="p">,</span><span class="mf">1.0</span><span class="p">,</span><span class="n">linewidth</span><span class="o">=</span><span class="mi">8</span><span class="p">,</span><span class="n">edgecolor</span><span class="o">=</span><span class="p">[</span><span class="mf">0.5</span><span class="p">,</span> <span class="mf">0.2</span><span class="p">,</span> <span class="mf">0.7</span><span class="p">],</span><span class="n">facecolor</span><span class="o">=</span><span class="s1">&#39;none&#39;</span><span class="p">))</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="s1">&#39;r&#39;</span><span class="p">,</span> <span class="n">zorder</span> <span class="o">=</span> <span class="mi">2</span><span class="p">)</span>
+
+<span class="n">temporal_colormap</span> <span class="o">=</span> <span class="n">cm</span><span class="o">.</span><span class="n">hot</span><span class="p">(</span><span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="n">T</span><span class="o">+</span><span class="mi">1</span><span class="p">))</span>
+<span class="n">dots</span> <span class="o">=</span> <span class="n">ax</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">1</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span><span class="n">all_locations</span><span class="p">[:,</span><span class="mi">0</span><span class="p">]</span><span class="o">+</span><span class="mf">0.5</span><span class="p">,</span> <span class="mi">450</span><span class="p">,</span> <span class="n">c</span> <span class="o">=</span> <span class="n">temporal_colormap</span><span class="p">,</span> <span class="n">zorder</span><span class="o">=</span><span class="mi">3</span><span class="p">)</span>
+
+<span class="n">ax</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="sa">f</span><span class="s2">&quot;Cue 1 located at </span><span class="si">{</span><span class="n">cue2_loc</span><span class="si">}</span><span class="s2">, Cue 2 located at </span><span class="si">{</span><span class="n">cue2_loc</span><span class="si">}</span><span class="s2">, Cheese on </span><span class="si">{</span><span class="n">reward_condition</span><span class="si">}</span><span class="s2">&quot;</span><span class="p">,</span> <span class="n">fontsize</span><span class="o">=</span><span class="mi">16</span><span class="p">)</span>
+</pre></div>
+</div>
+</div>
+<div class="cell_output docutils container">
+<div class="output text_plain highlight-myst-ansi notranslate"><div class="highlight"><pre><span></span>Text(0.5, 1.0, &#39;Cue 1 located at (0, 2), Cue 2 located at (0, 2), Cheese on RIGHT&#39;)
+</pre></div>
+</div>
+<img alt="../_images/fe8188a293d5621c990efba24f0b3d35d0def5a7584f8f87e289dfd8eaa9c256.png" src="../_images/fe8188a293d5621c990efba24f0b3d35d0def5a7584f8f87e289dfd8eaa9c256.png" />
+</div>
+</div>
+</section>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="tmaze_demo.html" class="btn btn-neutral float-left" title="Active Inference Demo: T-Maze Environment" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="../inference.html" class="btn btn-neutral float-right" title="Inference" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

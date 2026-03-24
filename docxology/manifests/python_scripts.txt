@@ -1,0 +1,3 @@
+# Runnable Python examples (repo-relative). See docs/examples_catalog.md for flags.
+examples/envs/chained_cue_navigation.py
+examples/model_fitting/tmaze_recoverability.py

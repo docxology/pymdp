@@ -1,0 +1,7 @@
+# NumPy / pymdp.legacy-oriented notebooks (not in CI nbval by default).
+examples/legacy/agent_demo.ipynb
+examples/legacy/free_energy_calculation.ipynb
+examples/legacy/gridworld_tutorial_1.ipynb
+examples/legacy/gridworld_tutorial_2.ipynb
+examples/legacy/tmaze_demo.ipynb
+examples/legacy/tmaze_learning_demo.ipynb

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "id": "experimental/sophisticated_inference/mcts_graph_world",
+  "action_weights_shape": [
+    1,
+    4
+  ],
+  "action_probs": [
+    [
+      2.7722790036932565e-05,
+      0.49994581937789917,
+      0.49994581937789917,
+      8.069588511716574e-05
+    ]
+  ],
+  "diagnostics": {
+    "action_probs": [
+      2.7722790036932565e-05,
+      0.49994581937789917,
+      0.49994581937789917,
+      8.069588511716574e-05
+    ],
+    "action_weights_shape": [
+      1,
+      4
+    ]
+  }
+}

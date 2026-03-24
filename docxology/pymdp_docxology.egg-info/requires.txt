@@ -1,0 +1,2 @@
+inferactively-pymdp
+multimethod>=2.0.2

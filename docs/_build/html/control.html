@@ -1,0 +1,641 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Control &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="_static/pymdp_logo_2-removebg.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="next" title="Learning" href="learning.html" />
+    <link rel="prev" title="Inference" href="inference.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Control</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.Policies"><code class="docutils literal notranslate"><span class="pre">Policies</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.calc_inductive_value_t"><code class="docutils literal notranslate"><span class="pre">calc_inductive_value_t()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.calc_negative_pA_info_gain"><code class="docutils literal notranslate"><span class="pre">calc_negative_pA_info_gain()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.calc_negative_pB_info_gain"><code class="docutils literal notranslate"><span class="pre">calc_negative_pB_info_gain()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_expected_obs"><code class="docutils literal notranslate"><span class="pre">compute_expected_obs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_expected_state"><code class="docutils literal notranslate"><span class="pre">compute_expected_state()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_expected_state_and_Bs"><code class="docutils literal notranslate"><span class="pre">compute_expected_state_and_Bs()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_expected_utility"><code class="docutils literal notranslate"><span class="pre">compute_expected_utility()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_info_gain"><code class="docutils literal notranslate"><span class="pre">compute_info_gain()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_neg_efe_policy"><code class="docutils literal notranslate"><span class="pre">compute_neg_efe_policy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.compute_neg_efe_policy_inductive"><code class="docutils literal notranslate"><span class="pre">compute_neg_efe_policy_inductive()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.construct_policies"><code class="docutils literal notranslate"><span class="pre">construct_policies()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.generate_I_matrix"><code class="docutils literal notranslate"><span class="pre">generate_I_matrix()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.get_marginals"><code class="docutils literal notranslate"><span class="pre">get_marginals()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.sample_action"><code class="docutils literal notranslate"><span class="pre">sample_action()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.sample_policy"><code class="docutils literal notranslate"><span class="pre">sample_policy()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.update_posterior_policies"><code class="docutils literal notranslate"><span class="pre">update_posterior_policies()</span></code></a></li>
+<li class="toctree-l2"><a class="reference internal" href="#pymdp.control.update_posterior_policies_inductive"><code class="docutils literal notranslate"><span class="pre">update_posterior_policies_inductive()</span></code></a></li>
+</ul>
+</li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">Control</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/control.rst.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="control">
+<h1>Control<a class="headerlink" href="#control" title="Link to this heading"></a></h1>
+<p>The <code class="docutils literal notranslate"><span class="pre">control.py</span></code> module contains the functions for performing inference of policies (sequences of control states) in POMDP generative models,
+according to active inference.</p>
+<div class="admonition-docxology admonition">
+<p class="admonition-title">Docxology</p>
+<p>Control / policy tests and examples: <code class="docutils literal notranslate"><span class="pre">docxology/docs/validation_matrix.md</span></code> (JAX agent and control). Gallery: <code class="docutils literal notranslate"><span class="pre">examples/advanced/complex_action_dependency.ipynb</span></code>, <code class="docutils literal notranslate"><span class="pre">examples/envs/knapsack_demo.ipynb</span></code>.</p>
+</div>
+<p id="module-pymdp.control">Policy construction, expected free energy, and action sampling utilities.</p>
+<dl class="py class">
+<dt class="sig sig-object py" id="pymdp.control.Policies">
+<em class="property"><span class="pre">class</span><span class="w"> </span></em><span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">Policies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy_arr</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em><span class="sig-paren">)</span><a class="headerlink" href="#pymdp.control.Policies" title="Link to this definition"></a></dt>
+<dd><p>A class for storing an array of policies and its properties</p>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.calc_inductive_value_t">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">calc_inductive_value_t</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_next</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.calc_inductive_value_t" title="Link to this definition"></a></dt>
+<dd><p>Computes the inductive value of a state at a particular time (translation of &#64;tverbele’s <cite>numpy</cite> implementation of inductive planning, formerly
+called <cite>calc_inductive_cost</cite>).</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Marginal posterior beliefs over hidden states at a given timepoint.</p></li>
+<li><p><strong>qs_next</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predictive posterior beliefs over hidden states expected under the policy.</p></li>
+<li><p><strong>I</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – For each state factor, contains a 2D array whose element i,j yields the probability
+of reaching the goal state backwards from state j after i steps.</p></li>
+<li><p><strong>epsilon</strong> (<em>float</em>) – Value that tunes the strength of the inductive value (how much it contributes to the expected free energy of policies)</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>inductive_val</strong> – Value (negative inductive cost) of visiting this state using backwards induction under the policy in question</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>float</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.calc_negative_pA_info_gain">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">calc_negative_pA_info_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.calc_negative_pA_info_gain" title="Link to this definition"></a></dt>
+<dd><p>Compute the negative expected Dirichlet information gain about <cite>pA</cite>.</p>
+<p class="rubric">Notes</p>
+<p>This helper returns the negative of the parameter epistemic-value term.
+Subtract its return value when adding parameter information gain to
+<cite>neg_efe</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pA</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Dirichlet parameters over observation model (same shape as <cite>A</cite>).</p></li>
+<li><p><strong>qo</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predictive posterior beliefs over observations; stores the beliefs about
+observations expected under the policy at some arbitrary time <cite>t</cite>.</p></li>
+<li><p><strong>qs</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predictive posterior beliefs over hidden states, stores the beliefs about
+hidden states expected under the policy at some arbitrary time <cite>t</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>neg_infogain_pA</strong> – Negative expected information gain (scalar JAX array) for the pair of
+predictive distributions <cite>qo</cite> and <cite>qs</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.calc_negative_pB_info_gain">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">calc_negative_pB_info_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">pB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_t_minus_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_t_minus_1</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.calc_negative_pB_info_gain" title="Link to this definition"></a></dt>
+<dd><p>Compute the negative expected Dirichlet information gain about <cite>pB</cite>.</p>
+<p class="rubric">Notes</p>
+<p>This helper returns the negative of the parameter epistemic-value term.
+Subtract its return value when adding parameter information gain to
+<cite>neg_efe</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>pB</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Dirichlet parameters over transition model (same shape as <cite>B</cite>).</p></li>
+<li><p><strong>qs_t</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predictive posterior beliefs over hidden states expected under the
+policy at time <cite>t</cite>.</p></li>
+<li><p><strong>qs_t_minus_1</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Posterior over hidden states at time <cite>t-1</cite> (before receiving
+observations).</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – For each state factor, indices of the state factors that its
+transition model depends on.</p></li>
+<li><p><strong>u_t_minus_1</strong> (<em>Array</em><em> | </em><em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Actions in time step t-1 for each factor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>neg_infogain_pB</strong> – Negative expected information gain (scalar JAX array) under the
+policy in question.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_expected_obs">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_expected_obs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.compute_expected_obs" title="Link to this definition"></a></dt>
+<dd><p>New version of expected observation (computation of Q(o|pi)) that takes into account sparse dependencies between observation
+modalities and hidden state factors</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Beliefs over hidden states.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood models.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and state factors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Predictive beliefs over observations for each modality.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_expected_state">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_expected_state</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs_prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.compute_expected_state" title="Link to this definition"></a></dt>
+<dd><p>Compute posterior over next state, given belief about previous state, transition model and action…</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs_prior</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Marginal beliefs over hidden states at time <cite>t</cite>.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition model tensors.</p></li>
+<li><p><strong>u_t</strong> (<em>Array</em><em> | </em><em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Action indices for each control factor.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em><em>, </em><em>optional</em>) – Optional dependencies used to marginalize transition tensors. If <cite>None</cite>,
+defaults to factor-local transitions.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Marginal beliefs over next-time hidden states.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_expected_state_and_Bs">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_expected_state_and_Bs</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs_prior</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">u_t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.compute_expected_state_and_Bs" title="Link to this definition"></a></dt>
+<dd><p>Compute one-step predictive states and selected transition matrices.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs_prior</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Marginal beliefs over hidden states at time <cite>t</cite>.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition model tensors for each hidden-state factor.</p></li>
+<li><p><strong>u_t</strong> (<em>Array</em><em> | </em><em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Action indices for each control factor at time <cite>t</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>(qs_next, Bs)</cite> where <cite>qs_next</cite> are next-state marginals and <cite>Bs</cite> are
+the action-conditioned transition slices used for each factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[list[Array], list[Array]]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_expected_utility">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_expected_utility</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">t</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.compute_expected_utility" title="Link to this definition"></a></dt>
+<dd><p>Compute expected utility from predictive observations and preferences.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qo</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predicted observations for each modality.</p></li>
+<li><p><strong>C</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Prior preferences per modality. Each modality can be static <cite>(num_obs,)</cite>
+or time-indexed <cite>(policy_len, num_obs)</cite>.</p></li>
+<li><p><strong>t</strong> (<em>int</em><em>, </em><em>default=0</em>) – Planning timestep used when <cite>C[m]</cite> is time-indexed.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scalar expected utility contribution.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_info_gain">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_info_gain</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qo</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.compute_info_gain" title="Link to this definition"></a></dt>
+<dd><p>Compute expected state-information gain term of expected free energy.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predicted hidden-state beliefs.</p></li>
+<li><p><strong>qo</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Predicted observation beliefs.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood tensors.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and hidden-state factors.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scalar epistemic value from expected information gain.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_neg_efe_policy">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_neg_efe_policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_utility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_states_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_param_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.compute_neg_efe_policy" title="Link to this definition"></a></dt>
+<dd><p>Compute policy-wise negative expected free energy for one policy.</p>
+<p class="rubric">Notes</p>
+<p>This function computes <cite>neg_efe = -EFE</cite> for a single policy. This policy
+score (<cite>neg_efe</cite>) is commonly denoted <cite>G</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs_init</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Initial hidden-state marginals at current timestep.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood tensors.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition tensors.</p></li>
+<li><p><strong>C</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Prior preferences over observations.</p></li>
+<li><p><strong>pA</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>A</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>pB</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>B</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and hidden-state factors.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Transition dependencies between hidden-state factors.</p></li>
+<li><p><strong>policy_i</strong> (<em>Array</em>) – Single policy trajectory with shape <cite>(policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>use_utility</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Include expected utility term.</p></li>
+<li><p><strong>use_states_info_gain</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Include state-information-gain term.</p></li>
+<li><p><strong>use_param_info_gain</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Include parameter-information-gain term.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scalar negative expected free energy for <cite>policy_i</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.compute_neg_efe_policy_inductive">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">compute_neg_efe_policy_inductive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">qs_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_i</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductive_epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_utility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_states_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_param_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inductive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.compute_neg_efe_policy_inductive" title="Link to this definition"></a></dt>
+<dd><p>Compute policy-wise negative expected free energy with inductive planning.</p>
+<p class="rubric">Notes</p>
+<p>This function computes <cite>neg_efe = -EFE</cite> for a single policy with optional
+inductive-value terms. This score is commonly denoted <cite>G</cite>, so here
+<cite>G = neg_efe = -EFE</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>qs_init</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Initial hidden-state marginals at current timestep.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood tensors.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition tensors.</p></li>
+<li><p><strong>C</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Prior preferences over observations.</p></li>
+<li><p><strong>pA</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>A</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>pB</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>B</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and hidden-state factors.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Transition dependencies between hidden-state factors.</p></li>
+<li><p><strong>I</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Inductive reachability matrices.</p></li>
+<li><p><strong>policy_i</strong> (<em>Array</em>) – Single policy trajectory with shape <cite>(policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>inductive_epsilon</strong> (<em>float</em><em>, </em><em>default=1e-3</em>) – Scale of the inductive-value contribution.</p></li>
+<li><p><strong>use_utility</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Include expected utility term.</p></li>
+<li><p><strong>use_states_info_gain</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Include state-information-gain term.</p></li>
+<li><p><strong>use_param_info_gain</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Include parameter-information-gain term.</p></li>
+<li><p><strong>use_inductive</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Include inductive-value term.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>Scalar negative expected free energy for <cite>policy_i</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.construct_policies">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">construct_policies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">num_states</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_controls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policy_len</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">1</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">control_fac_idx</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.construct_policies" title="Link to this definition"></a></dt>
+<dd><p>Generate an exhaustive policy matrix for the specified planning horizon.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>num_states</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Dimensionalities of each hidden state factor.</p></li>
+<li><p><strong>num_controls</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em><em>, </em><em>default None</em>) – Dimensionalities of each control state factor. If <cite>None</cite>, this is
+computed from controllable state factors.</p></li>
+<li><p><strong>policy_len</strong> (<em>int</em><em>, </em><em>default 1</em>) – temporal depth (“planning horizon”) of policies</p></li>
+<li><p><strong>control_fac_idx</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Indices of controllable hidden state factors (factors <cite>i</cite> where <cite>num_controls[i] &gt; 1</cite>).</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>policies</strong> – Policy matrix with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.generate_I_matrix">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">generate_I_matrix</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">H</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">threshold</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">depth</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">int</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.generate_I_matrix" title="Link to this definition"></a></dt>
+<dd><p>Generate inductive reachability matrices using backward state reachability.</p>
+<p>These matrices store whether state <cite>j</cite> (columns) can still reach the
+intended state set after <cite>i</cite> backward steps (rows).
+:param H: Constraints over desired states (1 if you want to reach that state, 0 otherwise)
+:type H: list[Array]
+:param B: Dynamics likelihood mapping or transition model, mapping from hidden states at <cite>t</cite> to hidden states at <cite>t+1</cite>, given some control state <cite>u</cite>.</p>
+<blockquote>
+<div><p>Each element <cite>B[f]</cite> stores a 3-D tensor for hidden state factor <cite>f</cite>, whose entries <cite>B[f][s, v, u]</cite> store the probability
+of hidden state level <cite>s</cite> at the current time, given hidden state level <cite>v</cite> and action <cite>u</cite> at the previous time.</p>
+</div></blockquote>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>threshold</strong> (<em>float</em>) – The threshold for pruning transitions that are below a certain probability</p></li>
+<li><p><strong>depth</strong> (<em>int</em>) – The temporal depth of the backward induction</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>I</strong> – For each state factor, contains a 2D indicator array whose element
+<cite>i, j</cite> is <cite>1</cite> when state <cite>j</cite> can still reach the intended state set
+after <cite>i</cite> backward steps, and <cite>0</cite> otherwise.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.get_marginals">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">get_marginals</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">q_pi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">policies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_controls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.get_marginals" title="Link to this definition"></a></dt>
+<dd><p>Computes the marginal posterior(s) over actions by integrating their posterior probability under the policies that they appear within.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_pi</strong> (<em>1D Array</em>) – Posterior beliefs over policies, i.e. a vector containing one posterior probability per policy.</p></li>
+<li><p><strong>policies</strong> (<em>Array</em>) – Policy matrix with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>num_controls</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Dimensionalities of each control state factor.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>action_marginals</strong> – Marginal posterior over actions for each control factor.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>list[Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.sample_action">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">sample_action</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">num_controls</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Sequence</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_pi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'deterministic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.sample_action" title="Link to this definition"></a></dt>
+<dd><p>Samples an action from posterior marginals, one action per control factor.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>q_pi</strong> (<em>1D Array</em>) – Posterior beliefs over policies, i.e. a vector containing one posterior probability per policy.</p></li>
+<li><p><strong>policies</strong> (<em>Array</em>) – Policy matrix with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>num_controls</strong> (<em>Sequence</em><em>[</em><em>int</em><em>]</em>) – Dimensionalities of each control state factor.</p></li>
+<li><p><strong>action_selection</strong> (<em>string</em><em>, </em><em>default &quot;deterministic&quot;</em>) – String indicating whether whether the selected action is chosen as the maximum of the posterior over actions,
+or whether it’s sampled from the posterior marginal over actions</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>default 16.0</em>) – Action selection precision – the inverse temperature of the softmax that is used to scale the
+action marginals before sampling. This is only used if <cite>action_selection</cite> is <cite>“stochastic”</cite>.</p></li>
+<li><p><strong>rng_key</strong> (<em>Array</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – PRNG key required when <cite>action_selection=’stochastic’</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><strong>selected_policy</strong> – Vector containing the indices of the actions for each control factor</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>1D Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.sample_policy">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">sample_policy</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">q_pi</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">action_selection</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">str</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">'deterministic'</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">alpha</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">rng_key</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">None</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">Array</span></span></span><a class="headerlink" href="#pymdp.control.sample_policy" title="Link to this definition"></a></dt>
+<dd><p>Select or sample a policy, then return its first-step multi-action.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policies</strong> (<em>Array</em>) – Policy matrix with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>q_pi</strong> (<em>Array</em>) – Posterior over policies for one batch element.</p></li>
+<li><p><strong>action_selection</strong> (<em>{&quot;deterministic&quot;</em><em>, </em><em>&quot;stochastic&quot;}</em><em>, </em><em>default=&quot;deterministic&quot;</em>) – Selection mode for choosing a policy.</p></li>
+<li><p><strong>alpha</strong> (<em>float</em><em>, </em><em>default=16.0</em>) – Precision (inverse temperature) used for stochastic sampling.</p></li>
+<li><p><strong>rng_key</strong> (<em>Array</em><em> | </em><em>None</em><em>, </em><em>optional</em>) – PRNG key required for <cite>action_selection=’stochastic’</cite>.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p>First-step action vector for all control factors.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>Array</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.update_posterior_policies">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">update_posterior_policies</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_utility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_states_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_param_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.update_posterior_policies" title="Link to this definition"></a></dt>
+<dd><p>Compute posterior over policies and policy-wise negative expected free energy.</p>
+<p class="rubric">Notes</p>
+<p>The returned policy score is <cite>neg_efe = -EFE</cite>. This same quantity is
+often denoted by <cite>G</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policy_matrix</strong> (<em>Array</em>) – Policy tensor with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>qs_init</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Current marginal beliefs over hidden states.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood tensors.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition tensors.</p></li>
+<li><p><strong>C</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Prior preferences over observations.</p></li>
+<li><p><strong>E</strong> (<em>Array</em>) – Prior over policies.</p></li>
+<li><p><strong>pA</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>A</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>pB</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>B</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and hidden-state factors.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Transition dependencies between hidden-state factors.</p></li>
+<li><p><strong>gamma</strong> (<em>float</em><em>, </em><em>default=16.0</em>) – Policy precision parameter.</p></li>
+<li><p><strong>use_utility</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Whether to include expected utility in EFE.</p></li>
+<li><p><strong>use_states_info_gain</strong> (<em>bool</em><em>, </em><em>default=True</em>) – Whether to include state epistemic value.</p></li>
+<li><p><strong>use_param_info_gain</strong> (<em>bool</em><em>, </em><em>default=False</em>) – Whether to include parameter epistemic value.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><cite>(q_pi, neg_efe_all_policies)</cite> where <cite>q_pi</cite> is the posterior over policies.</p>
+</dd>
+<dt class="field-odd">Return type<span class="colon">:</span></dt>
+<dd class="field-odd"><p>tuple[Array, Array]</p>
+</dd>
+</dl>
+</dd></dl>
+
+<dl class="py function">
+<dt class="sig sig-object py" id="pymdp.control.update_posterior_policies_inductive">
+<span class="sig-prename descclassname"><span class="pre">pymdp.control.</span></span><span class="sig-name descname"><span class="pre">update_posterior_policies_inductive</span></span><span class="sig-paren">(</span><em class="sig-param"><span class="n"><span class="pre">policy_matrix</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">qs_init</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">C</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">E</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">Array</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pA</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">pB</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span><span class="w"> </span><span class="p"><span class="pre">|</span></span><span class="w"> </span><span class="pre">None</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">A_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">B_dependencies</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">int</span><span class="p"><span class="pre">]</span></span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">I</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">list</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></em>, <em class="sig-param"><span class="n"><span class="pre">gamma</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">16.0</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">inductive_epsilon</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">float</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">0.001</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_utility</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_states_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_param_info_gain</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">False</span></span></em>, <em class="sig-param"><span class="n"><span class="pre">use_inductive</span></span><span class="p"><span class="pre">:</span></span><span class="w"> </span><span class="n"><span class="pre">bool</span></span><span class="w"> </span><span class="o"><span class="pre">=</span></span><span class="w"> </span><span class="default_value"><span class="pre">True</span></span></em><span class="sig-paren">)</span> <span class="sig-return"><span class="sig-return-icon">&#x2192;</span> <span class="sig-return-typehint"><span class="pre">tuple</span><span class="p"><span class="pre">[</span></span><span class="pre">Array</span><span class="p"><span class="pre">,</span></span><span class="w"> </span><span class="pre">Array</span><span class="p"><span class="pre">]</span></span></span></span><a class="headerlink" href="#pymdp.control.update_posterior_policies_inductive" title="Link to this definition"></a></dt>
+<dd><p>Compute policy posterior and negative expected free energy with optional
+inductive terms.</p>
+<p class="rubric">Notes</p>
+<p>The returned policy score is <cite>neg_efe = -EFE</cite>. This same quantity is
+often denoted by <cite>G</cite>.</p>
+<dl class="field-list simple">
+<dt class="field-odd">Parameters<span class="colon">:</span></dt>
+<dd class="field-odd"><ul class="simple">
+<li><p><strong>policy_matrix</strong> (<em>Array</em>) – Policy tensor with shape <cite>(num_policies, policy_len, num_factors)</cite>.</p></li>
+<li><p><strong>qs_init</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Current marginal state beliefs.</p></li>
+<li><p><strong>A</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Observation likelihood models.</p></li>
+<li><p><strong>B</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Transition models.</p></li>
+<li><p><strong>C</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Prior preference vectors.</p></li>
+<li><p><strong>E</strong> (<em>Array</em>) – Policy prior over the policy space.</p></li>
+<li><p><strong>pA</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>A</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>pB</strong> (<em>list</em><em>[</em><em>Array</em><em>] </em><em>| </em><em>None</em>) – Optional posterior Dirichlet parameters for <cite>B</cite>. When
+<cite>use_param_info_gain=True</cite>, provide <cite>pA</cite>, <cite>pB</cite>, or both.</p></li>
+<li><p><strong>A_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Observation dependencies between modalities and state factors.</p></li>
+<li><p><strong>B_dependencies</strong> (<em>list</em><em>[</em><em>list</em><em>[</em><em>int</em><em>]</em><em>]</em>) – Transition dependencies between hidden-state factors and control factors.</p></li>
+<li><p><strong>I</strong> (<em>list</em><em>[</em><em>Array</em><em>]</em>) – Inductive planning matrices.</p></li>
+<li><p><strong>gamma</strong> (<em>float = 16.0</em>) – Policy precision for softmax policy posterior.</p></li>
+<li><p><strong>inductive_epsilon</strong> (<em>float = 1e-3</em>) – Inductive value scale factor.</p></li>
+<li><p><strong>use_utility</strong> (<em>bool = True</em>) – Include utility term in expected free energy.</p></li>
+<li><p><strong>use_states_info_gain</strong> (<em>bool = True</em>) – Include epistemic state-information gain term.</p></li>
+<li><p><strong>use_param_info_gain</strong> (<em>bool = False</em>) – Include epistemic parameter-information gain term.</p></li>
+<li><p><strong>use_inductive</strong> (<em>bool = True</em>) – Include inductive value term.</p></li>
+</ul>
+</dd>
+<dt class="field-even">Returns<span class="colon">:</span></dt>
+<dd class="field-even"><p><ul class="simple">
+<li><p><strong>q_pi</strong> (<em>Array</em>) – Posterior over policies.</p></li>
+<li><p><strong>neg_efe_all_policies</strong> (<em>Array</em>) – Policy-wise negative expected free energies.</p></li>
+</ul>
+</p>
+</dd>
+</dl>
+</dd></dl>
+
+</section>
+
+
+           </div>
+          </div>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="inference.html" class="btn btn-neutral float-left" title="Inference" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+        <a href="learning.html" class="btn btn-neutral float-right" title="Learning" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right" aria-hidden="true"></span></a>
+    </div>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>

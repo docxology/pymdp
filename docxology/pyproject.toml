@@ -1,0 +1,53 @@
+[build-system]
+requires = ["setuptools>=77"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymdp-docxology"
+version = "0.1.0"
+description = "Sidecar docs, manifests, and validation helpers for inferactively-pymdp (sibling package)."
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = [
+    "inferactively-pymdp",
+    "multimethod>=2.0.2",
+]
+
+[dependency-groups]
+# Fast docxology pytest (manifest checks, runner --help). No Graphviz C headers required.
+test = [
+    "ipykernel>=6.29.0,<7",
+    "nbval>=0.11.0",
+    "pytest-cov>=7.0.0",
+    "pytest>=8.4.2",
+    "pytest-timeout>=2.4.0",
+    "pytest-xdist>=3.5.0",
+    "pyyaml>=6.0.1",
+]
+# Full notebook execution (nbval CI manifest): requires Graphviz system libs for pygraphviz.
+notebooks = [
+    "jupyter>=1.1.1",
+    "mediapy>=1.2.4",
+    "pybefit",
+    "pygraphviz>=1.14",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pkg*"]
+
+[tool.pytest.ini_options]
+minversion = "6.2.1"
+testpaths = ["tests"]
+addopts = ["-m", "not slow"]
+filterwarnings = [
+    "ignore::DeprecationWarning",
+    "ignore::FutureWarning",
+]
+markers = [
+    "slow: executes nbval over CI-tier notebooks (minutes)",
+]
+
+[tool.uv.sources]
+inferactively-pymdp = { path = "..", editable = true }
+pybefit = { git = "https://github.com/dimarkov/pybefit.git" }

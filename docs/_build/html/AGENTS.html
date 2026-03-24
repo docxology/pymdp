@@ -1,0 +1,197 @@
+
+
+<!DOCTYPE html>
+<html class="writer-html5" lang="en" data-content_root="./">
+<head>
+  <meta charset="utf-8" /><meta name="viewport" content="width=device-width, initial-scale=1" />
+
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>docs/ — Sphinx technical reference &mdash; pymdp 1.0.0 documentation</title>
+      <link rel="stylesheet" type="text/css" href="_static/pygments.css?v=b86133f3" />
+      <link rel="stylesheet" type="text/css" href="_static/css/theme.css?v=9edc463e" />
+      <link rel="stylesheet" type="text/css" href="_static/mystnb.11b39860a7a0cbfd473a3ad8a317855267ff0bd372690045ca344a6b62be495e.css" />
+
+  
+    <link rel="shortcut icon" href="_static/pymdp_logo_2-removebg.png"/>
+      <script src="_static/jquery.js?v=5d32c60e"></script>
+      <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
+      <script src="_static/documentation_options.js?v=8d563738"></script>
+      <script src="_static/doctools.js?v=9a2dae69"></script>
+      <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
+    <script src="_static/js/theme.js"></script>
+    <link rel="index" title="Index" href="genindex.html" />
+    <link rel="search" title="Search" href="search.html" /> 
+</head>
+
+<body class="wy-body-for-nav"> 
+  <div class="wy-grid-for-nav">
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+
+          
+          
+          <a href="index.html">
+            
+              <img src="_static/pymdp_logo_2-removebg.png" class="logo" alt="Logo"/>
+          </a>
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" aria-label="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
+              <p class="caption" role="heading"><span class="caption-text">Installation &amp; Usage</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="installation.html">Installation</a></li>
+<li class="toctree-l1"><a class="reference internal" href="docxology_sidecar.html">Docxology sidecar</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/pymdp_fundamentals.html"><code class="docutils literal notranslate"><span class="pre">pymdp</span></code> Fundamentals</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/active_inference_from_scratch.html">Tutorial 1: Active inference from scratch</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/using_the_agent_class.html">Tutorial 2:  the <code class="docutils literal notranslate"><span class="pre">Agent</span></code> API</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Examples</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/tmaze_demo.html">Active Inference Demo: T-Maze Environment</a></li>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/cue_chaining_demo.html">Active Inference Demo: Epistemic Chaining</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Modules</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="inference.html">Inference</a></li>
+<li class="toctree-l1"><a class="reference internal" href="control.html">Control</a></li>
+<li class="toctree-l1"><a class="reference internal" href="learning.html">Learning</a></li>
+<li class="toctree-l1"><a class="reference internal" href="algos/index.html">Algos</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Agent and environment API</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="agent.html">Agent class</a></li>
+<li class="toctree-l1"><a class="reference internal" href="env.html">Env</a></li>
+</ul>
+<p class="caption" role="heading"><span class="caption-text">Additional learning materials</span></p>
+<ul>
+<li class="toctree-l1"><a class="reference internal" href="notebooks/free_energy_calculation.html">Computing the variational free energy in categorical models</a></li>
+</ul>
+
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="index.html">pymdp</a>
+      </nav>
+
+      <div class="wy-nav-content">
+        <div class="rst-content">
+          <div role="navigation" aria-label="Page navigation">
+  <ul class="wy-breadcrumbs">
+      <li><a href="index.html" class="icon icon-home" aria-label="Home"></a></li>
+      <li class="breadcrumb-item active">docs/ — Sphinx technical reference</li>
+      <li class="wy-breadcrumbs-aside">
+            <a href="_sources/AGENTS.md.txt" rel="nofollow"> View page source</a>
+      </li>
+  </ul>
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+             
+  <section id="docs-sphinx-technical-reference">
+<h1>docs/ — Sphinx technical reference<a class="headerlink" href="#docs-sphinx-technical-reference" title="Link to this heading"></a></h1>
+<section id="layout">
+<h2>Layout<a class="headerlink" href="#layout" title="Link to this heading"></a></h2>
+<table class="docutils align-default">
+<thead>
+<tr class="row-odd"><th class="head"><p>Path</p></th>
+<th class="head"><p>Role</p></th>
+</tr>
+</thead>
+<tbody>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">conf.py</span></code></p></td>
+<td><p>Extensions, theme, <code class="docutils literal notranslate"><span class="pre">sys.path</span></code> to parent package, MyST-NB, static paths</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">index.rst</span></code></p></td>
+<td><p>Master toctree</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">*.rst</span></code></p></td>
+<td><p>Module and topic pages</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">algos/</span></code></p></td>
+<td><p>FPI / MMP sub-pages (JAX <code class="docutils literal notranslate"><span class="pre">pymdp.algos</span></code>)</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">notebooks/*.ipynb</span></code></p></td>
+<td><p>MyST-NB sources (also listed in <code class="docutils literal notranslate"><span class="pre">index.rst</span></code>)</p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">Makefile</span></code>, <code class="docutils literal notranslate"><span class="pre">make.bat</span></code></p></td>
+<td><p><code class="docutils literal notranslate"><span class="pre">sphinx-build</span></code> wrappers</p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">requirements.txt</span></code></p></td>
+<td><p>Pinned Sphinx stack + editable install <code class="docutils literal notranslate"><span class="pre">.</span></code></p></td>
+</tr>
+<tr class="row-odd"><td><p><code class="docutils literal notranslate"><span class="pre">_static/</span></code></p></td>
+<td><p>Logo and static assets referenced by <code class="docutils literal notranslate"><span class="pre">html_logo</span></code> / <code class="docutils literal notranslate"><span class="pre">html_static_path</span></code></p></td>
+</tr>
+<tr class="row-even"><td><p><code class="docutils literal notranslate"><span class="pre">_build/</span></code></p></td>
+<td><p>Generated output (gitignored typical)</p></td>
+</tr>
+</tbody>
+</table>
+</section>
+<section id="extensions-conf-py">
+<h2>Extensions (<code class="docutils literal notranslate"><span class="pre">conf.py</span></code>)<a class="headerlink" href="#extensions-conf-py" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">sphinx.ext.autodoc</span></code>, <code class="docutils literal notranslate"><span class="pre">doctest</span></code>, <code class="docutils literal notranslate"><span class="pre">coverage</span></code>, <code class="docutils literal notranslate"><span class="pre">napoleon</span></code>, <code class="docutils literal notranslate"><span class="pre">autosummary</span></code></p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">myst_nb</span></code> — <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> as sources; <code class="docutils literal notranslate"><span class="pre">source_suffix</span></code> maps <code class="docutils literal notranslate"><span class="pre">.ipynb</span></code> to <code class="docutils literal notranslate"><span class="pre">myst-nb</span></code></p></li>
+</ul>
+</section>
+<section id="myst-nb">
+<h2>MyST-NB<a class="headerlink" href="#myst-nb" title="Link to this heading"></a></h2>
+<ul class="simple">
+<li><p><code class="docutils literal notranslate"><span class="pre">jupyter_execute_notebooks</span> <span class="pre">=</span> <span class="pre">&quot;cache&quot;</span></code> — reuse executed outputs when possible</p></li>
+<li><p><code class="docutils literal notranslate"><span class="pre">jupyter_cache</span> <span class="pre">=</span> <span class="pre">&quot;notebooks&quot;</span></code> — cache subdirectory name under <code class="docutils literal notranslate"><span class="pre">docs/</span></code></p></li>
+</ul>
+</section>
+<section id="version">
+<h2>Version<a class="headerlink" href="#version" title="Link to this heading"></a></h2>
+<p><code class="docutils literal notranslate"><span class="pre">version</span></code> / <code class="docutils literal notranslate"><span class="pre">release</span></code> in <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> should stay aligned with root <a class="reference download internal" download="" href="_downloads/079962c730e6e61f3f9971f670e9cf70/pyproject.toml"><span class="xref download myst">pyproject.toml</span></a> <code class="docutils literal notranslate"><span class="pre">[project].version</span></code> when bumping releases.</p>
+</section>
+<section id="cross-links-to-docxology">
+<h2>Cross-links to docxology<a class="headerlink" href="#cross-links-to-docxology" title="Link to this heading"></a></h2>
+<p>Human-oriented indexes: <span class="xref myst">../docxology/docs/README.md</span>. Sphinx page: <a class="reference internal" href="docxology_sidecar.html"><span class="std std-doc">docxology_sidecar.rst</span></a>.</p>
+</section>
+<section id="parent-repository">
+<h2>Parent repository<a class="headerlink" href="#parent-repository" title="Link to this heading"></a></h2>
+<p>Pymdp package root is the parent of <code class="docutils literal notranslate"><span class="pre">docs/</span></code>; <code class="docutils literal notranslate"><span class="pre">conf.py</span></code> sets <code class="docutils literal notranslate"><span class="pre">sys.path.insert(0,</span> <span class="pre">os.path.abspath('..'))</span></code> for autodoc.</p>
+</section>
+</section>
+
+
+           </div>
+          </div>
+          <footer>
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>&#169; Copyright 2021, infer-actively.</p>
+  </div>
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
+    <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
+
+</footer>
+        </div>
+      </div>
+    </section>
+  </div>
+  <script>
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script> 
+
+</body>
+</html>
