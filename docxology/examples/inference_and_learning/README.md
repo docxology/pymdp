@@ -1,9 +1,21 @@
-# examples/inference_and_learning
+# docxology/examples/inference_and_learning
 
-Validated, verified real `pymdp` configurable functional validation layer for `inference_and_learning`.
+> **State Inference & Learning Comparative Benchmarks**
 
-Outputs are signposted to `docxology/output/inference_and_learning/` and tracked by the `run_all.py` pipeline.
+This directory contains validated Python scenarios that exercise the competitive and cooperative dynamics between different state inference and learning algorithms in `pymdp`. These scripts verify the numerical parity and convergence profiles of Fixed-Point Iteration (FPI), Marginal Message Passing (MMP), and Variational Message Passing (VMP).
 
-## Parent
+## 🚀 Inference & Learning Workloads
 
-[../README.md](../README.md)
+| Workload | Scenario Script | Description |
+| :--- | :--- | :--- |
+| **Algorithm Audit** | `state_inference_learning_demo.py` | Compares FPI, MMP, and VMP accuracy over increasing observation noise. |
+
+## 📊 Output Traces
+Diagnostic artifacts, including VFE convergence trajectories and Dirichlet count heatmaps, are archived in:
+`../../output/inference_and_learning/`
+
+## 🤖 Agentic Contract
+- **Convergence Parity**: Verify that all three inference algorithms converge to the same posterior $q(s)$ within $\epsilon=1e-5$ for simple 1-factor generative models.
+- **Learning Rate Sensitivity**: Audit the stability of the Dirichlet update when the learning rate $\eta$ is varied across three orders of magnitude ($10^{-1}$ to $10^{-3}$).
+
+[Parent Examples Reference](../AGENTS.md)

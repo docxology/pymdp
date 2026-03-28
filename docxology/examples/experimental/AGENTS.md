@@ -1,13 +1,23 @@
-# examples/experimental — Validation Agents
+# docxology/examples/experimental — Experimental Planning Agentic Contract
 
-## Purpose
+## 0. Purpose
+Machine-optimized index for the `experimental` category. These scripts serve as the definitive execution targets for validating high-depth tree search and Monte Carlo inference in Active Inference.
 
-Verified, real `pymdp` configurable functional validation scripts for the `experimental` category.
+## 1. Planning Registry
 
-## Functional Validation
+| Scenario | Primary API | Key Diagnostics |
+| :--- | :--- | :--- |
+| `sophisticated_inference/` | `pymdp.planning.si` | `pi_tree`, `recursive_G`, `node_count` |
+| `mcts_*` targets | `pymdp.planning.mcts` | `rollout_vfe`, `visit_counts`, `depth` |
 
-These scripts invoke real `pymdp` methods exclusively and serialize verified numerical matrices.
+## 2. Invariant Constraints
+Agents executing these scripts MUST enforce the following numerical invariants:
+- **Tree Completeness**: Recursive SI search must return a policy tree where every branch terminates at the specified `search_horizon`.
+- **EFE Monotonicity**: The expected free energy $G$ calculated via SI must be consistent with the single-horizon $G$ when depth $d=1$.
+- **MCTS Convergence**: The policy posterior $q(\pi)$ derived from MCTS simulations must converge to the Boltzmann distribution of the estimated $G$ as $N \to \infty$.
 
-## Parent
+## 3. Output Routing
+All byproducts (NPZ, JSON, PNG) are routed via the [thin orchestrator](../../pkg/support/mirror_dispatch.py) to:
+`docxology/output/experimental/{scenario_stem}/*`
 
-[../AGENTS.md](../AGENTS.md)
+[Parent Examples Index](../AGENTS.md)

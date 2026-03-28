@@ -1,17 +1,24 @@
-# docxology/tests
+# docxology/tests — Structural Validation Agentic Contract
 
-## Markers
+## 0. Purpose
+Machine-optimized index for the `tests` hierarchy. This directory contains the `pytest` suite for validating the integrity of the docxology orchestrator and manifest resolution.
 
-| Marker | Behavior |
-|--------|----------|
-| `slow` | Full nbval over CI notebook manifest (long); may skip if deps missing |
+## 1. Test Registry
 
-Environment: `PYMDP_DOCXOLOGY_SKIP_NBVAL=1` skips heavy work inside slow tests when documented in conftest.
+| Component | Responsibility | Technical Depth |
+| :--- | :--- | :--- |
+| **[`conftest.py`](conftest.py)** | Global path resolution and mock-free agent factories. | Low |
+| **[`test_manifests.py`](test_manifests.py)** | Verifies resolvability of all registry paths. | Medium |
+| **[`test_orchestrations.py`](test_orchestrations.py)** | Smoke tests every scenario in `--fast` mode. | High |
+| **[`test_notebook_runner_smoke.py`](test_notebook_runner_smoke.py)** | Verifies CLI arguments and help-output of drivers. | Medium |
 
-## Repo root resolution
+## 2. Invariant Constraints
+Agents executing these tests MUST enforce the following operational invariants:
+- **Path Purity**: Tests must use absolute path resolution via `Path(__file__).resolve()` to ensure stability across heterogeneous CI environments.
+- **Independence**: Test logic must not depend on the volatile state of `docxology/output/` or pre-existing build artifacts.
+- **Zero-Mock Policy**: Structural validation must prioritize real `pymdp` method execution over mocks to ensure documentation-to-code parity.
 
-Tests use `Path(__file__).resolve().parents[2]` for pymdp root (`parents[0]` = `tests`, `parents[1]` = `docxology`, `parents[2]` = repo root).
+## 3. Deployment Notes
+This suite is executed via `uv run pytest tests/ -v`. It is the primary gatekeeper for ensuring that new examples and manifests are correctly registered and resolvable.
 
-## Parent
-
-[../AGENTS.md](../AGENTS.md)
+[Parent Sidecar Reference](../AGENTS.md)

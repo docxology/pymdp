@@ -1,13 +1,31 @@
 # docxology/config
 
-## Files
+> **Orchestration Context & Rigor Settings**
 
-- **`orchestration.yaml`** — Default flags for [run_docxology_orchestrations.py](../scripts/run_docxology_orchestrations.py). CLI flags override YAML when both apply. Keys: `seed`, `fast`, `skip_heavy`, `verbose`, optional `output_dir`.
+This directory contains the YAML configurations that drive the docxology validation pipeline. These settings allow for precise control over execution depth, reproducibility, and logging verbosity.
 
-## Loading
+## 📄 Core Configuration: `orchestration.yaml`
 
-[run_docxology_orchestrations.py](../scripts/run_docxology_orchestrations.py) reads `config/orchestration.yaml` via `yaml.safe_load` when `pyyaml` is installed; missing file or import yields empty defaults.
+The primary configuration file defines the global defaults for the [thin orchestrator](../pkg/support/mirror_dispatch.py).
 
-## Parent
+| Key | Type | Description |
+| :--- | :--- | :--- |
+| `seed` | `int` | Global PRNG seed for stochastic policy selection and environment resets. |
+| `fast` | `bool` | If `true`, executes minimal timesteps (smoke test) to verify pipeline integrity. |
+| `skip_heavy` | `bool` | If `true`, bypasses resource-intensive MCTS or deep-tree SI scenarios. |
+| `verbose` | `bool` | Enables detailed tracing of JAX array shapes and VFE convergence during execution. |
+| `output_dir` | `str` | Optional override for the base artifact directory (defaults to `../output/`). |
 
-[../AGENTS.md](../AGENTS.md)
+## 🕹️ CLI Overrides
+
+Command-line arguments provided to [`run_docxology_orchestrations.py`](../scripts/run_docxology_orchestrations.py) always take precedence over the values defined in `orchestration.yaml`. This allows for rapid toggling between fast CI checks and rigorous local audits.
+
+---
+
+## 🤖 Agentic Guidance
+
+Agents navigating this directory should:
+1.  **Validate Schema**: Ensure any new keys added to `orchestration.yaml` are supported by the `OrchestrationConfig` dataclass in `pkg/support/bootstrap.py`.
+2.  **Verify Loading**: Confirm that `pyyaml` is available in the environment; otherwise, the pipeline fallbacks to hardcoded defaults.
+
+[Parent Sidecar Reference](../AGENTS.md)

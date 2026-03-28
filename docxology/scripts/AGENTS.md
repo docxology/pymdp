@@ -1,14 +1,24 @@
-# docxology/scripts
+# docxology/scripts — Tool Orchestration Agentic Contract
 
-## Path resolution
+## 0. Purpose
+Machine-optimized index for the `scripts` hierarchy. This directory contains the command-line entrypoints and subprocess wrappers for the docxology validation ecosystem.
 
-- `_DOCXOLOGY = Path(__file__).resolve().parent.parent`
-- `_REPO = _DOCXOLOGY.parent` (pymdp root)
+## 1. Tool Registry
 
-[run_docxology_notebooks.py](run_docxology_notebooks.py) sets subprocess `cwd` to `_REPO` and invokes `sys.executable scripts/run_notebook_manifest.py`.
+| Script | Responsibility | Execution Context |
+| :--- | :--- | :--- |
+| **[`run_docxology_orchestrations.py`](run_docxology_orchestrations.py)** | Categorical scenario execution. | `cwd = docxology/` |
+| **[`run_docxology_notebooks.py`](run_docxology_notebooks.py)** | `nbval` testing for upstream tutorials. | `cwd = repo root` |
+| **[`run_upstream_test_suite.sh`](run_upstream_test_suite.sh)** | Shell wrapper for `pytest test/`. | `cwd = repo root` |
 
-[run_docxology_orchestrations.py](run_docxology_orchestrations.py) runs subprocesses with `cwd=_DOCXOLOGY`, one entry per line from `manifests/orchestrations.txt` (paths relative to `docxology/`).
+## 2. Invariant Constraints
+Agents invoking these scripts MUST enforce the following operational invariants:
+- **Subprocess Isolation**: Every scenario must be executed in a fresh subprocess to prevent state leakage between simulation runs.
+- **Manifest Adherence**: Only targets registered in `docxology/manifests/` may be executed as valid workloads.
+- **Path Parity**: Scripts must automatically resolve `_DOCXOLOGY` and `_REPO` absolute paths to ensure portability across standardized and sidecar-only environments.
 
-## Parent
+## 3. Output Routing
+Subprocess logs and serialization commands from these scripts route data to:
+`docxology/output/{category}/{scenario_stem}/*`
 
-[../AGENTS.md](../AGENTS.md)
+[Parent Sidecar Reference](../AGENTS.md)

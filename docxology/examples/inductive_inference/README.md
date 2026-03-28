@@ -1,9 +1,21 @@
-# examples/inductive_inference
+# docxology/examples/inductive_inference
 
-Validated, verified real `pymdp` configurable functional validation layer for `inductive_inference`.
+> **Structural Discovery & Reachability Benchmarks**
 
-Outputs are signposted to `docxology/output/inductive_inference/` and tracked by the `run_all.py` pipeline.
+This directory contains validated Python scenarios that exercise the structural inference capabilities of `pymdp`. These scripts verify the generation of inductive ($I$) matrices, which represent the reachability of goal states across arbitrary transition structures and policy depths.
 
-## Parent
+## 🚀 Inductive Workloads
 
-[../README.md](../README.md)
+| Workload | Scenario Script | Description |
+| :--- | :--- | :--- |
+| **Reachability Analysis** | `reachability_demo.py` | Validates the recursive `generate_I_matrix` function against known-connectivity graphs. |
+
+## 📊 Output Traces
+Diagnostic artifacts, including color-coded reachability matrices and entropy maps over structural discovery, are archived in:
+`../../output/inductive_inference/`
+
+## 🤖 Agentic Contract
+- **Threshold Integrity**: Verify that the `threshold` parameter in `generate_I_matrix` correctly prunes unreachable states from the marginalized policy space.
+- **Graph Consistency**: Inductive benchmarks must use the `si_fixtures.py` graph definitions to ensure parity with the experimental planning suite.
+
+[Parent Examples Reference](../AGENTS.md)

@@ -131,6 +131,23 @@ For new users to `pymdp`, we specifically recommend stepping through following t
 
 We also have (and are continuing to build) a series of notebooks that walk through active inference agents performing different types of tasks in the [Notebook Gallery](https://pymdp-rtd.readthedocs.io/en/latest/tutorials/notebooks/).
 
+## 🛡️ Validation Sidecar (Docxology)
+
+For rigorous numerical validation and high-fidelity orchestration, `pymdp` includes a specialized sidecar called **[Docxology](docxology/README.md)**. This subsystem provides:
+
+- **Standalone Orchestrators**: Independent drivers for 32+ Active Inference scenarios.
+- **Thermodynamic Diagnostics**: Automated extraction of VFE, EFE, and Shannon entropy.
+- **Zero-Mock Policy**: Strict verification using real `Agent` classes and JAX primitives.
+- **Artifact Archiving**: Persistent storage of tensor traces (.npz) and visual reports.
+
+To run the full validation suite:
+
+```bash
+cd docxology
+uv sync --group test
+uv run python run_all.py
+```
+
 ## Contributing
 
 This package is under active development. If you would like to contribute, please refer to [CONTRIBUTING.md](CONTRIBUTING.md).
