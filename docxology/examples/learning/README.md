@@ -1,6 +1,8 @@
 # examples/learning
 
-This directory contains orchestration routines for `learning` examples. Outputs are generated into mirroring paths under `docxology/output/learning` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `learning`.
+
+Outputs are signposted to `docxology/output/learning/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

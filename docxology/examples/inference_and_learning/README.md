@@ -1,6 +1,8 @@
 # examples/inference_and_learning
 
-This directory contains orchestration routines for `inference_and_learning` examples. Outputs are generated into mirroring paths under `docxology/output/inference_and_learning` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `inference_and_learning`.
+
+Outputs are signposted to `docxology/output/inference_and_learning/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

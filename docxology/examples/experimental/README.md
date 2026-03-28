@@ -1,6 +1,8 @@
 # examples/experimental
 
-This directory contains orchestration routines for `experimental` examples. Outputs are generated into mirroring paths under `docxology/output/experimental` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `experimental`.
+
+Outputs are signposted to `docxology/output/experimental/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

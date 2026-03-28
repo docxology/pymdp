@@ -1,6 +1,8 @@
 # examples/inductive_inference
 
-This directory contains orchestration routines for `inductive_inference` examples. Outputs are generated into mirroring paths under `docxology/output/inductive_inference` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `inductive_inference`.
+
+Outputs are signposted to `docxology/output/inductive_inference/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

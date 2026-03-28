@@ -1,8 +1,12 @@
-# examples/api Agents
+# examples/api — Validation Agents
 
 ## Purpose
 
-Runnable mirrors of gallery examples for the `api` category rooted under `docxology/` for isolated orchestration and native validation.
+Verified, real `pymdp` configurable functional validation scripts for the `api` category.
+
+## Functional Validation
+
+These scripts invoke real `pymdp` methods exclusively and serialize verified numerical matrices.
 
 ## Parent
 

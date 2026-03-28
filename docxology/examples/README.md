@@ -1,13 +1,17 @@
-# docxology/examples
+# docxology/examples — Configurable Validation Harness
 
-Thin mirror scripts aligned with gallery layout under `examples/` (same suffix paths). Listed in [manifests/orchestrations.txt](../manifests/orchestrations.txt) (paths **relative to `docxology/`**).
+The `docxology/examples/` tree contains real `pymdp` configurable functional scripts mirroring the main repository gallery. These scripts are validated pipeline execution targets.
 
-Run all:
+Every script inside these folders is a verified, real active inference implementation. They invoke exact methods inside `pymdp`.
+
+Run all examples sequentially:
 
 ```bash
-cd docxology && uv run python scripts/run_docxology_orchestrations.py
+cd docxology && uv run python run_all.py
 ```
 
-Subdirectories mirror upstream topics (`api/`, `envs/`, `legacy/`, etc.). Each script delegates to `pkg.support.mirror_dispatch` and real pymdp code.
+See [../docs/examples_catalog.md](../docs/examples_catalog.md) for the signposted, cross-indexed operator catalog.
 
-See [../docs/examples_catalog.md](../docs/examples_catalog.md) for the authoritative gallery under repo `examples/`.
+## Parent
+
+[../README.md](../README.md)

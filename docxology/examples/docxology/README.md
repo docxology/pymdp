@@ -1,6 +1,8 @@
 # examples/docxology
 
-This directory contains orchestration routines for `docxology` examples. Outputs are generated into mirroring paths under `docxology/output/docxology` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `docxology`.
+
+Outputs are signposted to `docxology/output/docxology/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

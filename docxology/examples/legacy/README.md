@@ -1,6 +1,8 @@
 # examples/legacy
 
-This directory contains orchestration routines for `legacy` examples. Outputs are generated into mirroring paths under `docxology/output/legacy` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `legacy`.
+
+Outputs are signposted to `docxology/output/legacy/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

@@ -1,6 +1,8 @@
 # examples/model_fitting
 
-This directory contains orchestration routines for `model_fitting` examples. Outputs are generated into mirroring paths under `docxology/output/model_fitting` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `model_fitting`.
+
+Outputs are signposted to `docxology/output/model_fitting/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

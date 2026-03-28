@@ -1,6 +1,8 @@
 # examples/sparse
 
-This directory contains orchestration routines for `sparse` examples. Outputs are generated into mirroring paths under `docxology/output/sparse` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `sparse`.
+
+Outputs are signposted to `docxology/output/sparse/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

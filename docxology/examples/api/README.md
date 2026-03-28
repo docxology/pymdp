@@ -1,6 +1,8 @@
 # examples/api
 
-This directory contains orchestration routines for `api` examples. Outputs are generated into mirroring paths under `docxology/output/api` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `api`.
+
+Outputs are signposted to `docxology/output/api/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 

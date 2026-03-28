@@ -1,8 +1,12 @@
-# examples/experimental Agents
+# examples/experimental — Validation Agents
 
 ## Purpose
 
-Runnable mirrors of gallery examples for the `experimental` category rooted under `docxology/` for isolated orchestration and native validation.
+Verified, real `pymdp` configurable functional validation scripts for the `experimental` category.
+
+## Functional Validation
+
+These scripts invoke real `pymdp` methods exclusively and serialize verified numerical matrices.
 
 ## Parent
 

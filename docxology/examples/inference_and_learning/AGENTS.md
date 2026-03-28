@@ -1,8 +1,12 @@
-# examples/inference_and_learning Agents
+# examples/inference_and_learning — Validation Agents
 
 ## Purpose
 
-Runnable mirrors of gallery examples for the `inference_and_learning` category rooted under `docxology/` for isolated orchestration and native validation.
+Verified, real `pymdp` configurable functional validation scripts for the `inference_and_learning` category.
+
+## Functional Validation
+
+These scripts invoke real `pymdp` methods exclusively and serialize verified numerical matrices.
 
 ## Parent
 

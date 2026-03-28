@@ -1,6 +1,8 @@
 # examples/envs
 
-This directory contains orchestration routines for `envs` examples. Outputs are generated into mirroring paths under `docxology/output/envs` when executed.
+Validated, verified real `pymdp` configurable functional validation layer for `envs`.
+
+Outputs are signposted to `docxology/output/envs/` and tracked by the `run_all.py` pipeline.
 
 ## Parent
 
