@@ -11,10 +11,13 @@ Docxology is a specialized validation sidecar designed to provide **independent 
 Docxology doesn't just run tests; it archives the **thermodynamic signatures** of Active Inference. Every simulation produces high-fidelity visual and numeric diagnostics.
 
 <p align="center">
-  <img src="output/docxology/cue_chaining_beliefs.png" width="45%" height="300px" style="object-fit: contain; margin-right: 10px;"/>
-  <img src="output/docxology/cue_chaining_efe_heatmap.png" width="45%" height="300px" style="object-fit: contain;"/>
+  <img src="output/docxology/cue_chaining_beliefs_anim.gif" width="45%" height="300px" style="object-fit: contain; margin-right: 10px; margin-bottom: 15px;"/>
+  <img src="output/docxology/cue_chaining_efe_heatmap.png" width="45%" height="300px" style="object-fit: contain; margin-bottom: 15px;"/>
   <br>
-  <em>Left: Posterior Belief Heatmap q(s) over time. Right: Negative Expected Free Energy −G landscapes over policies and time.</em>
+  <img src="output/docxology/cue_chaining_entropy.png" width="45%" height="300px" style="object-fit: contain; margin-right: 10px;"/>
+  <img src="output/docxology/cue_chaining_efe_traj.png" width="45%" height="300px" style="object-fit: contain;"/>
+  <br>
+  <em>Top Left: Animated Posterior Belief updates $q(s)$. Top Right: Expected Free Energy (EFE) Action-Horizon Heatmaps.<br>Bottom Left: Derived Thermodynamic Shannon Entropy $H(q)$. Bottom Right: Expected Free Energy Trajectory $-G$.</em>
 </p>
 
 ---
