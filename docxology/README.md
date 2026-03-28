@@ -1,14 +1,14 @@
-# docxology
+# docxology/ Sidecar
 
-> **Standalone Validation & High-Fidelity Orchestration for [pymdp](https://github.com/infer-actively/pymdp)**
+> **High-Fidelity Orchestration & Validation for [pymdp](https://github.com/infer-actively/pymdp)**
 
-Docxology is a specialized validation sidecar designed to provide **independent confirmation** and **zero-mock verification** for Active Inference agents. It exercises the full `pymdp` API surface—from basic state inference to hierarchical planning and MCTS—ensuring every mathematical artifact is verified against real execution traces.
+The `docxology/` subdirectory is a specialized sidecar operating, extending, documenting, and orchestrating the upstream `pymdp` package. It provides **independent confirmation** and **zero-mock verification** for Active Inference models, extracting all data purely from real method execution. It exercises the full `pymdp` API surface—from basic state inference to hierarchical planning and MCTS—ensuring every mathematical artifact is verified against genuine thermodynamic trajectories.
 
 ---
 
 ## 🚀 High-Fidelity Validation
 
-Docxology doesn't just run tests; it archives the **thermodynamic signatures** of Active Inference. Every simulation produces high-fidelity visual and numeric diagnostics.
+The sidecar doesn't just run tests; it archives the **thermodynamic signatures** of Active Inference. Every simulation produces high-fidelity visual and numeric diagnostics using actual values extracted from the `Agent` cycle.
 
 <p align="center">
   <img src="output/docxology/cue_chaining_beliefs_anim.gif" width="45%" height="300px" style="object-fit: contain; margin-right: 10px; margin-bottom: 15px;"/>
@@ -24,7 +24,7 @@ Docxology doesn't just run tests; it archives the **thermodynamic signatures** o
 
 ## 🛠 Subsystem Architecture
 
-The validation architecture is built on a modular, **thin-orchestrator** pipeline that strictly separates configuration from execution logic.
+The validation architecture is built on a modular, **thin-orchestrator** pipeline that strictly separates configuration from execution logic within the `docxology/` tree.
 
 | Subsystem | Role & Engineering Purpose |
 | :--- | :--- |
@@ -41,7 +41,7 @@ The validation architecture is built on a modular, **thin-orchestrator** pipelin
 
 ## 🧪 Independent Confirmation & "Zero-Mock" Policy
 
-The core of Docxology is its **Rule of Parity**: No mocked methods. No hallucinated benchmarks. 
+The core of the sidecar is its **Rule of Parity**: No mocked methods. No hallucinated benchmarks. 
 
 Every result is derived from **real `pymdp` methods** running in isolated execution environments. When `run_all.py` executes, it triggers a 6-step post-processing pipeline:
 
@@ -58,7 +58,7 @@ Every result is derived from **real `pymdp` methods** running in isolated execut
 
 ### 1. Repository Setup
 
-Docxology is designed to work within the `pymdp` repository but can run in its own standalone virtual environment.
+The sidecar is designed to work natively within the `pymdp` repository but can be run in its own standalone virtual environment.
 
 ```bash
 cd docxology
@@ -84,7 +84,7 @@ uv run python scripts/run_docxology_notebooks.py --strict-output
 
 ## 📊 Performance Insights
 
-Docxology automatically extracts terminal and mean scalar values across belief trajectories:
+The sidecar automatically extracts terminal and mean scalar values across belief trajectories:
 
 | Metric | Display Key | Mathematical Basis |
 | :--- | :--- | :--- |
@@ -95,7 +95,7 @@ Docxology automatically extracts terminal and mean scalar values across belief t
 
 ---
 
-
 ## ⚠️ CI & Deployment Note
 
-Running Docxology validation in hosted CI environments (like GitHub Actions) requires either a root execution workflow or an external pipeline. This sidecar serves as the **mathematical authority** for the repository, ensuring that every code change preserves the thermodynamic properties of the Active Inference implementations.
+Running sidecar validation in hosted CI environments (like GitHub Actions) requires either a root execution workflow or an external pipeline. This sidecar serves as the **mathematical authority** for the repository, ensuring that every code change preserves the thermodynamic properties of the active codebase.
+
