@@ -32,7 +32,14 @@ When you invoke:
 python run_all.py
 ```
 
-The script systematically loads all scripts defined in `manifests/orchestrations.txt`. Each script utilizes methods specifically imported from the upstream package (e.g., `pymdp.agent.Agent`, `pymdp.control.compute_neg_efe_policy`). The outputs—including exact mathematical array structures like the Free Energy trajectories, posterior belief matrices $q(s)$, and policy selections $q(\pi)$—are transparently dumped into `output/<category>_data.json` along with visualizations.
+The script systematically loads all scripts defined in `manifests/orchestrations.txt`. Each script utilizes methods specifically imported from the upstream package (e.g., `pymdp.agent.Agent`, `pymdp.control.compute_neg_efe_policy`). The orchestrator's post-processing pipeline then automatically produces 4 standard artifacts per example:
+
+- `{stem}_validation.json` — handler diagnostics
+- `{stem}_full_data.json` — complete info dict with derived Shannon entropy and invariant audits
+- `{stem}_model_trace.npz` — compressed NumPy archive of all extracted tensor parameters
+- `{stem}_execution_report.md` — auto-generated Markdown with config, invariants, Performance Insights, and embedded PNGs
+
+Plus up to 13 conditional visualizations via 21 headless-safe plotting functions. Outputs are organized as `output/{category}/{stem}/`.
 
 This guarantees that documentation generated or verified through this folder is biologically and computationally accurate against the current checked-out SHA of the repo.
 

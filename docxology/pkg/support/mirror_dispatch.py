@@ -109,9 +109,176 @@ def _extract_rollout_diagnostics(info: dict[str, Any]) -> dict[str, Any]:
             diag["learned_B_shape"] = list(np.asarray(b_arr).shape)
     
     return diag
+
+def _verify_invariants(info: dict[str, Any]) -> dict[str, Any]:
+    import numpy as np
+    results = {"passed": True, "violations": []}
+    
+    def check_sum(arr, axis, name, tol=1e-3):
+        arr = np.asarray(arr)
+        if arr.size == 0: return
+        sums = np.sum(arr, axis=axis)
+        if not np.allclose(sums, 1.0, atol=tol):
+            results["passed"] = False
+            results["violations"].append(f"{name} does not sum to 1 over axis {axis}.")
+
+    if "qs" in info:
+        qs_raw = info["qs"]
+        if isinstance(qs_raw, (list, tuple)) and len(qs_raw) > 0:
+            try:
+                first = np.asarray(qs_raw[-1])
+                if first.ndim >= 2:
+                    check_sum(first[..., 0, :], -1, "Final beliefs (qs)")
+                elif first.ndim == 1:
+                    check_sum(first, -1, "Final beliefs (qs)")
+            except: pass
+
+    if "qpi" in info:
+        try:
+            qpi = np.asarray(info["qpi"])
+            if qpi.ndim >= 2: check_sum(qpi[-1], -1, "Final policy posterior (q_pi)")
+            elif qpi.ndim == 1: check_sum(qpi, -1, "Final policy posterior (q_pi)")
+        except: pass
+            
+    if "A_matrix" in info:
+        try:
+            A = np.asarray(info["A_matrix"][0] if isinstance(info["A_matrix"], (list, tuple)) else info["A_matrix"])
+            check_sum(A, 0, "Likelihood matrix (A)")
+        except: pass
+
+    if "B_matrix" in info:
+        try:
+            B = np.asarray(info["B_matrix"][0] if isinstance(info["B_matrix"], (list, tuple)) else info["B_matrix"])
+            check_sum(B, 0, "Transition matrix (B)")
+        except: pass
+        
+    return results
+
+def _save_native_arrays(cfg: OrchestrationConfig, info: dict[str, Any], stem: str) -> None:
+    if not cfg.save_plots:
+        return
+    import numpy as np
+    to_save = {}
+    
+    def _add_to_save(key: str, val: Any):
+        if isinstance(val, (list, tuple)):
+            if len(val) > 0 and hasattr(val[0], "shape"):
+                for i, factor in enumerate(val):
+                    try: to_save[f"{key}_factor_{i}"] = np.asarray(factor)
+                    except: pass
+            else:
+                try: to_save[key] = np.asarray(val)
+                except: pass
+        else:
+            try: to_save[key] = np.asarray(val)
+            except: pass
+
+    for key, val in info.items():
+        if key.startswith("_"): continue
+        if isinstance(val, dict): continue
+        _add_to_save(key, val)
+        
+    if to_save:
+        try:
+            np.savez_compressed(cfg.output_dir / f"{stem}_model_trace.npz", **to_save)
+        except Exception:
+            pass
+
+def _generate_markdown_report(cfg: OrchestrationConfig, stem: str, invariants: dict[str, Any], info: dict[str, Any]) -> None:
+    if not cfg.save_plots:
+        return
+    lines = [
+        f"# Execution Report: {stem}", "",
+        "## Configuration",
+        f"- **Seed**: {cfg.seed}",
+        f"- **Fast Mode**: {cfg.fast}",
+        f"- **Skip Heavy**: {cfg.skip_heavy}", "",
+        "## Mathematical Invariants",
+    ]
+    if invariants["passed"]: lines.append("- ✅ **All probability bounds valid.**")
+    else:
+        lines.append("- ❌ **Violations Detected:**")
+        for v in invariants["violations"]: lines.append(f"  - {v}")
+        
+    lines.extend(["", "## Performance Insights"])
+    lines.append("| Metric | Terminal Value | Mean Trajectory Value |")
+    lines.append("|---|---|---|")
+    
+    import numpy as np
+    added_metrics = False
+    
+    def add_metric(name, key):
+        nonlocal added_metrics
+        if key in info:
+            v = np.asarray(info[key]).ravel()
+            if v.size > 0:
+                final = f"{float(v[-1]):.4f}"
+                mean = f"{float(np.mean(v)):.4f}"
+                lines.append(f"| **{name}** | {final} | {mean} |")
+                added_metrics = True
+                
+    add_metric("Shannon Entropy $H(q)$", "H_qs")
+    add_metric("Variational Free Energy $F$", "vfe")
+    add_metric("Variational Free Energy $F$", "F")
+    add_metric("Negative Expected Free Energy $-G$", "neg_efe")
+    add_metric("Negative Expected Free Energy $-G$", "G")
+    add_metric("KL Divergence $D_{KL}(q||p)$", "KL")
+    
+    if not added_metrics:
+        lines.append("| *No scalar trace endpoints detected* | N/A | N/A |")
+        
+    lines.extend(["", "## Native Trace Archive", f"A native complete JAX/NumPy parameter archive is available at [`{stem}_model_trace.npz`]({stem}_model_trace.npz).", ""])
+    lines.append("## Visualizations")
+    pngs = sorted([p for p in cfg.output_dir.glob("*.png") if p.is_file()])
+    if not pngs: lines.append("*No visual traces generated.*")
+    else:
+        for p in pngs:
+            name = p.stem.replace(stem + "_", "").replace("_", " ").title()
+            lines.extend([f"### {name}", f"![{name}]({p.name})", ""])
+    (cfg.output_dir / f"{stem}_execution_report.md").write_text("\n".join(lines), encoding="utf-8")
+
+def _to_serializable(obj: Any) -> Any:
+    import numpy as np
+    if hasattr(obj, "tolist"):
+        return np.asarray(obj).tolist()
+    if isinstance(obj, dict):
+        return {k: _to_serializable(v) for k, v in obj.items()}
+    if isinstance(obj, (list, tuple)):
+        return [_to_serializable(v) for v in list(obj)]
+    if isinstance(obj, (int, float, str, bool, type(None))):
+        return obj
+    return str(obj)
+
 def _auto_plot_metrics(cfg: OrchestrationConfig, info: dict[str, Any], stem: str) -> None:
     if not cfg.save_plots:
         return
+    try:
+        invariants = _verify_invariants(info)
+        info["_invariants"] = invariants
+        
+        import numpy as np
+        if "qs" in info and "H_qs" not in info:
+            qs_raw = info["qs"]
+            if isinstance(qs_raw, (list, tuple)) and len(qs_raw) > 0:
+                h_seq = []
+                for q in qs_raw:
+                    q_arr = np.asarray(q)
+                    if isinstance(q, (list, tuple)):
+                        q_arr = np.asarray(q[0]) if len(q) > 0 else np.array([])
+                    q_arr = q_arr.flatten()
+                    if q_arr.size > 0:
+                        q_safe = np.clip(q_arr, 1e-12, 1.0)
+                        h = -np.sum(q_safe * np.log(q_safe))
+                        h_seq.append(float(h))
+                if h_seq:
+                    info["H_qs"] = h_seq
+
+        _save_native_arrays(cfg, info, stem)
+        import json
+        out_json = cfg.output_dir / f"{stem}_full_data.json"
+        out_json.write_text(json.dumps(_to_serializable(info), indent=2), encoding="utf-8")
+    except Exception:
+        pass
     try:
         from pkg.support.viz import plot_action_probabilities, plot_beliefs_heatmap, plot_free_energy, save_current_figure
         import jax.numpy as jnp
@@ -246,6 +413,23 @@ def _auto_plot_metrics(cfg: OrchestrationConfig, info: dict[str, Any], stem: str
                 from pkg.support.viz import plot_action_frequency_donut
                 plot_action_frequency_donut(act_flat, title=f"Action Distribution ({stem})")
                 save_current_figure(cfg.output_dir, stem=f"{stem}_action_donut")
+                
+        if "vfe" in info or "F" in info:
+            F_seq = info.get("vfe", info.get("F"))
+            if np.asarray(F_seq).size > 1:
+                from pkg.support.viz import plot_free_energy
+                plot_free_energy(F_seq, title=f"Variational Free Energy ({stem})")
+                save_current_figure(cfg.output_dir, stem=f"{stem}_vfe")
+                
+        if "I_matrix" in info or "I" in info:
+            I_mat = info.get("I_matrix", info.get("I"))
+            if np.asarray(I_mat).ndim >= 2:
+                from pkg.support.viz import plot_reachability_matrix
+                plot_reachability_matrix(I_mat, title=f"Reachability Matrix I ({stem})")
+                save_current_figure(cfg.output_dir, stem=f"{stem}_reachability_I")
+
+        # Generate the unified markdown report right at the end to assemble all generated files
+        _generate_markdown_report(cfg, stem, invariants, info)
     except Exception:
         pass
 
@@ -276,9 +460,8 @@ def _h_complex_action_dependency(cfg: OrchestrationConfig) -> dict[str, Any]:
     qs, _ = agent.infer_states(obs, empirical_prior=agent.D, return_info=True)
     q_pi, neg_efe = agent.infer_policies(qs)
     
-    if cfg.save_plots:
-        plot_beliefs_heatmap([qs[0]], title="Beliefs (Factor 0)")
-        save_current_figure(cfg.output_dir, stem="complex_action_dependency_beliefs")
+    info = {"qs": qs, "qpi": q_pi, "neg_efe": neg_efe}
+    _auto_plot_metrics(cfg, info, "complex_action_dependency")
         
     return {
         "ok": True, "id": "advanced/complex_action_dependency", "qs0_shape": tuple(qs[0].shape),

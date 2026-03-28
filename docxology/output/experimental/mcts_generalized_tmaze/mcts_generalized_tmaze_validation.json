@@ -1,0 +1,25 @@
+{
+  "ok": true,
+  "id": "experimental/sophisticated_inference/mcts_generalized_tmaze",
+  "action_weights_shape": [
+    1,
+    4
+  ],
+  "action_probs": "[[0.9211743  0.03711378 0.03711378 0.00459813]]",
+  "_invariants": {
+    "passed": true,
+    "violations": []
+  },
+  "diagnostics": {
+    "action_probs": [
+      0.9211742877960205,
+      0.03711377829313278,
+      0.03711377829313278,
+      0.004598126746714115
+    ],
+    "action_weights_shape": [
+      1,
+      4
+    ]
+  }
+}

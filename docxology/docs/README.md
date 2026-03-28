@@ -8,17 +8,22 @@ Technical documentation hub for the pymdp **docxology** validation sidecar. This
 
 ## Documentation Map
 
-| File                                         | Size       | Purpose                                                                                                                                                                                                                                                                                                                              |
-| -------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
-| [AGENTS.md](AGENTS.md)                       | 500+ lines | **Comprehensive technical reference**: pymdp package architecture (10 modules, ~160 functions, 6 envs, 2 planning algos), Active Inference mathematical foundations (VFE, EFE, learning, SI), docxology sidecar modules (18 viz functions, 32 handlers, 4 analysis functions), diagnostics schema, output routing, maintenance guide |
-| [examples_catalog.md](examples_catalog.md)   | 280+ lines | **Per-example deep dives**: all 32 examples by category with handler names, env configs, timesteps, diagnostics keys, viz types, upstream tests                                                                                                                                                                                      |
-| [validation_matrix.md](validation_matrix.md) | 200+ lines | **Capability validation**: 12 capability areas → tests → examples → Sphinx → diagnostics → key APIs → verified behaviors                                                                                                                                                                                                             |
+| File | Purpose |
+|---|---|
+| **[docxology_pymdp_overview.md](docxology_pymdp_overview.md)** | Unified entry point — architecture, pipeline flow, capabilities, quick start |
+| **[AGENTS.md](AGENTS.md)** | Comprehensive technical reference: pymdp API (160+ functions), docxology modules (21 viz, 32 handlers, 4 analysis), diagnostics schema, output routing |
+| **[examples_catalog.md](examples_catalog.md)** | Per-example deep dives: all 32 examples by category with handler configs, diagnostics, viz types, auto-generated artifacts |
+| **[validation_matrix.md](validation_matrix.md)** | Capability validation: 12 areas → tests → examples → docs → diagnostics → key APIs → verified behaviors |
+| **[orchestrator_internals.md](orchestrator_internals.md)** | Deep-dive into mirror_dispatch.py: handler patterns, post-processing pipeline, invariant validation, serialization |
+| **[visualization_reference.md](visualization_reference.md)** | Complete reference for all 21 viz functions: signatures, colormaps, trigger conditions, auto-trigger flow |
+| **[thermodynamics_reference.md](thermodynamics_reference.md)** | Mathematical foundations: VFE, EFE, Shannon entropy, KL divergence, Dirichlet learning, reachability, SI |
+| **[README.md](README.md)** | This file — operator index, quick start, output structure, doc tree relationships |
 
 ---
 
 ## Pipeline at a Glance
 
-**32 examples** • **30/32 full diagnostics** • **130+ output files** • **41 tests passing**
+**32 examples** • **30/32 full diagnostics** • **200+ output files** • **41 tests passing**
 
 ### Architecture
 
@@ -40,15 +45,15 @@ pymdp/                                    # Repository root
     ├── run_all.py                        # 32-example pipeline
     ├── pkg/support/
     │   ├── bootstrap.py                  # OrchestrationConfig + CLI
-    │   ├── mirror_dispatch.py            # 32 handlers + auto-viz
+    │   ├── mirror_dispatch.py            # 32 handlers + auto-viz + invariants + reporting
     │   ├── patterns.py                   # Reusable pymdp call patterns
-    │   ├── viz.py                        # 18 plotting functions
+    │   ├── viz.py                        # 21 plotting functions
     │   ├── analysis.py                   # Entropy, KL, VFE decomposition
     │   └── si_fixtures.py                # SI/MCTS model builders
     ├── tests/                            # 41 tests (all passing)
     ├── docs/                             # ← You are here
     ├── manifests/                         # CI/nightly/legacy path lists
-    └── output/                           # Generated: JSON + PNG + GIF
+    └── output/                           # Generated: JSON + NPZ + PNG + GIF + MD
 ```
 
 ### Active Inference Loop (what each example exercises)
@@ -103,16 +108,31 @@ bash docxology/scripts/run_upstream_test_suite.sh
 output/
 ├── run_all.log                    # Timestamped pipeline log
 ├── run_summary.json               # {results: [{path, ok, elapsed_s, metrics}]}
-├── api/                           # model_construction_tutorial
-├── advanced/                      # complex_action, infer_states, neural_encoder
+├── api/
+│   └── model_construction_tutorial/
+│       ├── model_construction_validation.json
+│       ├── model_construction_full_data.json     # All diagnostics + derived H_qs
+│       ├── model_construction_model_trace.npz   # Native NumPy tensor archive
+│       ├── model_construction_execution_report.md # Auto Markdown report
+│       ├── model_construction_matrix_A.png
+│       ├── model_construction_matrix_B.png
+│       ├── model_construction_matrix_C.png
+│       ├── model_construction_matrix_D.png
+│       ├── model_construction_actions.png
+│       └── model_construction_action_prob.png
 ├── envs/                          # 6 examples, richest output
-│   ├── tmaze_demo_data.json       # Per-timestep diagnostics
-│   ├── tmaze_demo_beliefs.png     # q(s) heatmap (plasma)
-│   ├── tmaze_demo_entropy.png     # H[q(s)] trajectory
-│   ├── tmaze_demo_efe_traj.png    # −G best/mean line+fill
-│   ├── tmaze_demo_efe_heatmap.png # −G landscape (viridis)
-│   ├── tmaze_demo_qpi_heatmap.png # q(π) evolution (magma)
-│   └── tmaze_demo_beliefs_anim.gif# Animated belief bars
+│   └── tmaze_demo/
+│       ├── tmaze_demo_validation.json
+│       ├── tmaze_demo_full_data.json
+│       ├── tmaze_demo_model_trace.npz
+│       ├── tmaze_demo_execution_report.md
+│       ├── tmaze_demo_beliefs.png
+│       ├── tmaze_demo_entropy.png
+│       ├── tmaze_demo_efe_traj.png
+│       ├── tmaze_demo_efe_heatmap.png
+│       ├── tmaze_demo_qpi_heatmap.png
+│       └── tmaze_demo_beliefs_anim.gif
+├── advanced/                      # complex_action, infer_states, neural_encoder
 ├── experimental/sophisticated_inference/  # SI×3 + MCTS×2
 ├── inductive_inference/           # Reachability I matrix
 ├── inference_and_learning/        # FPI vs MMP comparison
@@ -136,19 +156,58 @@ output/
 
 ---
 
-## Visualization Types (9 auto-triggered)
+## Visualization Types (13 auto-triggered)
 
-| Type               | Trigger Condition       | Function                           |
-| ------------------ | ----------------------- | ---------------------------------- |
-| Beliefs heatmap    | `qs` with ≥2 timesteps  | `plot_beliefs_heatmap`             |
-| Entropy trajectory | Same                    | `plot_entropy_trajectory`          |
-| KL from prior      | `qs` + `D_matrix`       | `plot_kl_divergence_trajectory`    |
-| EFE trajectory     | `neg_efe` with T≥2, π≥2 | `plot_efe_trajectory`              |
-| Neg-EFE heatmap    | Same                    | `plot_neg_efe_heatmap`             |
-| Policy posterior   | `qpi` with T≥2, π≥2     | `plot_policy_posterior_heatmap`    |
-| Action donut       | `action` with ≥2 values | `plot_action_frequency_donut`      |
-| Belief animation   | `qs` with ≥3 timesteps  | `plot_belief_trajectory_animation` |
-| Generative model   | `A_matrix` present      | `plot_likelihood_matrix` etc.      |
+| Type                  | Trigger Condition             | Function                           |
+| --------------------- | ----------------------------- | ---------------------------------- |
+| Beliefs heatmap       | `qs` with ≥2 timesteps         | `plot_beliefs_heatmap`             |
+| Entropy trajectory    | Same                          | `plot_entropy_trajectory`          |
+| KL from prior         | `qs` + `D_matrix`             | `plot_kl_divergence_trajectory`    |
+| EFE trajectory        | `neg_efe` with T≥2, π≥2       | `plot_efe_trajectory`              |
+| Neg-EFE heatmap       | Same                          | `plot_neg_efe_heatmap`             |
+| Policy posterior hmap  | `qpi` with T≥2, π≥2          | `plot_policy_posterior_heatmap`    |
+| Policy posterior bar  | `q_pi` present                | `plot_policy_posterior`            |
+| EFE breakdown         | `G_epistemic` + `G_pragmatic` | `plot_efe_components`              |
+| Action donut          | `action` with ≥2 values       | `plot_action_frequency_donut`      |
+| Belief animation      | `qs` with ≥3 timesteps         | `plot_belief_trajectory_animation` |
+| Generative model      | `A_matrix` present            | `plot_likelihood_matrix` etc.      |
+| VFE trajectory        | `vfe` or `F` with size > 1   | `plot_free_energy`                 |
+| Reachability matrix   | `I_matrix` or `I` (ndim ≥2)   | `plot_reachability_matrix`         |
+
+---
+
+## Auto-Generated Artifacts (per example)
+
+Every example automatically produces these standard outputs via the orchestrator pipeline:
+
+| Artifact               | File                          | Description                                                     |
+| ---------------------- | ----------------------------- | --------------------------------------------------------------- |
+| Validation JSON        | `{stem}_validation.json`      | Handler return dict (ok, id, diagnostics)                       |
+| Full data JSON         | `{stem}_full_data.json`       | Complete info dict with derived `H_qs` entropy and `_invariants`|
+| Native trace archive   | `{stem}_model_trace.npz`      | Compressed NumPy of all tensor keys (unrestricted extraction)   |
+| Execution report       | `{stem}_execution_report.md`  | Markdown: config, invariants, Performance Insights table, PNGs  |
+
+### Mathematical Invariant Validation
+
+The orchestrator automatically audits probability assumptions via `_verify_invariants(info)`:
+
+- `qs` (beliefs): final distribution sums to 1.0 (±1e-3)
+- `qpi` (policy posterior): final distribution sums to 1.0
+- `A_matrix` (likelihood): columns sum to 1.0
+- `B_matrix` (transitions): columns sum to 1.0
+
+Results are logged as `{"passed": true/false, "violations": [...]}` in the JSON outputs and displayed in execution reports.
+
+### Performance Insights
+
+The execution report automatically extracts scalar trajectory endpoints into a Markdown table:
+
+| Metric Key      | Display Name                    |
+| --------------- | ------------------------------- |
+| `H_qs`          | Shannon Entropy $H(q)$          |
+| `vfe` / `F`     | Variational Free Energy $F$     |
+| `neg_efe` / `G` | Negative Expected Free Energy   |
+| `KL`            | KL Divergence $D_{KL}(q\|\|p)$  |
 
 ---
 

@@ -77,7 +77,7 @@ def main() -> int:
         else:
             category = "misc"
             
-        out_dir = _DOCXOLOGY / "output" / category
+        out_dir = _DOCXOLOGY / "output" / category / script.stem
         out_dir.mkdir(parents=True, exist_ok=True)
             
         cmd = [

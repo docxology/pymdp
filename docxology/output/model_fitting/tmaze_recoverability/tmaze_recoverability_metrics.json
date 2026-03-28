@@ -1,0 +1,58 @@
+{
+  "bimodality_score_reward_probability": 0.0,
+  "config": {
+    "cue_validity": 1.0,
+    "dependent_outcomes": true,
+    "num_agents": 2,
+    "num_blocks": 2,
+    "num_particles": 5,
+    "num_samples": 4,
+    "num_trials": 1,
+    "parameterization": "three_param",
+    "punishment_probability": 0.0,
+    "reward_probability": 0.98,
+    "save_json": "/Users/4d/Documents/GitHub/template/projects_in_progress/pymdp/docxology/output/model_fitting/tmaze_recoverability/tmaze_recoverability_metrics.json",
+    "save_plot": "/Users/4d/Documents/GitHub/template/projects_in_progress/pymdp/docxology/output/model_fitting/tmaze_recoverability/tmaze_recoverability_plot.png",
+    "seed": 0,
+    "svi_steps": 5
+  },
+  "corr_latent": [
+    -1.0,
+    -1.0,
+    1.0
+  ],
+  "corr_reward_probability": -0.9999999999999999,
+  "inferred_reward_probability": [
+    0.5377811193466187,
+    0.3859206736087799
+  ],
+  "inferred_z": [
+    [
+      0.15141314268112183,
+      0.2313288003206253,
+      0.33675500750541687
+    ],
+    [
+      -0.4644923508167267,
+      -0.8305500745773315,
+      -0.24176743626594543
+    ]
+  ],
+  "num_params": 3,
+  "true_reward_probability": [
+    0.07585817575454712,
+    0.9241418242454529
+  ],
+  "true_z": [
+    [
+      -2.5,
+      0.041794124990701675,
+      -0.552122950553894
+    ],
+    [
+      2.5,
+      0.608426034450531,
+      -1.9119703769683838
+    ]
+  ]
+}

@@ -1,0 +1,28 @@
+{
+  "ok": true,
+  "id": "learning/learning_gridworld",
+  "qA_delta": 0.5,
+  "diagnostics": {
+    "qA_delta": 0.5,
+    "pA_prior_shape": [
+      4,
+      3
+    ],
+    "qA_posterior_shape": [
+      1,
+      4,
+      3
+    ],
+    "learning_rate": 0.5,
+    "observation": [
+      0
+    ],
+    "beliefs": [
+      [
+        0.5532619953155518,
+        0.008953937329351902,
+        0.4377841353416443
+      ]
+    ]
+  }
+}

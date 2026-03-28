@@ -2,7 +2,14 @@
 
 Maps pymdp **capability areas** to **upstream** `test/test_*.py` modules, **representative examples**, Upstream Documentation (Sphinx & MkDocs), **diagnostic output** types, and **key pymdp APIs** exercised.
 
-All 32 examples produce JSON diagnostic logs into `docxology/output/{category}/`. Rollout-based examples additionally generate 6 visualization types (beliefs heatmap, entropy, EFE trajectory, neg-EFE heatmap, policy posterior heatmap, belief animation GIF).
+All 32 examples produce JSON diagnostic logs into `docxology/output/{category}/{stem}/`. Every example automatically generates:
+
+- `{stem}_validation.json` — handler return dict
+- `{stem}_full_data.json` — complete info dict with derived Shannon entropy (`H_qs`) and mathematical invariant audits (`_invariants`)
+- `{stem}_model_trace.npz` — compressed NumPy archive of all tensor parameters (unrestricted extraction)
+- `{stem}_execution_report.md` — auto-generated Markdown with config, invariant status, Performance Insights scalar table, and embedded visualization PNGs
+
+Rollout-based examples additionally generate up to 13 visualization types (beliefs heatmap, entropy, EFE trajectory, neg-EFE heatmap, policy posterior heatmap, belief animation GIF, VFE trajectory, reachability matrix, A/B/C/D matrices, action donut, action bars, EFE breakdown, KL from prior).
 
 ---
 
@@ -20,6 +27,8 @@ All 32 examples produce JSON diagnostic logs into `docxology/output/{category}/`
 - Multi-factor models with cross-factor `B_action_dependencies` produce valid 12-policy landscapes
 - Both `sampling_mode="full"` and default marginal sampling work correctly
 - `num_controls` configuration properly shapes the policy space
+- Mathematical invariants (`_verify_invariants`) confirm `qs` and `qpi` normalization
+- Shannon entropy `H_qs` retroactively derived and logged in Performance Insights
 
 ---
 
@@ -37,6 +46,8 @@ All 32 examples produce JSON diagnostic logs into `docxology/output/{category}/`
 - FPI and MMP converge to compatible beliefs on the same model
 - `return_info=True` provides convergence metadata
 - VFE decomposes correctly into accuracy − complexity
+- Invariant validation confirms all posterior distributions properly normalized
+- `H_qs` entropy trajectory derived retroactively where not explicitly logged
 
 ---
 
@@ -77,15 +88,19 @@ All 32 examples produce JSON diagnostic logs into `docxology/output/{category}/`
 
 Each rollout example (#5–9, #31) produces:
 
-| File                      | Content                                                         |
-| ------------------------- | --------------------------------------------------------------- |
-| `{stem}_data.json`        | Full diagnostics (per-timestep beliefs, actions, q_pi, neg_efe) |
-| `{stem}_beliefs.png`      | q(s) heatmap (states × timesteps)                               |
-| `{stem}_entropy.png`      | H[q(s)] over time                                               |
-| `{stem}_efe_traj.png`     | Best/mean −G over time                                          |
-| `{stem}_efe_heatmap.png`  | −G per policy × timestep                                        |
-| `{stem}_qpi_heatmap.png`  | q(π) per policy × timestep                                      |
-| `{stem}_beliefs_anim.gif` | Animated belief bar chart                                       |
+| File                               | Content                                                         |
+| ---------------------------------- | --------------------------------------------------------------- |
+| `{stem}_validation.json`           | Handler diagnostics (ok, id, elapsed)                           |
+| `{stem}_full_data.json`            | Full diagnostics + derived H_qs entropy + invariant audits      |
+| `{stem}_model_trace.npz`           | Native NumPy archive of all tensor keys (qs, qpi, neg_efe, etc.)|
+| `{stem}_execution_report.md`       | Auto Markdown report with Performance Insights + embedded PNGs  |
+| `{stem}_beliefs.png`               | q(s) heatmap (states × timesteps)                               |
+| `{stem}_entropy.png`               | H[q(s)] over time                                               |
+| `{stem}_efe_traj.png`              | Best/mean −G over time                                          |
+| `{stem}_efe_heatmap.png`           | −G per policy × timestep                                        |
+| `{stem}_qpi_heatmap.png`           | q(π) per policy × timestep                                      |
+| `{stem}_beliefs_anim.gif`          | Animated belief bar chart                                       |
+| `{stem}_kl.png`                    | KL(q‖D) from prior (if D_matrix present)                       |
 
 ---
 
@@ -114,6 +129,8 @@ Each rollout example (#5–9, #31) produces:
 
 - Chain transition `B` matrix (3 states) produces valid reachability landscape
 - Threshold=0.5, depth=4 configuration generates non-trivial I matrix
+- `I_matrix` natively archived in `_model_trace.npz` for offline analysis
+- 2D+ `I_matrix` automatically triggers `plot_reachability_matrix` heatmap visualization
 
 ---
 
@@ -164,6 +181,9 @@ Each rollout example (#5–9, #31) produces:
 - All 6 legacy handlers capture per-timestep VFE when `agent.F` is available
 - EFE (G) values are captured from `agent.infer_policies()` return
 - State transitions use `utils.sample(B[f][:, s, action])` correctly
+- Legacy handlers that log `VFE` or `F` arrays automatically trigger `plot_free_energy`
+- Terminal VFE/EFE values reported in Performance Insights tables of execution reports
+- All tensor parameters natively archived in `_model_trace.npz`
 
 ---
 
@@ -205,3 +225,27 @@ cd docxology && uv run pytest tests/ -v
 
 # Result: 41 passed (32 handlers + 3 viz + 3 analysis + 2 manifests + 1 notebook)
 ```
+
+---
+
+## Orchestrator Pipeline Functions
+
+The following functions in `pkg/support/mirror_dispatch.py` execute automatically for every example:
+
+| Function | Purpose |
+| --- | --- |
+| `_verify_invariants(info)` | Audits normalization of `qs`, `qpi`, `A_matrix`, `B_matrix` (sum-to-1 within ±1e-3) |
+| `H_qs` retroactive derivation | Computes Shannon entropy $H(q) = -\sum q \log q$ from belief sequences when not explicitly logged |
+| `_save_native_arrays(cfg, info, stem)` | Unrestricted sweep: iterates all non-dict, non-private keys and archives via `numpy.savez_compressed` |
+| `_to_serializable(obj)` | Recursive JAX/NumPy → JSON converter for `_full_data.json` |
+| `_auto_plot_metrics(cfg, info, stem)` | Conditional trigger of all 13+ visualization types based on data key presence |
+| `_generate_markdown_report(cfg, stem, invariants, info)` | Assembles `_execution_report.md` with config, invariants, Performance Insights scalar table, and embedded PNGs |
+
+### Performance Insights Metrics
+
+| Metric Key | Display Name | Source |
+| --- | --- | --- |
+| `H_qs` | Shannon Entropy $H(q)$ | Retroactively derived from `qs` |
+| `vfe` / `F` | Variational Free Energy $F$ | Logged by legacy handlers |
+| `neg_efe` / `G` | Negative Expected Free Energy $-G$ | From `infer_policies()` |
+| `KL` | KL Divergence $D_{KL}(q\|\|p)$ | From trajectory analysis |

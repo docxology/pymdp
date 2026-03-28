@@ -82,13 +82,42 @@ When implementing sophisticated patterns, adhere strictly to these precise endpo
 
 ## 3. The `docxology/` Validation Sidecar
 
-The `docxology/` directory acts as the **definitive source of operational truth** for the repository, strictly bridging the actual code execution to theoretical documentation. It natively hosts:
+The `docxology/` directory acts as the **definitive source of operational truth** for the repository, strictly bridging the actual code execution to theoretical documentation. It orchestrates **32 real pymdp execution targets** across 12 categories, producing **200+ output files** per full run.
 
-- **`docxology/docs/README.md`**: The central Operator Index mapping the bridges connecting MkDocs (`docs-mkdocs/`) and Sphinx (`docs/`).
-- **`docxology/docs/AGENTS.md`**: The granular, module-by-module technical breakdown of parameters, constraints, and dependencies (`A_dependencies`, `B_action_dependencies`, etc.).
-- **`docxology/docs/examples_catalog.md`**: The categorical taxonomy indexing the 32 fully-tested integration scenarios.
-- **`docxology/docs/validation_matrix.md`**: The test-to-implementation feature trace matrix.
-- **`docxology/output/`**: Execution artifacts, tightly adhering to programmatic testing boundaries (containing 6 visualizations spanning Bellevue belief heatmaps to Neg-EFE landscapes).
+### 3.1 Documentation Hub (`docxology/docs/` — 8 files)
+
+- **`docxology_pymdp_overview.md`**: Unified entry point — architecture, pipeline flow, capabilities, quick start.
+- **`AGENTS.md`**: Comprehensive technical reference: pymdp API (160+ functions), docxology modules (21 viz, 32 handlers, 4 analysis), diagnostics schema, output routing.
+- **`examples_catalog.md`**: Per-example deep dives: all 32 examples by category with handler configs, diagnostics, viz types, auto-generated artifacts.
+- **`validation_matrix.md`**: Capability validation: 12 areas → tests → examples → docs → diagnostics → key APIs → verified behaviors.
+- **`README.md`**: Operator Index — documentation map, output structure, doc tree relationships.
+- **`orchestrator_internals.md`**: Deep-dive into `mirror_dispatch.py`: 4 handler patterns, 6-step post-processing pipeline, invariant validation.
+- **`visualization_reference.md`**: Complete reference for all 21 viz functions: signatures, colormaps, trigger conditions, auto-trigger flow.
+- **`thermodynamics_reference.md`**: Mathematical foundations: VFE, EFE, Shannon entropy, KL divergence, Dirichlet learning, reachability, SI.
+
+### 3.2 Auto-Generated Artifacts (per example)
+
+Every example automatically produces:
+
+| Artifact | File Pattern | Content |
+| --- | --- | --- |
+| Validation JSON | `{stem}_validation.json` | Handler return dict (ok, id, diagnostics) |
+| Full data JSON | `{stem}_full_data.json` | Complete info dict with derived Shannon entropy (`H_qs`) and mathematical invariant audits |
+| Native trace archive | `{stem}_model_trace.npz` | Compressed NumPy archive of all tensor parameters (unrestricted extraction) |
+| Execution report | `{stem}_execution_report.md` | Auto-generated Markdown with config, invariants, Performance Insights scalar table, embedded PNGs |
+
+Plus conditional visualizations (up to 13 types depending on data available) via 21 headless-safe plotting functions.
+
+### 3.3 Orchestrator Pipeline
+
+```text
+run_all.py → HANDLERS[key](cfg) → info dict
+  → _verify_invariants(info)            → normalization audits
+  → H_qs retroactive derivation         → Shannon entropy from qs
+  → _save_native_arrays(cfg, info, stem) → model_trace.npz
+  → _auto_plot_metrics(cfg, info, stem)  → conditional PNG plots
+  → _generate_markdown_report(...)       → execution_report.md
+```
 
 > [!WARNING]  
 > **Rule of Parity:** Any modification to the `pymdp/` source codebase MUST be simultaneously documented in the `docs-mkdocs/` API guides AND cross-referenced or demonstrated within the `docxology/` validation sidecar. Code without equivalent validation matrices is considered incomplete.

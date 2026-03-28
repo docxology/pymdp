@@ -1,9 +1,13 @@
-# examples/advanced/infer_states_optimization Agents
+# examples/advanced/infer_states_optimization — Validation Agents
 
 ## Purpose
 
-Runnable mirrors of gallery examples for the `infer_states_optimization` category rooted under `docxology/` for isolated orchestration and native validation.
+Verified, real `pymdp` configurable functional validation scripts for the `advanced/infer_states_optimization` category.
+
+## Functional Validation
+
+These scripts invoke real `pymdp` methods exclusively and serialize verified numerical matrices.
 
 ## Parent
 
-[../../AGENTS.md](../../AGENTS.md)
+[../AGENTS.md](../AGENTS.md)

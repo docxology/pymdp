@@ -1,0 +1,17 @@
+{
+  "ok": true,
+  "id": "sparse/sparse_benchmark",
+  "dense_shape": [
+    4,
+    4
+  ],
+  "diagnostics": {
+    "sparse_ops_elapsed_s": 0.5942,
+    "nnz_input": 4,
+    "dense_shape": [
+      4,
+      4
+    ],
+    "result_trace": 8.0
+  }
+}

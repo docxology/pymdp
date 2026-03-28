@@ -21,7 +21,14 @@ The `examples/` and `pkg/` directories inside `docxology/` form the execution ha
 - **Planning Horizons**: `agent.infer_policies(qs)` (computing strictly defined Epistemic and Pragmatic Information gains).
 - **Control API**: Deep reachability evaluations via `pymdp.control.generate_I_matrix` or `mcts_policy_search`.
 
-The resulting tensors (e.g., $q(s)$ matrices and $G(\pi)$ Expected Free Energy scalars) are serialized via the `run_all.py` Numpy Encoder and written out to `output/<category>_data.json` for validation matrix traceability.
+The resulting tensors (e.g., $q(s)$ matrices and $G(\pi)$ Expected Free Energy scalars) are serialized via the orchestrator's post-processing pipeline into 4 standard artifacts per example:
+
+- `{stem}_validation.json` — handler diagnostics
+- `{stem}_full_data.json` — complete info dict with derived Shannon entropy (`H_qs`) and invariant audits
+- `{stem}_model_trace.npz` — compressed NumPy archive of all tensor parameters
+- `{stem}_execution_report.md` — auto-generated Markdown with config, invariants, Performance Insights, and embedded PNGs
+
+Plus up to 13 conditional visualization types via 21 headless-safe plotting functions in `pkg/support/viz.py`.
 
 ## 2. Configurable Architecture Map
 
@@ -37,6 +44,7 @@ The role of the configurable structure within the `docxology/` folder allows pre
 | **`scripts/`**   | CLI runners spanning `run_docxology_notebooks.py` and upstream bridging tools like `run_upstream_test_suite.sh`.                                                                                     |
 | **`tests/`**     | Pytest hooks validating manifest path integrity and invoking `nbval` test passes. Confined to testing `docxology/` logic (`[tests/AGENTS.md]`).                                                      |
 | **`run_all.py`** | The central JAX-safe execution environment that auto-resolves global namespaces, spins up standard `OrchestrationConfig` structs, loops the `manifests/`, and produces total verification summaries. |
+| **`output/`**    | Auto-generated outputs organized as `output/{category}/{stem}/` containing JSON, NPZ, PNG, GIF, and MD files per example.                                                                           |
 
 ## 3. Path Resolution Standards
 
@@ -67,3 +75,19 @@ The `docxology/` environment explicitly pulls `inferactively-pymdp` as an editab
 
 - `test` group: Required for YAML (`pyyaml`) and execution loops.
 - `notebooks` group: Requires system graph dependencies (`pygraphviz`) and rendering (`mediapy`) to fully run verification metrics.
+
+## 6. Orchestrator Post-Processing Pipeline
+
+Every handler execution in `mirror_dispatch.py` triggers the following automatic pipeline:
+
+```text
+HANDLERS[key](cfg) -> info dict
+  -> _verify_invariants(info)            -> Audits qs, qpi, A, B normalization (sum-to-1 +/-1e-3)
+  -> H_qs retroactive derivation         -> Shannon entropy H(q) = -Sum q log q
+  -> _save_native_arrays(cfg, info, stem) -> Unrestricted tensor archiving -> .npz
+  -> _to_serializable(info)              -> Recursive JAX/NumPy -> JSON conversion
+  -> _auto_plot_metrics(cfg, info, stem)  -> Conditional trigger of 13+ viz types
+  -> _generate_markdown_report(...)       -> execution_report.md with Performance Insights
+```
+
+See `docxology/docs/orchestrator_internals.md` for the full technical deep-dive.

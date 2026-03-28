@@ -401,14 +401,14 @@ docxology/
 │   ├── bootstrap.py                     # OrchestrationConfig, CLI, path setup
 │   ├── mirror_dispatch.py               # 32 handlers + auto-viz + diagnostics
 │   ├── patterns.py                      # Reusable pymdp call patterns
-│   ├── viz.py                           # 18 visualization functions
+│   ├── viz.py                           # 21 visualization functions
 │   ├── analysis.py                      # Entropy, KL, marginalization
 │   ├── si_fixtures.py                   # SI/MCTS model builders
 │   └── path_hack.py                     # sys.path management
 ├── tests/                               # 41 tests
 ├── docs/                                # This directory
 ├── manifests/                           # CI/nightly/legacy path lists
-└── output/                              # Generated: 130+ files
+└── output/                              # Generated: 200+ files
 ```text
 
 ### `bootstrap.py` — Configuration
@@ -432,7 +432,7 @@ docxology/
 | `random_agent_one_cycle(seed, policy_len, inference_algo)` | Build random model, run 1 cycle           | `{qs_shapes, action, A_matrix, B_matrix, C_matrix, D_matrix, diagnostics}` |
 | `complex_action_dependency_agent(seed)`                    | 3-factor agent with B_action_dependencies | `Agent` instance                                                           |
 
-### `viz.py` — 18 Visualization Functions
+### `viz.py` — 21 Visualization Functions
 
 #### Generative Model Plots
 
@@ -458,6 +458,12 @@ docxology/
 - `plot_policy_posterior_heatmap(q_pi_seq)` — q(π) evolution (magma)
 - `plot_action_frequency_donut(actions)` — Donut chart
 
+#### Reachability & Specialized
+
+- `plot_reachability_matrix(I_matrix)` — Reachability I matrix heatmap (YlOrRd)
+- `plot_spm_log_comparison(x, log_x)` — SPM log vs standard log comparison
+- `plot_sparse_structure(dense, nnz)` — Sparse matrix structure (binary heatmap)
+
 #### Animation
 
 - `plot_belief_trajectory_animation(qs_seq, dir, stem, fps=4)` — GIF
@@ -478,10 +484,35 @@ docxology/
 ```text
 run_all.py → mirror_dispatch.run_registered(script_file, cfg)
   → HANDLERS[key](cfg: OrchestrationConfig) → dict
-    → _auto_plot_metrics(cfg, info, stem)
-    → _extract_rollout_diagnostics(info)
+    → _verify_invariants(info) → {passed, violations}
+    → H_qs retroactive derivation (Shannon entropy from qs)
+    → _save_native_arrays(cfg, info, stem) → {stem}_model_trace.npz
+    → JSON serialization → {stem}_full_data.json
+    → _auto_plot_metrics(cfg, info, stem) → PNG visualizations
+    → _generate_markdown_report(cfg, stem, invariants, info) → {stem}_execution_report.md
     → returns {ok, id, diagnostics, ...}
 ```text
+
+#### Orchestrator Support Functions
+
+| Function                    | Purpose                                                                           |
+| --------------------------- | --------------------------------------------------------------------------------- |
+| `_verify_invariants(info)`  | Audits `qs`, `qpi`, `A_matrix`, `B_matrix` normalization (sum-to-1 within 1e-3)  |
+| `_save_native_arrays(cfg, info, stem)` | Unrestricted sweep of all non-dict, non-private keys → `numpy.savez_compressed` |
+| `_generate_markdown_report(cfg, stem, invariants, info)` | Builds `execution_report.md` with config, invariants, Performance Insights table, embedded PNGs |
+| `_to_serializable(obj)`     | Recursive JAX/NumPy → JSON-safe converter                                        |
+| `_extract_rollout_diagnostics(info)` | Extracts per-timestep beliefs, actions, q_pi, neg_efe from rollout info dict |
+
+#### Performance Insights (auto-derived metrics)
+
+The `_generate_markdown_report` function searches the `info` dict for scalar trajectory endpoints and writes a Markdown table:
+
+| Metric Key | Display Name                         | Source                     |
+| ---------- | ------------------------------------ | -------------------------- |
+| `H_qs`     | Shannon Entropy $H(q)$               | Retroactively derived from `qs` |
+| `vfe` / `F`| Variational Free Energy $F$          | Logged by legacy handlers  |
+| `neg_efe` / `G` | Negative Expected Free Energy $-G$ | From `infer_policies()`  |
+| `KL`       | KL Divergence $D_{KL}(q\|\|p)$       | From trajectory analysis   |
 
 #### `_auto_plot_metrics` Trigger Logic
 
@@ -492,8 +523,13 @@ run_all.py → mirror_dispatch.run_registered(script_file, cfg)
 | `qs` (list of per-step arrays)   | ndim ≤ 2       | Same (legacy format)                          |
 | `qpi`                            | `(B,T,N_π)`    | Policy posterior heatmap                      |
 | `neg_efe`                        | `(B,T,N_π)`    | EFE trajectory, neg-EFE heatmap               |
-| `action`                         | `(B,T,N_f)`    | Action frequency donut                        |
+| `action`                         | `(B,T,N_f)`    | Action frequency bar + donut chart            |
+| `action_probs`                   | `(N_a,)`       | Action probabilities bar chart                |
+| `q_pi`                           | `(N_π,)`       | Policy posterior bar chart                    |
+| `G_epistemic` + `G_pragmatic`    | both present   | EFE breakdown (grouped bars)                  |
 | `D_matrix` + `qs`                | both present   | KL from prior                                 |
+| `vfe` / `F`                      | size > 1       | Variational Free Energy line plot             |
+| `I_matrix` / `I`                 | ndim ≥ 2       | Reachability matrix heatmap                   |
 
 #### Handler Categories (32 total)
 
@@ -655,18 +691,23 @@ For each possible action sequence:
 
 ## Part V: Output Routing
 
-| Output Type        | Path Pattern                           | Description                                   |
-| ------------------ | -------------------------------------- | --------------------------------------------- |
-| JSON diagnostics   | `output/{cat}/{stem}_data.json`        | Per-timestep beliefs, VFE, EFE, q_pi, actions |
-| Beliefs heatmap    | `output/{cat}/{stem}_beliefs.png`      | q(s) over time                                |
-| Entropy trajectory | `output/{cat}/{stem}_entropy.png`      | H[q(s)] over time                             |
-| EFE trajectory     | `output/{cat}/{stem}_efe_traj.png`     | Best/mean −G                                  |
-| Neg-EFE heatmap    | `output/{cat}/{stem}_efe_heatmap.png`  | −G×policies×time                              |
-| Policy posterior   | `output/{cat}/{stem}_qpi_heatmap.png`  | q(π) evolution                                |
-| Belief animation   | `output/{cat}/{stem}_beliefs_anim.gif` | Animated beliefs                              |
-| Action donut       | `output/{cat}/{stem}_action_donut.png` | Action frequency                              |
-| KL divergence      | `output/{cat}/{stem}_kl.png`           | KL(q‖D) from prior                            |
-| A/B/C/D matrices   | `output/{cat}/{stem}_{A,B,C,D}.png`    | Generative model                              |
+| Output Type          | Path Pattern                                    | Description                                                   |
+| -------------------- | ----------------------------------------------- | ------------------------------------------------------------- |
+| Validation JSON      | `output/{cat}/{stem}/{stem}_validation.json`    | Handler return dict (ok, id, diagnostics)                     |
+| Full data JSON       | `output/{cat}/{stem}/{stem}_full_data.json`     | Complete info dict with derived metrics (H_qs, invariants)    |
+| Native trace archive | `output/{cat}/{stem}/{stem}_model_trace.npz`    | Compressed NumPy archive of all tensor parameters             |
+| Execution report     | `output/{cat}/{stem}/{stem}_execution_report.md`| Auto-generated Markdown with config, invariants, metrics, PNGs|
+| Beliefs heatmap      | `output/{cat}/{stem}/{stem}_beliefs.png`        | q(s) over time                                                |
+| Entropy trajectory   | `output/{cat}/{stem}/{stem}_entropy.png`        | H[q(s)] over time                                             |
+| EFE trajectory       | `output/{cat}/{stem}/{stem}_efe_traj.png`       | Best/mean −G                                                  |
+| Neg-EFE heatmap      | `output/{cat}/{stem}/{stem}_efe_heatmap.png`    | −G×policies×time                                              |
+| Policy posterior     | `output/{cat}/{stem}/{stem}_qpi_heatmap.png`    | q(π) evolution                                                |
+| Belief animation     | `output/{cat}/{stem}/{stem}_beliefs_anim.gif`   | Animated beliefs                                              |
+| Action donut         | `output/{cat}/{stem}/{stem}_action_donut.png`   | Action frequency                                              |
+| KL divergence        | `output/{cat}/{stem}/{stem}_kl.png`             | KL(q‖D) from prior                                            |
+| VFE trajectory       | `output/{cat}/{stem}/{stem}_vfe.png`            | Variational Free Energy F over time                           |
+| Reachability matrix  | `output/{cat}/{stem}/{stem}_reachability_I.png` | Inductive reachability heatmap                                |
+| A/B/C/D matrices     | `output/{cat}/{stem}/{stem}_matrix_{A,B,C,D}.png`| Generative model parameter heatmaps                          |
 
 ---
 
@@ -691,8 +732,14 @@ For each possible action sequence:
 2. Add handler `_h_{name}(cfg) → dict` in `mirror_dispatch.py`
 3. Register in `HANDLERS` dict
 4. Add path to `manifests/orchestrations.txt`
-5. Return `diagnostics` dict for JSON persistence
-6. Call `_auto_plot_metrics(cfg, info, stem)` for auto-viz
+5. Return `info` dict with tensor keys (`qs`, `qpi`, `neg_efe`, `action`, `A_matrix`, etc.)
+6. Call `_auto_plot_metrics(cfg, info, stem)` — this automatically triggers:
+   - `_verify_invariants` → normalization audits
+   - `H_qs` retroactive derivation (Shannon entropy from beliefs)
+   - `_save_native_arrays` → `{stem}_model_trace.npz`
+   - JSON serialization → `{stem}_full_data.json`
+   - All matching visualization plots (see trigger table above)
+   - `_generate_markdown_report` → `{stem}_execution_report.md` with Performance Insights
 7. Update `examples_catalog.md`
 8. Update `validation_matrix.md`
 9. Run `uv run pytest tests/`
