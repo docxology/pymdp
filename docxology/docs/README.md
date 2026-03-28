@@ -1,16 +1,18 @@
 # docxology/docs — Operator Index
 
-Technical documentation hub for the pymdp **docxology** validation sidecar. Complements the Sphinx tree at [`docs/`](../../docs/) and the MkDocs site at [`docs-mkdocs/`](../../docs-mkdocs/).
+Technical documentation hub for the pymdp **docxology** validation sidecar. This acts as a bridge, synthesizing the theoretical concepts from the **[MkDocs Guides & Tutorials](../../docs-mkdocs/)** and the **[Sphinx API Reference](../../docs/)** against executable test pipelines.
+
+> **Navigation Hub:** Use this sidecar documentation to trace _how_ `pymdp` capabilities are tested, while referencing `../../docs-mkdocs/` for overarching guides and `../../docs/` for formal library structures.
 
 ---
 
 ## Documentation Map
 
-| File | Size | Purpose |
-|------|------|---------|
-| [AGENTS.md](AGENTS.md) | 500+ lines | **Comprehensive technical reference**: pymdp package architecture (10 modules, ~160 functions, 6 envs, 2 planning algos), Active Inference mathematical foundations (VFE, EFE, learning, SI), docxology sidecar modules (18 viz functions, 32 handlers, 4 analysis functions), diagnostics schema, output routing, maintenance guide |
-| [examples_catalog.md](examples_catalog.md) | 280+ lines | **Per-example deep dives**: all 32 examples by category with handler names, env configs, timesteps, diagnostics keys, viz types, upstream tests |
-| [validation_matrix.md](validation_matrix.md) | 200+ lines | **Capability validation**: 12 capability areas → tests → examples → Sphinx → diagnostics → key APIs → verified behaviors |
+| File                                         | Size       | Purpose                                                                                                                                                                                                                                                                                                                              |
+| -------------------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| [AGENTS.md](AGENTS.md)                       | 500+ lines | **Comprehensive technical reference**: pymdp package architecture (10 modules, ~160 functions, 6 envs, 2 planning algos), Active Inference mathematical foundations (VFE, EFE, learning, SI), docxology sidecar modules (18 viz functions, 32 handlers, 4 analysis functions), diagnostics schema, output routing, maintenance guide |
+| [examples_catalog.md](examples_catalog.md)   | 280+ lines | **Per-example deep dives**: all 32 examples by category with handler names, env configs, timesteps, diagnostics keys, viz types, upstream tests                                                                                                                                                                                      |
+| [validation_matrix.md](validation_matrix.md) | 200+ lines | **Capability validation**: 12 capability areas → tests → examples → Sphinx → diagnostics → key APIs → verified behaviors                                                                                                                                                                                                             |
 
 ---
 
@@ -85,13 +87,13 @@ bash docxology/scripts/run_upstream_test_suite.sh
 
 ## Configuration Reference
 
-| Flag | CLI | Default | Effect |
-|------|-----|---------|--------|
-| `fast` | `--fast` | `False` | Shorter loops (2–3 vs 15–25 timesteps) |
-| `skip_heavy` | `--skip-heavy` | `False` | Skip torch, long SI/MCTS, pybefit |
-| `seed` | `--seed N` | `0` | JAX PRNG seed for reproducibility |
-| `verbose` | `-v` | `False` | Enable verbose logging |
-| `output_dir` | `--output-dir PATH` | `None` | Output directory for plots/data |
+| Flag         | CLI                 | Default | Effect                                 |
+| ------------ | ------------------- | ------- | -------------------------------------- |
+| `fast`       | `--fast`            | `False` | Shorter loops (2–3 vs 15–25 timesteps) |
+| `skip_heavy` | `--skip-heavy`      | `False` | Skip torch, long SI/MCTS, pybefit      |
+| `seed`       | `--seed N`          | `0`     | JAX PRNG seed for reproducibility      |
+| `verbose`    | `-v`                | `False` | Enable verbose logging                 |
+| `output_dir` | `--output-dir PATH` | `None`  | Output directory for plots/data        |
 
 ---
 
@@ -125,53 +127,56 @@ output/
 
 ## Diagnostics Coverage
 
-| Handler Type | Examples | Keys Captured |
-|-------------|---------|--------------|
-| JAX rollout | #5–9, #20, #31 | `qs`, `qpi`, `neg_efe`, `action`, `obs` per timestep |
-| Legacy loop | #23–27 | `qs`, `q_pi`, `EFE`, `VFE`, `actions`, `states` per step |
-| Single-shot | #1–4, #11–19, #22, #28–30, #32 | `beliefs`, `q_pi`, `neg_efe` |
-| Upstream | #10, #21 | GIFs / SVI metrics |
+| Handler Type | Examples                       | Keys Captured                                            |
+| ------------ | ------------------------------ | -------------------------------------------------------- |
+| JAX rollout  | #5–9, #20, #31                 | `qs`, `qpi`, `neg_efe`, `action`, `obs` per timestep     |
+| Legacy loop  | #23–27                         | `qs`, `q_pi`, `EFE`, `VFE`, `actions`, `states` per step |
+| Single-shot  | #1–4, #11–19, #22, #28–30, #32 | `beliefs`, `q_pi`, `neg_efe`                             |
+| Upstream     | #10, #21                       | GIFs / SVI metrics                                       |
 
 ---
 
 ## Visualization Types (9 auto-triggered)
 
-| Type | Trigger Condition | Function |
-|------|------------------|----------|
-| Beliefs heatmap | `qs` with ≥2 timesteps | `plot_beliefs_heatmap` |
-| Entropy trajectory | Same | `plot_entropy_trajectory` |
-| KL from prior | `qs` + `D_matrix` | `plot_kl_divergence_trajectory` |
-| EFE trajectory | `neg_efe` with T≥2, π≥2 | `plot_efe_trajectory` |
-| Neg-EFE heatmap | Same | `plot_neg_efe_heatmap` |
-| Policy posterior | `qpi` with T≥2, π≥2 | `plot_policy_posterior_heatmap` |
-| Action donut | `action` with ≥2 values | `plot_action_frequency_donut` |
-| Belief animation | `qs` with ≥3 timesteps | `plot_belief_trajectory_animation` |
-| Generative model | `A_matrix` present | `plot_likelihood_matrix` etc. |
+| Type               | Trigger Condition       | Function                           |
+| ------------------ | ----------------------- | ---------------------------------- |
+| Beliefs heatmap    | `qs` with ≥2 timesteps  | `plot_beliefs_heatmap`             |
+| Entropy trajectory | Same                    | `plot_entropy_trajectory`          |
+| KL from prior      | `qs` + `D_matrix`       | `plot_kl_divergence_trajectory`    |
+| EFE trajectory     | `neg_efe` with T≥2, π≥2 | `plot_efe_trajectory`              |
+| Neg-EFE heatmap    | Same                    | `plot_neg_efe_heatmap`             |
+| Policy posterior   | `qpi` with T≥2, π≥2     | `plot_policy_posterior_heatmap`    |
+| Action donut       | `action` with ≥2 values | `plot_action_frequency_donut`      |
+| Belief animation   | `qs` with ≥3 timesteps  | `plot_belief_trajectory_animation` |
+| Generative model   | `A_matrix` present      | `plot_likelihood_matrix` etc.      |
 
 ---
 
 ## Doc Tree Relationships
 
-| Tree | Role | Entry Point |
-|------|------|-------------|
-| `docs/` | Sphinx RTD API docs | `docs/conf.py` (MyST-NB) |
-| `docs-mkdocs/` | MkDocs tutorial site | `mkdocs.yml` |
-| `docxology/docs/` | Validation sidecar reference | This file |
-| `docxology/output/` | Generated validation artifacts | `run_all.py` |
+| Tree                                     | Role                                                    | Entry Point / Key Links                                                    |
+| ---------------------------------------- | ------------------------------------------------------- | -------------------------------------------------------------------------- |
+| **[`docs/`](../../docs/)**               | Legacy Sphinx API docs (ReadTheDocs format)             | [`docs/index.rst`](../../docs/index.rst) (MyST-NB)                         |
+| **[`docs-mkdocs/`](../../docs-mkdocs/)** | Modern MkDocs Site: Theory, Notebooks, and User Guides. | [`docs-mkdocs/index.md`](../../docs-mkdocs/index.md) (Material for MkDocs) |
+| **[`docxology/docs/`](./)**              | Validation sidecar reference (Integration & Parity)     | `docxology/docs/README.md` (This file)                                     |
+| **`docxology/output/`**                  | Generated validation artifacts (JSON/PNG/GIFs)          | Generated by `docxology/run_all.py`                                        |
 
 ---
 
 ## Key Mathematical Concepts (signposting)
 
-| Concept | Formula | Where Used |
-|---------|---------|-----------|
-| **VFE** | F = D_KL[q(s)‖p(s)] − E_q[log p(o\|s)] | `maths.calc_vfe`, `inference.update_posterior_states` |
-| **EFE** | G(π) = −Epistemic − Pragmatic | `control.compute_neg_efe_policy` |
-| **Epistemic** | H[E_q[o]] − E_q[H[p(o\|s)]] | `control.compute_info_gain` |
-| **Pragmatic** | E_q[o] · C | `control.compute_expected_utility` |
-| **Policy posterior** | q(π) = σ(−G(π)) | `control.update_posterior_policies` |
-| **Dirichlet learning** | pA ← pA + η·o⊗q(s) | `learning.update_obs_likelihood_dirichlet` |
-| **Reachability** | I(s) = P(reach goal \| s, d) | `control.generate_I_matrix` |
+Cross-reference `pymdp` logic directly back to overarching theory and documentation.
+
+| Concept                | Formula                                  | Where Used (API)                                                                  | Theory / Guide Links                                                                  |
+| ---------------------- | ---------------------------------------- | --------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------- |
+| **Generative Model**   | `p(o, s, π)`                             | `Agent(A, B, C, D)`                                                               | [📗 Model Structure](../../docs-mkdocs/guides/generative-model-structure.md)          |
+| **VFE**                | `F = D_KL[q(s)‖p(s)] − E_q[log p(o\|s)]` | [`maths.calc_vfe`](../../docs/inference.rst), `inference.update_posterior_states` | [📗 Active Inference Loop](../../docs-mkdocs/guides/rollout-active-inference-loop.md) |
+| **EFE**                | `G(π) = −Epistemic − Pragmatic`          | [`control.compute_neg_efe_policy`](../../docs-mkdocs/api/control.md)              | [📗 Control & Planning API](../../docs-mkdocs/api/control.md)                         |
+| **Epistemic**          | `H[E_q[o]] − E_q[H[p(o\|s)]]`            | `control.compute_info_gain`                                                       | [📗 Control & Planning API](../../docs-mkdocs/api/control.md)                         |
+| **Pragmatic**          | `E_q[o] · C`                             | `control.compute_expected_utility`                                                | [📗 Control & Planning API](../../docs-mkdocs/api/control.md)                         |
+| **Policy posterior**   | `q(π) = σ(−G(π))`                        | `control.update_posterior_policies`                                               | [📗 Control & Planning API](../../docs-mkdocs/api/control.md)                         |
+| **Dirichlet learning** | `pA ← pA + η·o⊗q(s)`                     | [`learning.update_obs_likelihood_dirichlet`](../../docs-mkdocs/api/learning.md)   | [📗 Learning API](../../docs-mkdocs/api/learning.md)                                  |
+| **Reachability**       | `I(s) = P(reach goal \| s, d)`           | `control.generate_I_matrix`                                                       | [📗 Control API (`inductive`)](../../docs-mkdocs/api/control.md)                     |
 
 ---
 

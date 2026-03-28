@@ -10,7 +10,9 @@ Comprehensive technical reference tying the **pymdp** Active Inference package, 
 
 ### Package Layout
 
-```
+See also: [📗 Sphinx API Docs](../../docs/index.rst) | [📘 MkDocs Theory & API](../../docs-mkdocs/index.md)
+
+```text
 pymdp/
 ├── __init__.py              # Package entry point
 ├── agent.py                 # Agent class (equinox Module) — the central abstraction
@@ -39,119 +41,126 @@ pymdp/
     ├── algos/               # Legacy FPI, MMP implementations
     ├── envs/                # Legacy TMazeEnv, GridWorldEnv
     └── ...                  # maths, utils, control, inference, learning
-```
+```text
 
 ### Core: `agent.py` — The Agent Class
+
+📖 **API Reference:** [`agent.py`](../../docs-mkdocs/api/agent.md) | Sphinx: [`docs/agent.rst`](../../docs/agent.rst)
 
 ```python
 class Agent(eqx.Module):
     """Active Inference agent as an Equinox module (JAX-compatible, JIT-safe)."""
-```
+```text
 
 **Generative model parameters:**
 
-| Attribute | Type | Shape | Description |
-|-----------|------|-------|-------------|
-| `A` | `list[Array]` | `[num_obs_m × Π(num_states_f)]` per modality | Likelihood mapping p(o\|s) |
-| `B` | `list[Array]` | `[num_states_f × num_states_f × num_controls_f]` per factor | Transition dynamics p(s'\|s,a) |
-| `C` | `list[Array]` | `[num_obs_m]` per modality | Prior preferences (log-scale) |
-| `D` | `list[Array]` | `[num_states_f]` per factor | Initial state prior p(s₀) |
-| `pA` | `list[Array]` or `None` | Same as A | Dirichlet prior for A learning |
-| `pB` | `list[Array]` or `None` | Same as B | Dirichlet prior for B learning |
+| Attribute | Type                    | Shape                                                       | Description                    |
+| --------- | ----------------------- | ----------------------------------------------------------- | ------------------------------ |
+| `A`       | `list[Array]`           | `[num_obs_m × Π(num_states_f)]` per modality                | Likelihood mapping p(o\|s)     |
+| `B`       | `list[Array]`           | `[num_states_f × num_states_f × num_controls_f]` per factor | Transition dynamics p(s'\|s,a) |
+| `C`       | `list[Array]`           | `[num_obs_m]` per modality                                  | Prior preferences (log-scale)  |
+| `D`       | `list[Array]`           | `[num_states_f]` per factor                                 | Initial state prior p(s₀)      |
+| `pA`      | `list[Array]` or `None` | Same as A                                                   | Dirichlet prior for A learning |
+| `pB`      | `list[Array]` or `None` | Same as B                                                   | Dirichlet prior for B learning |
 
 **Dependency specifications:**
 
-| Attribute | Type | Description |
-|-----------|------|-------------|
-| `A_dependencies` | `list[list[int]]` | Which state factors each modality depends on |
-| `B_dependencies` | `list[list[int]]` | Which state factors each factor's transitions depend on |
-| `B_action_dependencies` | `list[list[int]]` | Which control factors each factor's action depends on |
+| Attribute               | Type              | Description                                             |
+| ----------------------- | ----------------- | ------------------------------------------------------- |
+| `A_dependencies`        | `list[list[int]]` | Which state factors each modality depends on            |
+| `B_dependencies`        | `list[list[int]]` | Which state factors each factor's transitions depend on |
+| `B_action_dependencies` | `list[list[int]]` | Which control factors each factor's action depends on   |
 
 **Key methods:**
 
-| Method | Signature | Purpose |
-|--------|-----------|---------|
-| `infer_states` | `(obs, empirical_prior, return_info) → (qs, info)` | Posterior belief update q(s) |
-| `infer_policies` | `(qs) → (q_pi, neg_efe)` | Policy posterior q(π) via expected free energy |
-| `sample_action` | `(q_pi, rng_key) → action` | Sample action from policy posterior |
-| `update_empirical_prior` | `(action, qs) → empirical_prior` | Compute p(s'\|a) for next step |
+| Method                   | Signature                                          | Purpose                                        |
+| ------------------------ | -------------------------------------------------- | ---------------------------------------------- |
+| `infer_states`           | `(obs, empirical_prior, return_info) → (qs, info)` | Posterior belief update q(s)                   |
+| `infer_policies`         | `(qs) → (q_pi, neg_efe)`                           | Policy posterior q(π) via expected free energy |
+| `sample_action`          | `(q_pi, rng_key) → action`                         | Sample action from policy posterior            |
+| `update_empirical_prior` | `(action, qs) → empirical_prior`                   | Compute p(s'\|a) for next step                 |
 
 **Active Inference cycle:**
-```
+
+```text
 obs → infer_states(obs) → qs → infer_policies(qs) → q_pi → sample_action(q_pi) → action
                                     ↑                                                   ↓
                                 update_empirical_prior(action, qs) ←───────────────────┘
-```
+```text
 
 ---
 
 ### State Inference: `inference.py` + `algos.py`
 
+📖 **API Reference:** [`inference.py`](../../docs-mkdocs/api/inference.md), [`algos.py`](../../docs-mkdocs/api/algos.md) | Sphinx: [`docs/inference.rst`](../../docs/inference.rst)
+
 **The inference pipeline updates posterior beliefs q(s) given observations.**
 
 #### `inference.py` — High-Level API (15 functions)
 
-| Function | Description |
-|----------|-------------|
+| Function                  | Description                                                            |
+| ------------------------- | ---------------------------------------------------------------------- |
 | `update_posterior_states` | Main entry point. Routes to FPI, MMP, or VMP based on `inference_algo` |
-| `_run_one_step_inference` | Single-step FPI (fixed-point iteration) |
-| `_run_sequence_inference` | Multi-step MMP (marginal message passing) |
-| `joint_dist_factor` | Joint distribution over a single factor |
-| `smoothing_ovf` | Overshoot variational filtering |
-| `smoothing_exact` | Exact Bayesian smoothing |
+| `_run_one_step_inference` | Single-step FPI (fixed-point iteration)                                |
+| `_run_sequence_inference` | Multi-step MMP (marginal message passing)                              |
+| `joint_dist_factor`       | Joint distribution over a single factor                                |
+| `smoothing_ovf`           | Overshoot variational filtering                                        |
+| `smoothing_exact`         | Exact Bayesian smoothing                                               |
 
 #### `algos.py` — Algorithm Implementations (34 functions)
 
 **Fixed-Point Iteration (FPI):**
 
-| Function | Description |
-|----------|-------------|
-| `run_vanilla_fpi` | Standard FPI: iteratively refine q(s) until convergence |
-| `run_factorized_fpi` | Factorized FPI for multi-factor models |
-| `run_factorized_fpi_hybrid` | Hybrid FPI with padded arrays |
-| `run_factorized_fpi_end2end_padded` | End-to-end padded FPI for JIT |
+| Function                            | Description                                             |
+| ----------------------------------- | ------------------------------------------------------- |
+| `run_vanilla_fpi`                   | Standard FPI: iteratively refine q(s) until convergence |
+| `run_factorized_fpi`                | Factorized FPI for multi-factor models                  |
+| `run_factorized_fpi_hybrid`         | Hybrid FPI with padded arrays                           |
+| `run_factorized_fpi_end2end_padded` | End-to-end padded FPI for JIT                           |
 
 **Marginal Message Passing (MMP):**
 
-| Function | Description |
-|----------|-------------|
-| `get_mmp_messages` | Compute MMP messages (forward + backward) |
-| `run_mmp` | Full MMP inference with temporal smoothing |
+| Function           | Description                                |
+| ------------------ | ------------------------------------------ |
+| `get_mmp_messages` | Compute MMP messages (forward + backward)  |
+| `run_mmp`          | Full MMP inference with temporal smoothing |
 
 **Variational Message Passing (VMP):**
 
-| Function | Description |
-|----------|-------------|
+| Function           | Description                          |
+| ------------------ | ------------------------------------ |
 | `get_vmp_messages` | Compute VMP messages between factors |
-| `run_vmp` | Full VMP inference |
+| `run_vmp`          | Full VMP inference                   |
 
 **HMM Filtering & Smoothing (via associative scan):**
 
-| Function | Description |
-|----------|-------------|
-| `hmm_filter_scan_rowstoch` | Row-stochastic HMM filtering with `jax.lax.associative_scan` |
-| `hmm_smoother_scan_rowstoch` | Row-stochastic HMM smoothing |
-| `hmm_filter_scan_colstoch` | Column-stochastic variant |
-| `hmm_smoother_scan_colstoch` | Column-stochastic smoothing |
-| `run_exact_single_factor_hmm_scan` | Exact single-factor HMM via scan |
+| Function                           | Description                                                  |
+| ---------------------------------- | ------------------------------------------------------------ |
+| `hmm_filter_scan_rowstoch`         | Row-stochastic HMM filtering with `jax.lax.associative_scan` |
+| `hmm_smoother_scan_rowstoch`       | Row-stochastic HMM smoothing                                 |
+| `hmm_filter_scan_colstoch`         | Column-stochastic variant                                    |
+| `hmm_smoother_scan_colstoch`       | Column-stochastic smoothing                                  |
+| `run_exact_single_factor_hmm_scan` | Exact single-factor HMM via scan                             |
 
 **Variational Filtering:**
 
-| Function | Description |
-|----------|-------------|
-| `variational_filtering_step` | Single step of variational filtering |
-| `update_variational_filtering` | Full variational filtering loop |
-| `run_online_filtering` | Online (streaming) inference |
+| Function                       | Description                          |
+| ------------------------------ | ------------------------------------ |
+| `variational_filtering_step`   | Single step of variational filtering |
+| `update_variational_filtering` | Full variational filtering loop      |
+| `run_online_filtering`         | Online (streaming) inference         |
 
 ---
 
 ### Policy Inference: `control.py`
 
+📖 **API Reference:** [`control.py`](../../docs-mkdocs/api/control.md) | Sphinx: [`docs/control.rst`](../../docs/control.rst)
+
 **The control module computes the policy posterior q(π) by evaluating expected free energy (EFE) for each policy.**
 
 #### Mathematical Foundation
 
-```
+```text
 q(π) = σ(−G(π))     where σ is softmax
 
 G(π) = Σ_τ [ G_epistemic(π,τ) + G_pragmatic(π,τ) + G_novelty(π,τ) ]
@@ -159,85 +168,90 @@ G(π) = Σ_τ [ G_epistemic(π,τ) + G_pragmatic(π,τ) + G_novelty(π,τ) ]
 G_epistemic(π,τ)  = −E_q(o|s,π)[ H[p(s|o)] − H[q(s|π)] ]    # Information gain
 G_pragmatic(π,τ)  = −E_q(o|π)[ log p(o|C) ]                    # Expected utility
 G_novelty(π,τ)    = −E_q(s|π)[ D_KL[q(A)||p(A)] ]              # Parameter info gain
-```
+```text
 
 #### Key Functions (18 total)
 
-| Function | Description |
-|----------|-------------|
-| `construct_policies` | Enumerate all policy sequences of length `policy_len` |
-| `update_posterior_policies` | Compute q(π) = σ(−G(π)) for all policies |
-| `compute_neg_efe_policy` | Full −G(π) with epistemic + pragmatic + novelty |
-| `compute_neg_efe_policy_inductive` | −G with inductive reachability bias |
-| `update_posterior_policies_inductive` | q(π) with inductive I matrix |
-| `compute_expected_state` | E_q[s\|π] = B(a) · q(s) |
-| `compute_expected_obs` | E_q[o\|π] = A · E_q[s\|π] |
-| `compute_info_gain` | Epistemic value: H[E_q[o]] − E_q[H[p(o\|s)]] |
-| `compute_expected_utility` | Pragmatic value: E_q[o] · C |
-| `calc_negative_pA_info_gain` | Parameter novelty for A learning |
-| `calc_negative_pB_info_gain` | Parameter novelty for B learning |
-| `generate_I_matrix` | Inductive inference reachability matrix |
-| `sample_action` | Sample from action marginals |
-| `sample_policy` | Sample entire policy sequences |
-| `get_marginals` | Marginalize q(π) to per-factor action probs |
+| Function                              | Description                                           |
+| ------------------------------------- | ----------------------------------------------------- |
+| `construct_policies`                  | Enumerate all policy sequences of length `policy_len` |
+| `update_posterior_policies`           | Compute q(π) = σ(−G(π)) for all policies              |
+| `compute_neg_efe_policy`              | Full −G(π) with epistemic + pragmatic + novelty       |
+| `compute_neg_efe_policy_inductive`    | −G with inductive reachability bias                   |
+| `update_posterior_policies_inductive` | q(π) with inductive I matrix                          |
+| `compute_expected_state`              | E_q[s\|π] = B(a) · q(s)                               |
+| `compute_expected_obs`                | E_q[o\|π] = A · E_q[s\|π]                             |
+| `compute_info_gain`                   | Epistemic value: H[E_q[o]] − E_q[H[p(o\|s)]]          |
+| `compute_expected_utility`            | Pragmatic value: E_q[o] · C                           |
+| `calc_negative_pA_info_gain`          | Parameter novelty for A learning                      |
+| `calc_negative_pB_info_gain`          | Parameter novelty for B learning                      |
+| `generate_I_matrix`                   | Inductive inference reachability matrix               |
+| `sample_action`                       | Sample from action marginals                          |
+| `sample_policy`                       | Sample entire policy sequences                        |
+| `get_marginals`                       | Marginalize q(π) to per-factor action probs           |
 
 ---
 
 ### Learning: `learning.py`
 
+📖 **API Reference:** [`learning.py`](../../docs-mkdocs/api/learning.md) | Sphinx: [`docs/learning.rst`](../../docs/learning.rst)
+
 **Dirichlet parameter updates for A (observation likelihood) and B (transition dynamics).**
 
-| Function | Description |
-|----------|-------------|
-| `update_obs_likelihood_dirichlet` | Update pA ← pA + lr · Δ(obs, qs) |
-| `update_obs_likelihood_dirichlet_m` | Per-modality variant |
-| `update_state_transition_dirichlet` | Update pB ← pB + lr · Δ(qs, qs', action) |
-| `update_state_transition_dirichlet_f` | Per-factor variant |
+| Function                              | Description                              |
+| ------------------------------------- | ---------------------------------------- |
+| `update_obs_likelihood_dirichlet`     | Update pA ← pA + lr · Δ(obs, qs)         |
+| `update_obs_likelihood_dirichlet_m`   | Per-modality variant                     |
+| `update_state_transition_dirichlet`   | Update pB ← pB + lr · Δ(qs, qs', action) |
+| `update_state_transition_dirichlet_f` | Per-factor variant                       |
 
 **Learning rule:**
-```
+
+```text
 qA_m(o,s) = pA_m(o,s) + lr · obs_m(o) ⊗ q(s)     # Observation likelihood
 qB_f(s',s,a) = pB_f(s',s,a) + lr · q(s') ⊗ q(s)   # Transition dynamics
-```
+```text
 
 ---
 
 ### Mathematical Primitives: `maths.py`
 
+📖 **API Reference:** [`maths.py`](../../docs-mkdocs/api/maths.md)
+
 **32 functions providing the mathematical backbone.**
 
 #### Information-Theoretic
 
-| Function | Description |
-|----------|-------------|
-| `stable_entropy(x)` | H(x) = −Σ x log x (numerically stable) |
-| `stable_cross_entropy(x, y)` | H(x,y) = −Σ x log y |
-| `stable_xlogx(x)` | x log x with 0·log(0) = 0 |
-| `log_stable(x)` | log(x + ε) with machine epsilon |
-| `dirichlet_kl_divergence(q, p)` | KL(Dir(q) ‖ Dir(p)) |
+| Function                        | Description                            |
+| ------------------------------- | -------------------------------------- |
+| `stable_entropy(x)`             | H(x) = −Σ x log x (numerically stable) |
+| `stable_cross_entropy(x, y)`    | H(x,y) = −Σ x log y                    |
+| `stable_xlogx(x)`               | x log x with 0·log(0) = 0              |
+| `log_stable(x)`                 | log(x + ε) with machine epsilon        |
+| `dirichlet_kl_divergence(q, p)` | KL(Dir(q) ‖ Dir(p))                    |
 
 #### Tensor Operations
 
-| Function | Description |
-|----------|-------------|
-| `factor_dot(A, qs)` | Multi-factor tensor contraction A · (q₁ ⊗ q₂ ⊗ ...) |
-| `factor_dot_flex(ll, qs, dims)` | Flexible factor_dot with arbitrary dims |
-| `spm_dot_sparse(sparse_A, qs)` | Sparse tensor contraction |
-| `multidimensional_outer(arrs)` | Outer product of multiple arrays |
+| Function                        | Description                                         |
+| ------------------------------- | --------------------------------------------------- |
+| `factor_dot(A, qs)`             | Multi-factor tensor contraction A · (q₁ ⊗ q₂ ⊗ ...) |
+| `factor_dot_flex(ll, qs, dims)` | Flexible factor_dot with arbitrary dims             |
+| `spm_dot_sparse(sparse_A, qs)`  | Sparse tensor contraction                           |
+| `multidimensional_outer(arrs)`  | Outer product of multiple arrays                    |
 
 #### Variational Free Energy
 
-| Function | Description |
-|----------|-------------|
+| Function                       | Description                                   |
+| ------------------------------ | --------------------------------------------- |
 | `calc_vfe(qs, prior, ll, ...)` | Full VFE: F = E_q[log q(s)] − E_q[log p(o,s)] |
-| `compute_accuracy(qs, A, obs)` | Accuracy: E_q[log p(o\|s)] |
+| `compute_accuracy(qs, A, obs)` | Accuracy: E_q[log p(o\|s)]                    |
 
 #### SPM Compatibility
 
-| Function | Description |
-|----------|-------------|
-| `spm_wnorm(A)` | SPM-style column normalization |
-| `dirichlet_expected_value(dir_arr)` | E[Dir(α)] = α / Σα |
+| Function                            | Description                    |
+| ----------------------------------- | ------------------------------ |
+| `spm_wnorm(A)`                      | SPM-style column normalization |
+| `dirichlet_expected_value(dir_arr)` | E[Dir(α)] = α / Σα             |
 
 ---
 
@@ -245,51 +259,53 @@ qB_f(s',s,a) = pB_f(s',s,a) + lr · q(s') ⊗ q(s)   # Transition dynamics
 
 **31 array construction and normalization helpers.**
 
-| Category | Functions |
-|----------|-----------|
-| **Array builders** | `random_A_array`, `random_B_array`, `create_controllable_B`, `list_array_uniform`, `list_array_zeros`, `list_array_scaled` |
-| **Normalization** | `norm_dist`, `list_array_norm_dist`, `validate_normalization` |
-| **Dependency resolvers** | `resolve_a_dependencies`, `resolve_b_dependencies`, `resolve_b_action_dependencies` |
-| **Indexing** | `get_combination_index`, `index_to_combination` |
-| **Agent spec generation** | `generate_agent_spec`, `generate_agent_specs_from_parameter_sets` |
-| **Categorical helpers** | `random_factorized_categorical`, `get_sample_obs` |
-| **Block diagonal** | `build_block_diag_A`, `preprocess_A_for_block_diag`, `compute_log_likelihoods_block_diag` |
+| Category                  | Functions                                                                                                                  |
+| ------------------------- | -------------------------------------------------------------------------------------------------------------------------- |
+| **Array builders**        | `random_A_array`, `random_B_array`, `create_controllable_B`, `list_array_uniform`, `list_array_zeros`, `list_array_scaled` |
+| **Normalization**         | `norm_dist`, `list_array_norm_dist`, `validate_normalization`                                                              |
+| **Dependency resolvers**  | `resolve_a_dependencies`, `resolve_b_dependencies`, `resolve_b_action_dependencies`                                        |
+| **Indexing**              | `get_combination_index`, `index_to_combination`                                                                            |
+| **Agent spec generation** | `generate_agent_spec`, `generate_agent_specs_from_parameter_sets`                                                          |
+| **Categorical helpers**   | `random_factorized_categorical`, `get_sample_obs`                                                                          |
+| **Block diagonal**        | `build_block_diag_A`, `preprocess_A_for_block_diag`, `compute_log_likelihoods_block_diag`                                  |
 
 ---
 
 ### Environments: `envs/`
 
+📖 **API Reference:** [`envs/env.py`](../../docs-mkdocs/api/envs-env.md), [`envs/rollout.py`](../../docs-mkdocs/api/envs-rollout.md) | Sphinx: [`docs/env.rst`](../../docs/env.rst)
+
 #### Base Class: `PymdpEnv(Env)`
 
 All environments inherit from `PymdpEnv` and implement:
 
-| Method | Description |
-|--------|-------------|
-| `step(rng_key, action)` | Advance state, return new observations |
-| `reset(rng_key)` | Reset to initial state |
-| `A`, `B`, `D` | Generative model parameters (class attributes) |
-| `A_dependencies`, `B_dependencies` | Dependency structure |
+| Method                             | Description                                    |
+| ---------------------------------- | ---------------------------------------------- |
+| `step(rng_key, action)`            | Advance state, return new observations         |
+| `reset(rng_key)`                   | Reset to initial state                         |
+| `A`, `B`, `D`                      | Generative model parameters (class attributes) |
+| `A_dependencies`, `B_dependencies` | Dependency structure                           |
 
 #### Environment Implementations
 
-| Class | Module | States | Obs Modalities | Controls | Description |
-|-------|--------|--------|----------------|----------|-------------|
-| `TMaze` | `tmaze.py` | 2 factors (location×context) | 3 (location, reward, cue) | [5, 1] | T-maze with hidden reward location |
-| `SimplifiedTMaze` | `tmaze.py` | Same | Same | Same | Parameter-simplified variant |
-| `GeneralizedTMazeEnv` | `generalized_tmaze.py` | Multi-arm maze | Multi-modal | Per-axis | Maze parsed from ASCII matrix |
-| `CueChainingEnv` | `cue_chaining.py` | Chain of cue locations | Per-cue modality | Location | Agent follows cue chain to reward |
-| `GraphEnv` | `graph_worlds.py` | Graph nodes | Node identity | Neighbor edges | Cluster-connected graph navigation |
-| `GridWorld` | `grid_world.py` | N×M grid cells | Cell identity | [up, down, left, right, stay] | 2D grid with optional walls |
+| Class                 | Module                 | States                       | Obs Modalities            | Controls                      | Description                        |
+| --------------------- | ---------------------- | ---------------------------- | ------------------------- | ----------------------------- | ---------------------------------- |
+| `TMaze`               | `tmaze.py`             | 2 factors (location×context) | 3 (location, reward, cue) | [5, 1]                        | T-maze with hidden reward location |
+| `SimplifiedTMaze`     | `tmaze.py`             | Same                         | Same                      | Same                          | Parameter-simplified variant       |
+| `GeneralizedTMazeEnv` | `generalized_tmaze.py` | Multi-arm maze               | Multi-modal               | Per-axis                      | Maze parsed from ASCII matrix      |
+| `CueChainingEnv`      | `cue_chaining.py`      | Chain of cue locations       | Per-cue modality          | Location                      | Agent follows cue chain to reward  |
+| `GraphEnv`            | `graph_worlds.py`      | Graph nodes                  | Node identity             | Neighbor edges                | Cluster-connected graph navigation |
+| `GridWorld`           | `grid_world.py`        | N×M grid cells               | Cell identity             | [up, down, left, right, stay] | 2D grid with optional walls        |
 
 #### Rollout Engine: `rollout.py`
 
 ```python
 def rollout(agent, env, num_timesteps, rng_key, policy_search_fn=None) -> (env, info):
-```
+```text
 
 **The rollout function orchestrates the full Active Inference loop:**
 
-```
+```text
 for t in range(T):
     obs ← env.step(action)                    # Environment dynamics
     qs  ← agent.infer_states(obs, prior)       # Belief update
@@ -300,22 +316,24 @@ for t in range(T):
     # Optional online learning:
     pA ← update_obs_likelihood(pA, obs, qs)
     pB ← update_state_transition(pB, qs, action)
-```
+```text
 
 **Return `info` dict:**
 
-| Key | Shape | Description |
-|-----|-------|-------------|
-| `qs` | `list[Array(batch, T, states)]` per factor | Posterior beliefs per timestep |
-| `qpi` | `Array(batch, T, num_policies)` | Policy posterior per timestep |
-| `neg_efe` | `Array(batch, T, num_policies)` | Negative EFE per policy per timestep |
-| `action` | `Array(batch, T, num_factors)` | Selected actions per timestep |
-| `obs` | `list[Array(batch, T, obs_dim)]` | Observations per timestep |
-| `env_states` | varies | Environment state trajectory |
+| Key          | Shape                                      | Description                          |
+| ------------ | ------------------------------------------ | ------------------------------------ |
+| `qs`         | `list[Array(batch, T, states)]` per factor | Posterior beliefs per timestep       |
+| `qpi`        | `Array(batch, T, num_policies)`            | Policy posterior per timestep        |
+| `neg_efe`    | `Array(batch, T, num_policies)`            | Negative EFE per policy per timestep |
+| `action`     | `Array(batch, T, num_factors)`             | Selected actions per timestep        |
+| `obs`        | `list[Array(batch, T, obs_dim)]`           | Observations per timestep            |
+| `env_states` | varies                                     | Environment state trajectory         |
 
 ---
 
 ### Planning: `planning/`
+
+📖 **API Reference:** [`planning/si.py`](../../docs-mkdocs/api/planning-si.md), [`planning/mcts.py`](../../docs-mkdocs/api/planning-mcts.md)
 
 #### Sophisticated Inference: `si.py`
 
@@ -324,24 +342,25 @@ for t in range(T):
 ```python
 def si_policy_search(agent, qs, rng_key, max_nodes, max_branching,
                      pruning_threshold, entropy_threshold) -> dict
-```
+```text
 
-| Parameter | Default | Effect |
-|-----------|---------|--------|
-| `max_nodes` | 512 | Maximum tree size |
-| `max_branching` | 32 | Actions per node |
-| `pruning_threshold` | 0.01 | Min probability to keep branch |
-| `entropy_threshold` | 0.1 | Entropy stopping criterion |
+| Parameter           | Default | Effect                         |
+| ------------------- | ------- | ------------------------------ |
+| `max_nodes`         | 512     | Maximum tree size              |
+| `max_branching`     | 32      | Actions per node               |
+| `pruning_threshold` | 0.01    | Min probability to keep branch |
+| `entropy_threshold` | 0.1     | Entropy stopping criterion     |
 
 **Architecture:**
-```
+
+```text
 Tree(eqx.Module)
 ├── beliefs: list[Array]      # q(s) at each node
 ├── actions: Array             # Action taken to reach node
 ├── neg_efe: Array             # −G accumulated at node
 ├── parent: Array              # Parent node index
 └── depth: Array               # Depth in tree
-```
+```text
 
 #### MCTS: `mcts.py`
 
@@ -349,7 +368,7 @@ Tree(eqx.Module)
 
 ```python
 def mcts_policy_search(agent, qs, rng_key, num_simulations, depth) -> dict
-```
+```text
 
 Uses `mctx.gumbel_muzero_policy` with a custom `recurrent_fn` that implements Active Inference dynamics.
 
@@ -359,15 +378,15 @@ Uses `mctx.gumbel_muzero_policy` with a custom `recurrent_fn` that implements Ac
 
 **NumPy-era backward compatibility layer. Mirrors the JAX API with NumPy arrays.**
 
-| Module | Description |
-|--------|-------------|
-| `legacy/agent.py` | `Agent` class with `infer_states`, `infer_policies`, `sample_action` |
-| `legacy/algos/` | FPI, MMP implementations in NumPy |
-| `legacy/envs/` | `TMazeEnv`, `GridWorldEnv` in NumPy |
-| `legacy/maths.py` | `spm_log_single`, `softmax`, etc. |
-| `legacy/utils.py` | `sample()`, array builders |
-| `legacy/control.py` | EFE computation, policy construction |
-| `legacy/default_models.py` | Pre-built models (epistemic MAB, etc.) |
+| Module                     | Description                                                          |
+| -------------------------- | -------------------------------------------------------------------- |
+| `legacy/agent.py`          | `Agent` class with `infer_states`, `infer_policies`, `sample_action` |
+| `legacy/algos/`            | FPI, MMP implementations in NumPy                                    |
+| `legacy/envs/`             | `TMazeEnv`, `GridWorldEnv` in NumPy                                  |
+| `legacy/maths.py`          | `spm_log_single`, `softmax`, etc.                                    |
+| `legacy/utils.py`          | `sample()`, array builders                                           |
+| `legacy/control.py`        | EFE computation, policy construction                                 |
+| `legacy/default_models.py` | Pre-built models (epistemic MAB, etc.)                               |
 
 ---
 
@@ -375,7 +394,7 @@ Uses `mctx.gumbel_muzero_policy` with a custom `recurrent_fn` that implements Ac
 
 ### Module Map
 
-```
+```text
 docxology/
 ├── run_all.py                           # Pipeline entry (32 examples)
 ├── pkg/support/
@@ -390,38 +409,40 @@ docxology/
 ├── docs/                                # This directory
 ├── manifests/                           # CI/nightly/legacy path lists
 └── output/                              # Generated: 130+ files
-```
+```text
 
 ### `bootstrap.py` — Configuration
 
 #### `OrchestrationConfig` (frozen dataclass)
 
-| Field | Type | Default | Description |
-|-------|------|---------|-------------|
-| `fast` | `bool` | `False` | Shorter loops (2–3 vs 15–25 timesteps) |
-| `skip_heavy` | `bool` | `False` | Skip torch, long SI/MCTS, pybefit |
-| `seed` | `int` | `0` | JAX PRNG seed |
-| `verbose` | `bool` | `False` | Verbose logging |
-| `output_dir` | `Path \| None` | `None` | Output directory for plots/data |
+| Field        | Type           | Default | Description                            |
+| ------------ | -------------- | ------- | -------------------------------------- |
+| `fast`       | `bool`         | `False` | Shorter loops (2–3 vs 15–25 timesteps) |
+| `skip_heavy` | `bool`         | `False` | Skip torch, long SI/MCTS, pybefit      |
+| `seed`       | `int`          | `0`     | JAX PRNG seed                          |
+| `verbose`    | `bool`         | `False` | Verbose logging                        |
+| `output_dir` | `Path \| None` | `None`  | Output directory for plots/data        |
 
 **Derived:** `save_plots → True` when `output_dir` is not None.
 
 ### `patterns.py` — Reusable Call Patterns
 
-| Function | Purpose | Returns |
-|----------|---------|---------|
-| `random_agent_one_cycle(seed, policy_len, inference_algo)` | Build random model, run 1 cycle | `{qs_shapes, action, A_matrix, B_matrix, C_matrix, D_matrix, diagnostics}` |
-| `complex_action_dependency_agent(seed)` | 3-factor agent with B_action_dependencies | `Agent` instance |
+| Function                                                   | Purpose                                   | Returns                                                                    |
+| ---------------------------------------------------------- | ----------------------------------------- | -------------------------------------------------------------------------- |
+| `random_agent_one_cycle(seed, policy_len, inference_algo)` | Build random model, run 1 cycle           | `{qs_shapes, action, A_matrix, B_matrix, C_matrix, D_matrix, diagnostics}` |
+| `complex_action_dependency_agent(seed)`                    | 3-factor agent with B_action_dependencies | `Agent` instance                                                           |
 
 ### `viz.py` — 18 Visualization Functions
 
 #### Generative Model Plots
+
 - `plot_likelihood_matrix(A)` — A matrix heatmap (viridis)
 - `plot_transition_matrix(B)` — B matrix heatmap (viridis)
 - `plot_empirical_prior(D)` — D bar chart (skyblue)
 - `plot_prior_preferences(C)` — C bar chart (salmon)
 
 #### Inference Plots
+
 - `plot_beliefs_heatmap(qs_seq)` — q(s) states × timesteps (plasma)
 - `plot_free_energy(F_seq)` — VFE line plot (tomato)
 - `plot_action_probabilities(probs)` — Action bar chart (steelblue)
@@ -429,6 +450,7 @@ docxology/
 - `plot_efe_components(g_epi, g_prag)` — EFE breakdown (grouped bars)
 
 #### Trajectory Analytics
+
 - `plot_entropy_trajectory(qs_seq)` — H[q(s)] over time
 - `plot_kl_divergence_trajectory(qs_seq, prior)` — KL(q‖D) over time
 - `plot_efe_trajectory(neg_efe_seq)` — Best/mean −G with fill
@@ -437,64 +459,68 @@ docxology/
 - `plot_action_frequency_donut(actions)` — Donut chart
 
 #### Animation
+
 - `plot_belief_trajectory_animation(qs_seq, dir, stem, fps=4)` — GIF
 
 ### `analysis.py` — Numerical Utilities
 
-| Function | Description |
-|----------|-------------|
-| `compute_entropy(probs, axis)` | Shannon entropy H = −Σ p log p |
-| `trajectory_divergence(qs_seq, prior)` | Per-timestep KL(q‖prior) |
-| `marginalize_actions(q_pi, policies)` | Policy posterior → action marginals |
-| `compute_accuracy_complexity(q_s, p_o_s, obs, prior)` | VFE = accuracy − complexity |
+| Function                                              | Description                         |
+| ----------------------------------------------------- | ----------------------------------- |
+| `compute_entropy(probs, axis)`                        | Shannon entropy H = −Σ p log p      |
+| `trajectory_divergence(qs_seq, prior)`                | Per-timestep KL(q‖prior)            |
+| `marginalize_actions(q_pi, policies)`                 | Policy posterior → action marginals |
+| `compute_accuracy_complexity(q_s, p_o_s, obs, prior)` | VFE = accuracy − complexity         |
 
 ### `mirror_dispatch.py` — Handler Architecture
 
 #### Dispatch Flow
 
-```
+```text
 run_all.py → mirror_dispatch.run_registered(script_file, cfg)
   → HANDLERS[key](cfg: OrchestrationConfig) → dict
     → _auto_plot_metrics(cfg, info, stem)
     → _extract_rollout_diagnostics(info)
     → returns {ok, id, diagnostics, ...}
-```
+```text
 
 #### `_auto_plot_metrics` Trigger Logic
 
-| Data Key | Required Shape | Visualizations |
-|----------|---------------|----------------|
-| `A_matrix` | list of arrays | A heatmap, B heatmap, D bar, C bar |
-| `qs` (list of factors `(B,T,N)`) | ndim ≥ 3 | Beliefs heatmap, entropy, KL, belief anim GIF |
-| `qs` (list of per-step arrays) | ndim ≤ 2 | Same (legacy format) |
-| `qpi` | `(B,T,N_π)` | Policy posterior heatmap |
-| `neg_efe` | `(B,T,N_π)` | EFE trajectory, neg-EFE heatmap |
-| `action` | `(B,T,N_f)` | Action frequency donut |
-| `D_matrix` + `qs` | both present | KL from prior |
+| Data Key                         | Required Shape | Visualizations                                |
+| -------------------------------- | -------------- | --------------------------------------------- |
+| `A_matrix`                       | list of arrays | A heatmap, B heatmap, D bar, C bar            |
+| `qs` (list of factors `(B,T,N)`) | ndim ≥ 3       | Beliefs heatmap, entropy, KL, belief anim GIF |
+| `qs` (list of per-step arrays)   | ndim ≤ 2       | Same (legacy format)                          |
+| `qpi`                            | `(B,T,N_π)`    | Policy posterior heatmap                      |
+| `neg_efe`                        | `(B,T,N_π)`    | EFE trajectory, neg-EFE heatmap               |
+| `action`                         | `(B,T,N_f)`    | Action frequency donut                        |
+| `D_matrix` + `qs`                | both present   | KL from prior                                 |
 
 #### Handler Categories (32 total)
 
-| Category | Handlers | Pattern |
-|----------|---------|---------|
-| Rollout (JAX) | tmaze, gen_tmaze, cue_chain, graph, knapsack, pybefit | `rollout()` → `_extract_rollout_diagnostics()` |
-| Legacy (NumPy) | agent_demo, tmaze, tmaze_learning, grid1, grid2 | Manual per-step loop |
-| Single-shot | model_construction, complex_action, neural, infer_states, learning, inductive×2, sparse, free_energy, docx×4, SI×3, MCTS×2 | One-cycle or specialized |
-| Upstream delegate | chained_cue_nav, tmaze_recoverability | `runpy.run_path()` |
+| Category          | Handlers                                                                                                                   | Pattern                                        |
+| ----------------- | -------------------------------------------------------------------------------------------------------------------------- | ---------------------------------------------- |
+| Rollout (JAX)     | tmaze, gen_tmaze, cue_chain, graph, knapsack, pybefit                                                                      | `rollout()` → `_extract_rollout_diagnostics()` |
+| Legacy (NumPy)    | agent_demo, tmaze, tmaze_learning, grid1, grid2                                                                            | Manual per-step loop                           |
+| Single-shot       | model_construction, complex_action, neural, infer_states, learning, inductive×2, sparse, free_energy, docx×4, SI×3, MCTS×2 | One-cycle or specialized                       |
+| Upstream delegate | chained_cue_nav, tmaze_recoverability                                                                                      | `runpy.run_path()`                             |
 
 ---
 
 ## Part III: Active Inference Mathematical Framework
 
+_(For step-by-step guides, see [🔰 Thinking in Generative Models](../../docs-mkdocs/guides/generative-model-structure.md) and [🔰 Rollout Active Inference Loop](../../docs-mkdocs/guides/rollout-active-inference-loop.md))_
+
 ### Generative Model
 
 The agent maintains a **Partially Observable Markov Decision Process (POMDP)** as its generative model:
 
-```
+```text
 p(õ, s̃, π) = p(π) Π_τ [ p(o_τ|s_τ) p(s_τ|s_{τ-1}, a_τ) ]
             = p(π) Π_τ [ A · B(a_τ) ]
-```
+```text
 
 Where:
+
 - **A** = p(o|s) — observation likelihood (how states generate observations)
 - **B(a)** = p(s'|s,a) — transition dynamics (how actions change states)
 - **C** = log p̃(o) — prior preferences (what observations the agent prefers)
@@ -504,11 +530,11 @@ Where:
 
 **Goal:** Approximate posterior q(s) ≈ p(s|o) by minimizing VFE:
 
-```
+```text
 F[q] = E_q[log q(s)] − E_q[log p(o,s)]
      = D_KL[q(s) ‖ p(s)] − E_q[log p(o|s)]
      = Complexity − Accuracy
-```
+```text
 
 - **Accuracy**: How well beliefs explain observations
 - **Complexity**: How far beliefs deviate from prior expectations
@@ -517,66 +543,71 @@ F[q] = E_q[log q(s)] − E_q[log p(o,s)]
 
 **Goal:** Select policies π that minimize expected free energy G(π):
 
-```
+```text
 G(π) = Σ_τ E_q(o,s|π) [ log q(s|π) − log p(o,s) ]
      = Σ_τ [ −Epistemic(τ) − Pragmatic(τ) ]
-```
+```text
 
 **Epistemic value** (information gain):
-```
+
+```text
 −E_q(o|s,π)[ H[p(s|o)] − H[q(s|π)] ]  →  Drives exploration
-```
+```text
 
 **Pragmatic value** (expected utility):
-```
+
+```text
 −E_q(o|π)[ log p(o|C) ]  →  Drives goal-directed behavior
-```
+```text
 
 **Policy posterior:**
-```
+
+```text
 q(π) = σ(−G(π))  =  softmax over negative EFE
-```
+```text
 
 ### Learning: Dirichlet Updates
 
 **Goal:** Update model parameters to better predict observations:
 
-```
+```text
 pA(o,s) ← pA(o,s) + η · o ⊗ q(s)     # "I saw o when I believed s"
 pB(s',s,a) ← pB(s',s,a) + η · q(s') ⊗ q(s)   # "s' followed s under a"
-```
+```text
 
 Where η is the learning rate. Expected parameters:
-```
+
+```text
 E[A] = pA / Σ_o pA     (normalized Dirichlet)
 E[B] = pB / Σ_s' pB
-```
+```text
 
 ### Inductive Inference: Reachability
 
 The **I matrix** encodes reachable goal states:
 
-```
+```text
 I(s) = Σ_d P(reach goal | start at s, depth=d) > threshold
-```
+```text
 
 Used to bias policy selection toward states with high reachability:
-```
+
+```text
 G_inductive(π) = G(π) + γ · I · q(s|π)
-```
+```text
 
 ### Sophisticated Inference
 
 **Replaces flat policy enumeration with tree search:**
 
-```
+```text
 For each possible action sequence:
   1. Predict future observations: q(o|s,a) = A · B(a) · q(s)
   2. Update beliefs: q(s|o) via Bayesian update
   3. Evaluate −G at each tree node
   4. Prune low-probability branches
   5. Backpropagate values to root
-```
+```text
 
 ---
 
@@ -592,7 +623,7 @@ For each possible action sequence:
   "q_pi_per_timestep": [[0.04, 0.96, ...], ...],
   "neg_efe_per_timestep": [[-1.2, 0.5, ...], ...]
 }
-```
+```text
 
 ### Legacy Handlers (NumPy)
 
@@ -605,47 +636,50 @@ For each possible action sequence:
   "efe_per_timestep": [...],
   "vfe_per_timestep": [...]
 }
-```
+```text
 
 ### Single-Shot Handlers
 
 ```json
 {
-  "beliefs": [[0.03, 0.17, 0.80], [0.64, 0.36]],
+  "beliefs": [
+    [0.03, 0.17, 0.8],
+    [0.64, 0.36]
+  ],
   "q_pi": [0.32, 0.33, 0.35],
   "neg_efe": [0.88, 0.89, 0.97]
 }
-```
+```text
 
 ---
 
 ## Part V: Output Routing
 
-| Output Type | Path Pattern | Description |
-|-------------|-------------|-------------|
-| JSON diagnostics | `output/{cat}/{stem}_data.json` | Per-timestep beliefs, VFE, EFE, q_pi, actions |
-| Beliefs heatmap | `output/{cat}/{stem}_beliefs.png` | q(s) over time |
-| Entropy trajectory | `output/{cat}/{stem}_entropy.png` | H[q(s)] over time |
-| EFE trajectory | `output/{cat}/{stem}_efe_traj.png` | Best/mean −G |
-| Neg-EFE heatmap | `output/{cat}/{stem}_efe_heatmap.png` | −G×policies×time |
-| Policy posterior | `output/{cat}/{stem}_qpi_heatmap.png` | q(π) evolution |
-| Belief animation | `output/{cat}/{stem}_beliefs_anim.gif` | Animated beliefs |
-| Action donut | `output/{cat}/{stem}_action_donut.png` | Action frequency |
-| KL divergence | `output/{cat}/{stem}_kl.png` | KL(q‖D) from prior |
-| A/B/C/D matrices | `output/{cat}/{stem}_{A,B,C,D}.png` | Generative model |
+| Output Type        | Path Pattern                           | Description                                   |
+| ------------------ | -------------------------------------- | --------------------------------------------- |
+| JSON diagnostics   | `output/{cat}/{stem}_data.json`        | Per-timestep beliefs, VFE, EFE, q_pi, actions |
+| Beliefs heatmap    | `output/{cat}/{stem}_beliefs.png`      | q(s) over time                                |
+| Entropy trajectory | `output/{cat}/{stem}_entropy.png`      | H[q(s)] over time                             |
+| EFE trajectory     | `output/{cat}/{stem}_efe_traj.png`     | Best/mean −G                                  |
+| Neg-EFE heatmap    | `output/{cat}/{stem}_efe_heatmap.png`  | −G×policies×time                              |
+| Policy posterior   | `output/{cat}/{stem}_qpi_heatmap.png`  | q(π) evolution                                |
+| Belief animation   | `output/{cat}/{stem}_beliefs_anim.gif` | Animated beliefs                              |
+| Action donut       | `output/{cat}/{stem}_action_donut.png` | Action frequency                              |
+| KL divergence      | `output/{cat}/{stem}_kl.png`           | KL(q‖D) from prior                            |
+| A/B/C/D matrices   | `output/{cat}/{stem}_{A,B,C,D}.png`    | Generative model                              |
 
 ---
 
 ## Part VI: Testing Matrix
 
-| Test File | Tests | Focus |
-|-----------|-------|-------|
-| `test_orchestrations.py` | 32 | Every handler with `--fast --skip-heavy` |
-| `test_viz.py` | 3 | Beliefs heatmap, free energy, action probs |
-| `test_analysis.py` | 3 | Entropy, KL divergence, action marginalization |
-| `test_manifests.py` | 2 | Manifest path existence, notebook listing |
-| `test_notebook_runner_smoke.py` | 1 | Module help flag |
-| **Total** | **41** | All passing |
+| Test File                       | Tests  | Focus                                          |
+| ------------------------------- | ------ | ---------------------------------------------- |
+| `test_orchestrations.py`        | 32     | Every handler with `--fast --skip-heavy`       |
+| `test_viz.py`                   | 3      | Beliefs heatmap, free energy, action probs     |
+| `test_analysis.py`              | 3      | Entropy, KL divergence, action marginalization |
+| `test_manifests.py`             | 2      | Manifest path existence, notebook listing      |
+| `test_notebook_runner_smoke.py` | 1      | Module help flag                               |
+| **Total**                       | **41** | All passing                                    |
 
 ---
 
